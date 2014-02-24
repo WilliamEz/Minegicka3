@@ -1,0 +1,16 @@
+[
+{
+  "modid": "minegicka3",
+  "name": "Minegicka III",
+  "description": "Pixelated Edition",
+  "version": "${version}",
+  "mcversion": "${mcversion}",
+  "url": "",
+  "updateUrl": "",
+  "authors": ["WilliamEze"],
+  "credits": "The Forge and FML guys, for making the tools for modders",
+  "logoFile": "",
+  "screenshots": [],
+  "dependencies": []
+}
+]

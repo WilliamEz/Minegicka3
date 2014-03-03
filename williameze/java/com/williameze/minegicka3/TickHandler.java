@@ -2,7 +2,7 @@ package com.williameze.minegicka3;
 
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
-import com.williameze.minegicka3.core.Core;
+import com.williameze.minegicka3.core.CoreBridge;
 
 import cpw.mods.fml.common.eventhandler.Event;
 import cpw.mods.fml.common.eventhandler.IEventListener;
@@ -18,42 +18,43 @@ public class TickHandler implements IEventListener
     @SubscribeEvent
     public void clientTick(ClientTickEvent event)
     {
-	Core.instance().onTick(event);
+	CoreBridge.instance().onTick(event);
     }
 
     @SubscribeEvent
     public void serverTick(ServerTickEvent event)
     {
-	Core.instance().onTick(event);
+	CoreBridge.instance().onTick(event);
     }
 
     @SubscribeEvent
     public void worldTick(WorldTickEvent event)
     {
-	Core.instance().onTick(event);
+	CoreBridge.instance().onTick(event);
     }
 
     @SubscribeEvent
     public void renderWorldTick(RenderTickEvent event)
     {
-	Core.instance().onTick(event);
+	CoreBridge.instance().onTick(event);
     }
 
     @SubscribeEvent
     public void playerTick(PlayerTickEvent event)
     {
-	Core.instance().onTick(event);
+	CoreBridge.instance().onTick(event);
     }
 
     @SubscribeEvent
     public void renderGameOverlayTick(RenderGameOverlayEvent event)
     {
-	Core.client.onRenderGameOverlayTick(event);
+	CoreBridge.client.onRenderGameOverlayTick(event);
     }
 
     @Override
     public void invoke(Event event)
     {
-	// if(event instanceof RenderGameOverlayEvent) renderGameOverlayTick((RenderGameOverlayEvent) event);
+	// if(event instanceof RenderGameOverlayEvent)
+	// renderGameOverlayTick((RenderGameOverlayEvent) event);
     }
 }

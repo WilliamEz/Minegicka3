@@ -1,14 +1,18 @@
 package com.williameze.minegicka3.bridges;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import net.minecraft.util.ResourceLocation;
 
 import com.williameze.minegicka3.ModBase;
+import com.williameze.minegicka3.core.Element;
 
 public abstract class Values
 {
     /** ResourceLocation **/
-    public static ResourceLocation gui_Main = new ResourceLocationCustom("drawables/gui_main.png");
-
+    public static ResourceLocationCustom elementsTexture = new ResourceLocationCustom("drawables/elements.png");
+    
     /** Toggleable **/
     public static GuiPosition gui_Position = GuiPosition.BOTTOM_RIGHT;
 
@@ -23,7 +27,7 @@ public abstract class Values
     {
 	public ResourceLocationCustom(String s)
 	{
-	    super(ModBase.PACKAGE, "textures/" + s);
+	    super(ModBase.MODID, "textures/" + s);
 	}
     }
 }

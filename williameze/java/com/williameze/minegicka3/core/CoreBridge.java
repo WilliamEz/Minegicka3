@@ -9,19 +9,19 @@ import cpw.mods.fml.common.gameevent.TickEvent.ServerTickEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.WorldTickEvent;
 import cpw.mods.fml.relauncher.Side;
 
-public class Core
+public class CoreBridge
 {
 
     /** Instantiate the Core **/
-    private Core()
+    private CoreBridge()
     {
     }
 
-    private static Core instance;
+    private static CoreBridge instance;
 
-    public static Core instance()
+    public static CoreBridge instance()
     {
-	return instance == null ? (instance = new Core()) : instance;
+	return instance == null ? (instance = new CoreBridge()) : instance;
     }
 
     /** Instances **/
@@ -41,24 +41,18 @@ public class Core
 	}
 	if (event instanceof WorldTickEvent)
 	{
-	    if (event.side == Side.CLIENT)
-		client.onClientWorldTick((WorldTickEvent) event);
-	    if (event.side == Side.SERVER)
-		server.onServerWorldTick((WorldTickEvent) event);
+	    if (event.side == Side.CLIENT) client.onClientWorldTick((WorldTickEvent) event);
+	    if (event.side == Side.SERVER) server.onServerWorldTick((WorldTickEvent) event);
 	}
 	if (event instanceof PlayerTickEvent)
 	{
-	    if (event.side == Side.CLIENT)
-		client.onClientPlayerTick((PlayerTickEvent) event);
-	    if (event.side == Side.SERVER)
-		server.onServerPlayerTick((PlayerTickEvent) event);
+	    if (event.side == Side.CLIENT) client.onClientPlayerTick((PlayerTickEvent) event);
+	    if (event.side == Side.SERVER) server.onServerPlayerTick((PlayerTickEvent) event);
 	}
 	if (event instanceof RenderTickEvent)
 	{
-	    if (event.side == Side.CLIENT)
-		client.onClientRenderTick((RenderTickEvent) event);
-	    if (event.side == Side.SERVER)
-		server.onServerRenderTick((RenderTickEvent) event);
+	    if (event.side == Side.CLIENT) client.onClientRenderTick((RenderTickEvent) event);
+	    if (event.side == Side.SERVER) server.onServerRenderTick((RenderTickEvent) event);
 	}
     }
 }

@@ -1,6 +1,7 @@
 package com.williameze.minegicka3.core;
 
 import net.minecraft.server.MinecraftServer;
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.gameevent.TickEvent.PlayerTickEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.RenderTickEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.ServerTickEvent;
@@ -22,7 +23,7 @@ public class CoreServer
     }
 
     /** Minecraft server instance **/
-    public static MinecraftServer mcs = FMLServerHandler.instance().getServer();
+    public static MinecraftServer mcs = FMLCommonHandler.instance().getMinecraftServerInstance();
 
     public void onServerTick(ServerTickEvent event)
     {

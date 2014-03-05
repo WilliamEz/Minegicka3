@@ -1,4 +1,4 @@
-package com.williameze.minegicka3.bridges;
+package com.williameze.minegicka3.bridges.math;
 
 public class Line
 {
@@ -14,9 +14,24 @@ public class Line
 	dir = direction;
     }
 
+    public Vector getPointWithX(double x)
+    {
+	return new Vector(x, (x - org.x) / dir.x * dir.y + org.y, (x - org.x) / dir.x * dir.z + org.z);
+    }
+
+    public Vector getPointWithY(double y)
+    {
+	return new Vector((y - org.y) / dir.y * dir.x + org.x, y, (y - org.y) / dir.y * dir.z + org.z);
+    }
+
+    public Vector getPointWithZ(double z)
+    {
+	return new Vector((z - org.z) / dir.z * dir.x + org.x, (z - org.z) / dir.z * dir.y + org.y, z);
+    }
+
     public Vector intersectWith(Line l)
     {
-	Vector between = org.subtractVector(l.org);
+	Vector between = org.subtract(l.org);
 	Vector cross = dir.crossProduct(l.dir);
 	if (!cross.isZeroVector() && cross.dotProduct(between) == 0)
 	{
@@ -40,19 +55,19 @@ public class Line
 	}
 	return null;
     }
-    
+
     public boolean parallel(Line l)
     {
 	return dir.parallel(l.dir);
     }
-    
+
     @Override
     public boolean equals(Object obj)
     {
-	if(obj instanceof Line)
+	if (obj instanceof Line)
 	{
-	    return dir.parallel(((Line) obj).dir) && dir.parallel(org.subtractVector(((Line) obj).org));
+	    return dir.parallel(((Line) obj).dir) && dir.parallel(org.subtract(((Line) obj).org));
 	}
-        return false;
+	return false;
     }
 }

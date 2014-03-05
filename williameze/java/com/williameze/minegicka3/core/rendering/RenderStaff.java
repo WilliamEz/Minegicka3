@@ -35,22 +35,24 @@ public class RenderStaff implements IItemRenderer
 	if (item.getItem() instanceof ItemStaff)
 	{
 	    GL11.glPushMatrix();
-	    //RenderHelper.enableStandardItemLighting();
+	    RenderHelper.enableStandardItemLighting();
+	    GL11.glDisable(GL11.GL_CULL_FACE);
+	    GL11.glEnable(GL11.GL_DEPTH_TEST);
 	    GL11.glEnable(GL11.GL_NORMALIZE);
 	    if (type == ItemRenderType.INVENTORY)
 	    {
 		GL11.glRotated(37.5, 0, 0, -1);
-		GL11.glScaled(1, 1, 1);
+		GL11.glScaled(1, 1, -1);
 		GL11.glTranslated(0, -0.5, 0);
 		GL11.glScaled(1.25, 1.25, 1.25);
 	    }
-	    if(type == ItemRenderType.EQUIPPED_FIRST_PERSON)
+	    if (type == ItemRenderType.EQUIPPED_FIRST_PERSON)
 	    {
 		GL11.glRotated(15, -1, 0, 1);
-		GL11.glScaled(1, 1, 1);
+		GL11.glScaled(1, 1, -1);
 		GL11.glTranslated(3, -2.5, 0);
 		GL11.glScaled(4, 4, 4);
-		GL11.glRotated(45, 0, 1, 0);
+		GL11.glRotated(20, 1, 0, -1);
 	    }
 	    if (type == ItemRenderType.EQUIPPED)
 	    {
@@ -63,12 +65,11 @@ public class RenderStaff implements IItemRenderer
 
 	    GL11.glDisable(GL11.GL_TEXTURE_2D);
 	    GL11.glEnable(GL11.GL_BLEND);
-	    GL11.glEnable(GL11.GL_DEPTH_TEST);
-	    GL11.glDepthMask(true);
 	    GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 
 	    ((ItemStaff) item.getItem()).getModel(item).render(item);
 
+	    GL11.glEnable(GL11.GL_CULL_FACE);
 	    GL11.glDisable(GL11.GL_BLEND);
 	    GL11.glEnable(GL11.GL_TEXTURE_2D);
 	    GL11.glPopMatrix();

@@ -1,20 +1,21 @@
-package com.williameze.minegicka3.core.rendering.models;
+package com.williameze.minegicka3.bridges.models;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Random;
+
+import net.minecraft.client.Minecraft;
 
 import org.lwjgl.opengl.GL11;
 
-import com.williameze.minegicka3.bridges.Vector;
+import com.williameze.minegicka3.bridges.math.Vector;
 
-public class Sphere implements IModelComponent
+public class Sphere extends ModelObject
 {
     double orgX, orgY, orgZ;
     double radius;
-    int color;
-    int opacity;
-    List<List<Vertex>> vertexStacks;
+    List<List<Vector>> vertexStacks;
 
     public Sphere(double orX, double orY, double orZ, double r)
     {
@@ -22,40 +23,32 @@ public class Sphere implements IModelComponent
 	orgY = orY;
 	orgZ = orZ;
 	radius = r;
-	setColorOpacity(0xffffff, 255);
 	calculateVectexes();
-    }
-
-    public Sphere setColorOpacity(int c, int o)
-    {
-	color = c;
-	opacity = o;
-	return this;
     }
 
     public void calculateVectexes()
     {
 	vertexStacks = new ArrayList();
-	vertexStacks.add(Arrays.asList(new Vertex(0, radius, 0)));
-	int stacks = (int) (Math.max(4,Math.pow(radius,0.5)*16));
-	int slices = stacks*2;
-	Vector latitude = new Vector(0, 1, 0);
+	vertexStacks.add(Arrays.asList(new Vector(0, radius, 0)));
+	int stacks = (int) (Math.max(4, Math.pow(radius, 0.5) * 16));
+	int slices = stacks * 2;
+	Vector latitude = new Vector(0, radius, 0);
 	for (int a = 1; a <= stacks; a++)
 	{
-	    List<Vertex> aStack = new ArrayList();
+	    List<Vector> aStack = new ArrayList();
 
-	    latitude.rotateAroundX((float) (Math.PI / stacks));
+	    latitude.rotateAroundX((Math.PI / stacks));
 	    Vector longitude = new Vector(latitude.x, latitude.y, latitude.z);
 
 	    for (int b = 0; b <= slices; b++)
 	    {
-		longitude.rotateAroundY((float) (Math.PI * 2D / slices));
-		aStack.add(new Vertex(longitude.x * radius, longitude.y * radius, longitude.z * radius));
+		longitude.rotateAroundY((Math.PI * 2D / slices));
+		aStack.add(new Vector(longitude.x, longitude.y, longitude.z));
 	    }
 
 	    vertexStacks.add(aStack);
 	}
-	vertexStacks.add(Arrays.asList(new Vertex(0, -radius, 0)));
+	vertexStacks.add(Arrays.asList(new Vector(0, -radius, 0)));
     }
 
     @Override
@@ -66,27 +59,24 @@ public class Sphere implements IModelComponent
 	if (vertexStacks.size() > 2)
 	{
 	    tess.setColorRGBA_I(color, opacity);
-	    int stacks = vertexStacks.size() - 1;
-	    int slices = vertexStacks.get(1).size();
-	    for (int a = 1; a <= stacks; a++)
+	    int size = vertexStacks.size();
+	    for (int a = 0; a < size-1; a++)
 	    {
-		List<Vertex> stackTop = vertexStacks.get(a - 1);
-		List<Vertex> stackBottom = vertexStacks.get(a);
-		if (a == 1)
+		if (a == 0)
 		{
 		    tess.startDrawing(GL11.GL_TRIANGLE_FAN);
-		    addVertex(stackTop.get(0));
-		    for (Vertex v : stackBottom)
+		    addVertex(vertexStacks.get(0).get(0));
+		    for (Vector v : vertexStacks.get(1))
 		    {
 			addVertex(v);
 		    }
 		    tess.draw();
 		}
-		else if (a == stacks)
+		else if (a == size - 2)
 		{
 		    tess.startDrawing(GL11.GL_TRIANGLE_FAN);
-		    addVertex(stackBottom.get(0));
-		    for (Vertex v : stackTop)
+		    addVertex(vertexStacks.get(size-1).get(0));
+		    for (Vector v : vertexStacks.get(size-2))
 		    {
 			addVertex(v);
 		    }
@@ -94,6 +84,9 @@ public class Sphere implements IModelComponent
 		}
 		else
 		{
+		    List<Vector> stackTop = vertexStacks.get(a);
+		    List<Vector> stackBottom = vertexStacks.get(a+1);
+		    int slices = stackTop.size();
 		    tess.startDrawing(GL11.GL_TRIANGLE_STRIP);
 		    for (int b = 0; b < slices; b++)
 		    {
@@ -107,7 +100,8 @@ public class Sphere implements IModelComponent
 	GL11.glPopMatrix();
     }
 
-    public void addVertex(Vertex v)
+    @Override
+    public void addVertex(Vector v)
     {
 	GL11.glNormal3d(v.x, v.y, v.z);
 	tess.addVertex(v.x, v.y, v.z);

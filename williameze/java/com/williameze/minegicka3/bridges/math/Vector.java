@@ -1,7 +1,4 @@
-package com.williameze.minegicka3.bridges;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+package com.williameze.minegicka3.bridges.math;
 
 public class Vector
 {
@@ -36,12 +33,12 @@ public class Vector
 	return this;
     }
 
-    /**
-     * Returns a new vector with the result of this vector minus the specified vector
-     */
-    public Vector subtractVector(Vector par1Vector)
+    public Vector multiply(double d)
     {
-	return new Vector(x - par1Vector.x, y - par1Vector.y, z - par1Vector.z);
+	x *= d;
+	y *= d;
+	z *= d;
+	return this;
     }
 
     /**
@@ -52,29 +49,47 @@ public class Vector
 	double d0 = Math.sqrt(x * x + y * y + z * z);
 	return d0 < 1.0E-4D ? new Vector(0.0D, 0.0D, 0.0D) : new Vector(x / d0, y / d0, z / d0);
     }
-
-    public double dotProduct(Vector par1Vector)
+    
+    public double getAlgebraicAngle(Vector v)
     {
-	return x * par1Vector.x + y * par1Vector.y + z * par1Vector.z;
+	return Math.atan2(crossProduct(v).lengthVector(), dotProduct(v));
+    }
+
+    public double dotProduct(Vector v)
+    {
+	return x * v.x + y * v.y + z * v.z;
     }
 
     /**
      * Returns a new vector with the result of this vector x the specified
      * vector.
      */
-    public Vector crossProduct(Vector par1Vector)
+    public Vector crossProduct(Vector v)
     {
-	return new Vector(y * par1Vector.z - z * par1Vector.y, z * par1Vector.x - x * par1Vector.z, x * par1Vector.y
-		- y * par1Vector.x);
+	return new Vector(y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x);
+    }
+
+    public Vector add(double i, double j, double k)
+    {
+	return new Vector(x + i, y + j, z + k);
     }
 
     /**
      * Adds the specified x,y,z vector components to this vector and returns the
      * resulting vector. Does not change this vector.
      */
-    public Vector addVector(double par1, double par3, double par5)
+    public Vector add(Vector v)
     {
-	return new Vector(x + par1, y + par3, z + par5);
+	return new Vector(x + v.x, y + v.y, z + v.z);
+    }
+
+    /**
+     * Returns a new vector with the result of this vector minus the specified
+     * vector
+     */
+    public Vector subtract(Vector v)
+    {
+	return new Vector(x - v.x, y - v.y, z - v.z);
     }
 
     /**
@@ -88,6 +103,36 @@ public class Vector
     public String toString()
     {
 	return "(" + x + ", " + y + ", " + z + ")";
+    }
+
+    public Vector rotateTowards(Vector dest)
+    {
+	Vector c = crossProduct(dest);
+	double l = c.lengthVector();
+	if (l > 0)
+	{
+	    Vector axis = c.normalize();
+	    return rotateAround(axis, Math.atan2(l, dotProduct(dest)));
+	}
+	else if (dotProduct(dest) < 0)
+	{
+	    return new Vector(-c.x, -c.y, -c.z);
+	}
+	else
+	{
+	    return c;
+	}
+    }
+
+    public Vector rotateAround(Vector axis, double radian)
+    {
+	Vector ax = axis.normalize();
+	double cos = Math.cos(radian);
+	double sin = Math.sin(radian);
+	Vector seg1 = new Vector(x * cos, y * cos, z * cos);
+	Vector seg2 = crossProduct(ax).multiply(sin);
+	Vector seg3 = ax.multiply(dotProduct(ax) * (1 - cos));
+	return new Vector(seg1.x + seg2.x + seg3.x, seg1.y + seg2.y + seg3.y, seg1.z + seg2.z + seg3.z);
     }
 
     /**
@@ -137,12 +182,17 @@ public class Vector
 
     public boolean isZeroVector()
     {
-	return x==0 && y==0 && z==0;
+	return x == 0 && y == 0 && z == 0;
     }
-    
+
     public boolean parallel(Vector v)
     {
 	int clamp = 100000000;
-	return Math.round(crossProduct(v).lengthVector()*clamp)==0; 
+	return Math.round(crossProduct(v).lengthVector() * clamp) == 0;
+    }
+
+    public Vector copy()
+    {
+	return new Vector(x, y, z);
     }
 }

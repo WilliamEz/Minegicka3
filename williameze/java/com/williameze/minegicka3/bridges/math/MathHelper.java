@@ -1,4 +1,4 @@
-package com.williameze.minegicka3.bridges;
+package com.williameze.minegicka3.bridges.math;
 
 
 public class MathHelper

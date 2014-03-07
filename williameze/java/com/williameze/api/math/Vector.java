@@ -1,7 +1,10 @@
-package com.williameze.minegicka3.bridges.math;
+package com.williameze.api.math;
 
 public class Vector
 {
+    public static Vector unitX = new Vector(1, 0, 0);
+    public static Vector unitY = new Vector(0, 1, 0);
+    public static Vector unitZ = new Vector(0, 0, 1);
     /**
      * X coordinate of VectorD
      */
@@ -15,6 +18,23 @@ public class Vector
      */
     public double z;
 
+    public static Vector median(Vector... vs)
+    {
+	double x = 0;
+	double y = 0;
+	double z = 0;
+	for(int a=0 ; a<vs.length ; a++)
+	{
+	    x+=vs[a].x;
+	    y+=vs[a].y;
+	    z+=vs[a].z;
+	}
+	x/=vs.length;
+	y/=vs.length;
+	z/=vs.length;
+	return new Vector(x, y, z);
+    }
+
     public Vector(double i, double j, double k)
     {
 	x = i;
@@ -25,7 +45,7 @@ public class Vector
     /**
      * Sets the x,y,z components of the vector as specified.
      */
-    protected Vector setComponents(double par1, double par3, double par5)
+    public Vector setComponents(double par1, double par3, double par5)
     {
 	x = par1;
 	y = par3;
@@ -47,10 +67,15 @@ public class Vector
     public Vector normalize()
     {
 	double d0 = Math.sqrt(x * x + y * y + z * z);
-	return d0 < 1.0E-4D ? new Vector(0.0D, 0.0D, 0.0D) : new Vector(x / d0, y / d0, z / d0);
+	return isZeroVector() ? new Vector(0,0,0) : new Vector(x / d0, y / d0, z / d0);
     }
     
-    public double getAlgebraicAngle(Vector v)
+    /**
+     * Get angle between vector, frmo 0 -> pi
+     * @param v
+     * @return
+     */
+    public double getAngleBetween(Vector v)
     {
 	return Math.atan2(crossProduct(v).lengthVector(), dotProduct(v));
     }
@@ -187,10 +212,10 @@ public class Vector
 
     public boolean parallel(Vector v)
     {
-	int clamp = 100000000;
+	int clamp = 1000000000;
 	return Math.round(crossProduct(v).lengthVector() * clamp) == 0;
     }
-
+    
     public Vector copy()
     {
 	return new Vector(x, y, z);

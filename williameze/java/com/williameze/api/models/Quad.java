@@ -1,10 +1,10 @@
-package com.williameze.minegicka3.bridges.models;
+package com.williameze.api.models;
 
 import org.lwjgl.opengl.GL11;
 
-import com.williameze.minegicka3.bridges.math.Line;
-import com.williameze.minegicka3.bridges.math.Plane;
-import com.williameze.minegicka3.bridges.math.Vector;
+import com.williameze.api.math.Line;
+import com.williameze.api.math.Plane;
+import com.williameze.api.math.Vector;
 
 import net.minecraft.client.renderer.Tessellator;
 
@@ -17,7 +17,7 @@ public class Quad extends ModelObject
     public Quad(Vector vec1, Vector vec2, Vector vec3, Vector vec4)
     {
 	this(vec1, vec2, vec3, vec4,
-		new Vector((vec1.x + vec2.x + vec3.x + vec4.x) / 4, (vec1.y + vec2.y + vec3.y + vec4.y) / 4, (vec1.z + vec2.z + vec3.z + vec4.z) / 4), false);
+		Vector.median(vec1, vec2, vec3, vec4), false);
     }
 
     public Quad(Vector vec1, Vector vec2, Vector vec3, Vector vec4, Vector nor, boolean setNormalDirectly)
@@ -50,12 +50,12 @@ public class Quad extends ModelObject
 	Vector pointV2 = v2.subtract(normalLine.intersectWith(new Plane(normal, v2)));
 	Vector pointV3 = v3.subtract(normalLine.intersectWith(new Plane(normal, v3)));
 	Vector pointV4 = v4.subtract(normalLine.intersectWith(new Plane(normal, v4)));
-	double angleV2 = pointV2.getAlgebraicAngle(pointV1);
-	double angleV3 = pointV3.getAlgebraicAngle(pointV1);
-	double angleV4 = pointV4.getAlgebraicAngle(pointV1);
-	if(normal.dotProduct(pointV1.crossProduct(pointV2))<0) angleV2+=Math.PI;
-	if(normal.dotProduct(pointV1.crossProduct(pointV3))<0) angleV3+=Math.PI;
-	if(normal.dotProduct(pointV1.crossProduct(pointV4))<0) angleV4+=Math.PI;
+	double angleV2 = pointV2.getAngleBetween(pointV1);
+	double angleV3 = pointV3.getAngleBetween(pointV1);
+	double angleV4 = pointV4.getAngleBetween(pointV1);
+	if(normal.dotProduct(pointV1.crossProduct(pointV2))<0) angleV2=Math.PI*2-angleV2;
+	if(normal.dotProduct(pointV1.crossProduct(pointV3))<0) angleV3=Math.PI*2-angleV3;
+	if(normal.dotProduct(pointV1.crossProduct(pointV4))<0) angleV4=Math.PI*2-angleV4;
 	
 	Vector dummy2, dummy3, dummy4;
 	if(angleV2>=angleV3 && angleV2>=angleV4)

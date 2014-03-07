@@ -1,4 +1,4 @@
-package com.williameze.minegicka3.bridges.models;
+package com.williameze.api.models;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -7,8 +7,8 @@ import org.lwjgl.opengl.GL11;
 
 import scala.Array;
 
-import com.williameze.minegicka3.bridges.math.Plane;
-import com.williameze.minegicka3.bridges.math.Vector;
+import com.williameze.api.math.Plane;
+import com.williameze.api.math.Vector;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -16,43 +16,50 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class Cylinder extends ModelObject
 {
-    Vector center1;
-    Vector center2;
-    Vector face1Normal;
-    Vector face2Normal;
-    double radius1;
-    double radius2;
-    int cuts;
+    public Vector center1;
+    public Vector center2;
+    public Vector face1Normal;
+    public Vector face2Normal;
+    public double radius1;
+    public double radius2;
+    public int cuts;
     public List<Vector> face1, face2;
     public List<Quad> sideQuads;
 
+    public static Cylinder create(Vector cen1, Vector cen2, double radius1, int cuts)
+    {
+	return create(cen1,cen2,radius1,radius1,cuts,0);
+    }
+    
     /**
      * 
      * @param cen1
      * @param cen2
-     * @param radius
-     * @param cuts amounts of side faces
+     * @param radius1
+     * @param cuts
+     *            amounts of side faces
      * @param type
-     *            0: normal, 1: slanted against Y, 2: slanted against X, 3: slanted against Z
+     *            0: normal, 1: slanted against Y, 2: slanted against X, 3:
+     *            slanted against Z
      * @return
      */
-    public Cylinder create(Vector cen1, Vector cen2, double radius, int cuts, int type)
+    public static Cylinder create(Vector cen1, Vector cen2, double radius1, double radius2, int cuts, int type)
     {
-	if(type == 1)
+	if (type == 1)
 	{
-	    return new Cylinder(cen1, cen2, new Vector(0,1,0), new Vector(0,-1,0), radius, radius, cuts);
+	    return new Cylinder(cen1, cen2, new Vector(0, 1, 0), new Vector(0, -1, 0), radius1, radius2, cuts);
 	}
-	else if(type == 2)
+	else if (type == 2)
 	{
-	    return new Cylinder(cen1, cen2, new Vector(1,0,0), new Vector(-1,0,0), radius, radius, cuts);
+	    return new Cylinder(cen1, cen2, new Vector(1, 0, 0), new Vector(-1, 0, 0), radius1, radius2, cuts);
 	}
-	else if(type == 3)
+	else if (type == 3)
 	{
-	    return new Cylinder(cen1, cen2, new Vector(0,0,1), new Vector(0,0,-1), radius, radius, cuts);
+	    return new Cylinder(cen1, cen2, new Vector(0, 0, 1), new Vector(0, 0, -1), radius1, radius2, cuts);
 	}
 	else
 	{
-	    return new Cylinder(cen1, cen2, cen1.subtract(cen1.add(cen2).multiply(0.5)), cen2.subtract(cen1.add(cen2).multiply(0.5)), radius, radius, cuts);
+	    return new Cylinder(cen1, cen2, cen1.subtract(cen1.add(cen2).multiply(0.5)), cen2.subtract(cen1.add(cen2).multiply(0.5)), radius1, radius2, cuts);
 	}
     }
 
@@ -63,11 +70,12 @@ public class Cylinder extends ModelObject
 	this.face1Normal = fromPlaneNormal;
 	this.face2Normal = toPlaneNormal;
 	this.radius1 = radiusFrom;
-	this.radius1 = radiusTo;
+	this.radius2 = radiusTo;
 	this.cuts = cuts;
 	makeCylinder();
+	untwist();
     }
-    
+
     public Cylinder makeCylinder()
     {
 	face1 = new ArrayList();
@@ -92,6 +100,7 @@ public class Cylinder extends ModelObject
 	Vector face2Circling = face2Normal.rotateAround(axis, -Math.PI / 2).normalize().multiply(radius2);
 	for (int a = 0; a < cuts; a++)
 	{
+	    
 	    Vector v1 = center2.add(face2Circling);
 	    Vector v2 = center1.add(face1Circling);
 	    face1Circling = face1Circling.rotateAround(face1Normal, Math.PI * 2D / cuts);
@@ -101,21 +110,22 @@ public class Cylinder extends ModelObject
 
 	    face2.add(v1);
 	    face1.add(v2);
-	    
-	    sideQuads.add(new Quad(v1, v2, v3, v4));
+
+	    Vector normalGuide = Vector.median(v1,v2,v3,v4).subtract(center1.add(center2).multiply(0.5));
+	    sideQuads.add(new Quad(v1, v2, v3, v4, normalGuide, true));
 	}
 	return this;
     }
-    
+
     public Cylinder untwist()
     {
-	if(center1.subtract(center1.add(center2).multiply(0.5)).dotProduct(face1Normal)>0)
+	if (center1.subtract(center1.add(center2).multiply(0.5)).dotProduct(face1Normal) > 0)
 	{
-	    if(center2.subtract(center1.add(center2).multiply(0.5)).dotProduct(face2Normal)<0) face2Normal.multiply(-1);
+	    if (center2.subtract(center1.add(center2).multiply(0.5)).dotProduct(face2Normal) < 0) face2Normal.multiply(-1);
 	}
 	else
 	{
-	    if(center2.subtract(center1.add(center2).multiply(0.5)).dotProduct(face2Normal)>0) face2Normal.multiply(-1);
+	    if (center2.subtract(center1.add(center2).multiply(0.5)).dotProduct(face2Normal) > 0) face2Normal.multiply(-1);
 	}
 	return this;
     }

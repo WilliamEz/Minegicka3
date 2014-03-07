@@ -39,6 +39,10 @@ public class RenderStaff implements IItemRenderer
 	    GL11.glDisable(GL11.GL_CULL_FACE);
 	    GL11.glEnable(GL11.GL_DEPTH_TEST);
 	    GL11.glEnable(GL11.GL_NORMALIZE);
+	    if (type == ItemRenderType.ENTITY)
+	    {
+		GL11.glScaled(3, 3, 3);
+	    }
 	    if (type == ItemRenderType.INVENTORY)
 	    {
 		GL11.glRotated(37.5, 0, 0, -1);
@@ -51,7 +55,7 @@ public class RenderStaff implements IItemRenderer
 		GL11.glRotated(15, -1, 0, 1);
 		GL11.glScaled(1, 1, -1);
 		GL11.glTranslated(3, -2.5, 0);
-		GL11.glScaled(4, 4, 4);
+		GL11.glScaled(6, 6, 6);
 		GL11.glRotated(20, 1, 0, -1);
 	    }
 	    if (type == ItemRenderType.EQUIPPED)

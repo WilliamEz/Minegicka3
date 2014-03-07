@@ -1,4 +1,4 @@
-package com.williameze.minegicka3.bridges.math;
+package com.williameze.api.math;
 
 public class Line
 {

@@ -24,7 +24,7 @@ public class ItemStaff extends Item
 	ModBase.proxy.registerItemRenderer(this);
 	setMaxStackSize(1);
 	setCreativeTab(ModBase.modCreativeTab);
-	setModel(ModelStaff.defaultModel);
+	setModel(ModelStaff.defaultStaffModel);
 	setBaseStats(1, 1, 1);
     }
     

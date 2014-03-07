@@ -1,12 +1,16 @@
-package com.williameze.minegicka3.bridges.models;
+package com.williameze.api.models;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import net.minecraft.client.renderer.Tessellator;
 
-import com.williameze.minegicka3.bridges.math.Vector;
+import com.williameze.api.math.Vector;
 
 public abstract class ModelObject
 {
     public static Tessellator tess = Tessellator.instance;
+    public List<Quad> childQuads = new ArrayList();
     public int color = 0xffffff;
     public int opacity = 255;
 

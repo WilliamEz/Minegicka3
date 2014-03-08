@@ -2,6 +2,7 @@ package com.williameze.minegicka3;
 
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
+import com.williameze.minegicka3.bridges.Values;
 import com.williameze.minegicka3.core.CoreBridge;
 
 import cpw.mods.fml.common.eventhandler.Event;
@@ -19,6 +20,7 @@ public class TickHandler implements IEventListener
     public void clientTick(ClientTickEvent event)
     {
 	CoreBridge.instance().onTick(event);
+	Values.clientTicked++;
     }
 
     @SubscribeEvent

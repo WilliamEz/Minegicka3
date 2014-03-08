@@ -55,10 +55,7 @@ public class Vector
 
     public Vector multiply(double d)
     {
-	x *= d;
-	y *= d;
-	z *= d;
-	return this;
+	return new Vector(x*d, y*d, z*d);
     }
 
     /**
@@ -96,7 +93,7 @@ public class Vector
 
     public Vector add(double i, double j, double k)
     {
-	return new Vector(x + i, y + j, z + k);
+	return new Vector(x+i, y+j, z+k);
     }
 
     /**
@@ -114,6 +111,7 @@ public class Vector
      */
     public Vector subtract(Vector v)
     {
+	if(v==null) v = new Vector(0,0,0);
 	return new Vector(x - v.x, y - v.y, z - v.z);
     }
 

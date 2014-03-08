@@ -43,7 +43,7 @@ public class Sphere extends ModelObject
 		Vector v2 = vert.rotateAround(Vector.unitX, (a + 1) * vertRotAngle).rotateAround(Vector.unitY, b * horzRotAngle);
 		Vector v3 = vert.rotateAround(Vector.unitX, a * vertRotAngle).rotateAround(Vector.unitY, (b + 1) * horzRotAngle);
 		Vector v4 = vert.rotateAround(Vector.unitX, (a + 1) * vertRotAngle).rotateAround(Vector.unitY, (b + 1) * horzRotAngle);
-		if (a < stacks-1)
+		if (a < stacks - 1)
 		{
 		    Triangle tri1 = new Triangle(v1, v2, v4);
 		    faces.add(tri1);
@@ -62,13 +62,14 @@ public class Sphere extends ModelObject
     {
 	GL11.glPushMatrix();
 	GL11.glTranslated(orgX, orgY, orgZ);
-	tess.setColorRGBA_I(color, opacity);
+	GL11.glBegin(GL11.GL_TRIANGLES);
+	glSetColor();
 	for (Triangle t : faces)
 	{
-	    tess.startDrawing(GL11.GL_TRIANGLES);
-	    t.addTriangleToTess(tess);
-	    tess.draw();
+	    t.addTriangleToGL();
 	}
+	GL11.glEnd();
+	glResetColor();
 	GL11.glPopMatrix();
     }
 

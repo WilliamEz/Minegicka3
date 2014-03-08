@@ -108,22 +108,23 @@ public class Triangle extends ModelObject
 	return this;
     }
 
-    public void addTriangleToTess(Tessellator tess)
+    public void addTriangleToGL()
     {
 	GL11.glNormal3d(normal.x, normal.y, normal.z);
-	tess.addVertex(v1.x, v1.y, v1.z);
-	tess.addVertex(v2.x, v2.y, v2.z);
-	tess.addVertex(v3.x, v3.y, v3.z);
+	GL11.glVertex3d(v1.x, v1.y, v1.z);
+	GL11.glVertex3d(v2.x, v2.y, v2.z);
+	GL11.glVertex3d(v3.x, v3.y, v3.z);
     }
 
     @Override
     public void render()
     {
 	GL11.glPushMatrix();
-	tess.startDrawing(GL11.GL_TRIANGLES);
-	tess.setColorRGBA_I(color, opacity);
-	addTriangleToTess(tess);
-	tess.draw();
+	GL11.glBegin(GL11.GL_TRIANGLES);
+	glSetColor();
+	addTriangleToGL();
+	GL11.glEnd();
+	glResetColor();
 	GL11.glPopMatrix();
     }
 }

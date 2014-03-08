@@ -41,14 +41,16 @@ public class RenderStaff implements IItemRenderer
 	    GL11.glEnable(GL11.GL_NORMALIZE);
 	    if (type == ItemRenderType.ENTITY)
 	    {
+		GL11.glTranslated(0, 1, 0);
 		GL11.glScaled(3, 3, 3);
 	    }
 	    if (type == ItemRenderType.INVENTORY)
 	    {
-		GL11.glRotated(37.5, 0, 0, -1);
 		GL11.glScaled(1, 1, -1);
-		GL11.glTranslated(0, -0.5, 0);
-		GL11.glScaled(1.25, 1.25, 1.25);
+		GL11.glTranslated(-0.2, -0.3, 0);
+		//GL11.glScaled(1.25, 1.25, 1.25);
+		GL11.glRotated(60, 1, 0, 0);
+		GL11.glRotated(45, 0, 1, 0);
 	    }
 	    if (type == ItemRenderType.EQUIPPED_FIRST_PERSON)
 	    {

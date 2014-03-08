@@ -1,13 +1,11 @@
 package com.williameze.api.models;
 
+import java.awt.Color;
 import java.util.ArrayList;
 import java.util.List;
 
 import org.lwjgl.opengl.GL11;
 
-import scala.Array;
-
-import com.williameze.api.math.Plane;
 import com.williameze.api.math.Vector;
 
 import cpw.mods.fml.relauncher.Side;
@@ -28,9 +26,9 @@ public class Cylinder extends ModelObject
 
     public static Cylinder create(Vector cen1, Vector cen2, double radius1, int cuts)
     {
-	return create(cen1,cen2,radius1,radius1,cuts,0);
+	return create(cen1, cen2, radius1, radius1, cuts, 0);
     }
-    
+
     /**
      * 
      * @param cen1
@@ -59,11 +57,13 @@ public class Cylinder extends ModelObject
 	}
 	else
 	{
-	    return new Cylinder(cen1, cen2, cen1.subtract(cen1.add(cen2).multiply(0.5)), cen2.subtract(cen1.add(cen2).multiply(0.5)), radius1, radius2, cuts);
+	    return new Cylinder(cen1, cen2, cen1.subtract(cen1.add(cen2).multiply(0.5)), cen2.subtract(cen1.add(cen2).multiply(
+		    0.5)), radius1, radius2, cuts);
 	}
     }
 
-    public Cylinder(Vector from, Vector to, Vector fromPlaneNormal, Vector toPlaneNormal, double radiusFrom, double radiusTo, int cuts)
+    public Cylinder(Vector from, Vector to, Vector fromPlaneNormal, Vector toPlaneNormal, double radiusFrom, double radiusTo,
+	    int cuts)
     {
 	this.center1 = from;
 	this.center2 = to;
@@ -93,14 +93,15 @@ public class Cylinder extends ModelObject
 	}
 	else
 	{
-	    axis = face1Normal.crossProduct(!(face1Normal.y == 0 && face1Normal.z == 0) ? face1Normal.add(1, 0, 0) : face1Normal.add(0, 0, 1));
+	    axis = face1Normal.crossProduct(!(face1Normal.y == 0 && face1Normal.z == 0) ? face1Normal.add(1, 0, 0) : face1Normal
+		    .add(0, 0, 1));
 	    axis = axis.rotateAround(face1Normal, Math.PI / 4);
 	}
 	Vector face1Circling = face1Normal.rotateAround(axis, Math.PI / 2).normalize().multiply(radius1);
 	Vector face2Circling = face2Normal.rotateAround(axis, -Math.PI / 2).normalize().multiply(radius2);
 	for (int a = 0; a < cuts; a++)
 	{
-	    
+
 	    Vector v1 = center2.add(face2Circling);
 	    Vector v2 = center1.add(face1Circling);
 	    face1Circling = face1Circling.rotateAround(face1Normal, Math.PI * 2D / cuts);
@@ -111,7 +112,7 @@ public class Cylinder extends ModelObject
 	    face2.add(v1);
 	    face1.add(v2);
 
-	    Vector normalGuide = Vector.median(v1,v2,v3,v4).subtract(center1.add(center2).multiply(0.5));
+	    Vector normalGuide = Vector.median(v1, v2, v3, v4).subtract(center1.add(center2).multiply(0.5));
 	    sideQuads.add(new Quad(v1, v2, v3, v4, normalGuide, true));
 	}
 	return this;
@@ -134,30 +135,36 @@ public class Cylinder extends ModelObject
     public void render()
     {
 	GL11.glPushMatrix();
-	tess.setColorRGBA_I(color, opacity);
 
-	tess.startDrawing(GL11.GL_POLYGON);
+	GL11.glBegin(GL11.GL_POLYGON);
+	glSetColor();
 	GL11.glNormal3d(face1.get(0).x, face1.get(0).y, face1.get(0).z);
 	for (int a = 1; a < face1.size(); a++)
 	{
 	    addVertex(face1.get(a));
 	}
-	tess.draw();
+	GL11.glEnd();
+	glResetColor();
 
-	tess.startDrawing(GL11.GL_POLYGON);
+	GL11.glBegin(GL11.GL_POLYGON);
+	glSetColor();
 	GL11.glNormal3d(face2.get(0).x, face2.get(0).y, face2.get(0).z);
 	for (int a = 1; a < face2.size(); a++)
 	{
 	    addVertex(face2.get(a));
 	}
-	tess.draw();
+	GL11.glEnd();
+	glResetColor();
 
+	GL11.glBegin(GL11.GL_QUADS);
+	glSetColor();
 	for (Quad q : sideQuads)
 	{
-	    tess.startDrawing(GL11.GL_QUADS);
-	    q.addQuadToTess(tess);
-	    tess.draw();
+	    q.addQuadToGL();
 	}
+	GL11.glEnd();
+	glResetColor();
+	
 	GL11.glPopMatrix();
     }
 

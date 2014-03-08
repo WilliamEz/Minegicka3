@@ -23,7 +23,6 @@ public class ModelStaff
 
     public ModelStaff()
     {
-	addComponents();
     }
 
     public void addComponents()
@@ -33,17 +32,39 @@ public class ModelStaff
     
     public void render(ItemStack staff)
     {
-	doRenderComponents(staff);
+	doRenderParameters(staff);
     }
 
-    public void doRenderComponents(ItemStack staff)
+    public void doRenderParameters(ItemStack staff)
     {
 	GL11.glPushMatrix();
 	GL11.glScaled(1/16D, 1/16D, 1/16D);
-	for (ModelObject cmp : components)
-	{
-	    cmp.render();
-	}
+	doRenderComponents(staff);
 	GL11.glPopMatrix();
+    }
+    
+    public void doRenderComponents(ItemStack staff)
+    {
+	renderList(components);
+    }
+    
+    public void renderList(List<ModelObject> l)
+    {
+	for(ModelObject o : l)
+	{
+	    onComponentPreRender(o);
+	    o.render();
+	    onComponentPostRender(o);
+	}
+    }
+    
+    public void onComponentPreRender(ModelObject o)
+    {
+	
+    }
+
+    public void onComponentPostRender(ModelObject o)
+    {
+	
     }
 }

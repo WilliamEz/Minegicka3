@@ -43,6 +43,9 @@ public class Quad extends ModelObject
     
     public Quad orderVertexesCounterClockwise()
     {
+	//if(true) return this;
+	
+	if(normal==null || normal.isZeroVector()) return this;
 	Vector mid = getMidVec();
 	Line normalLine = new Line(mid, normal);
 	
@@ -150,24 +153,25 @@ public class Quad extends ModelObject
 	v4 = v4.subtract(pivot).rotateAround(axis, rad).add(pivot);
 	return this;
     }
-
-    public void addQuadToTess(Tessellator tess)
+    
+    public void addQuadToGL()
     {
 	GL11.glNormal3d(normal.x, normal.y, normal.z);
-	tess.addVertex(v1.x, v1.y, v1.z);
-	tess.addVertex(v2.x, v2.y, v2.z);
-	tess.addVertex(v3.x, v3.y, v3.z);
-	tess.addVertex(v4.x, v4.y, v4.z);
+	GL11.glVertex3d(v1.x, v1.y, v1.z);
+	GL11.glVertex3d(v2.x, v2.y, v2.z);
+	GL11.glVertex3d(v3.x, v3.y, v3.z);
+	GL11.glVertex3d(v4.x, v4.y, v4.z);
     }
 
     @Override
     public void render()
     {
 	GL11.glPushMatrix();
-	tess.startDrawingQuads();
-	tess.setColorRGBA_I(color, opacity);
-	addQuadToTess(tess);
-	tess.draw();
+	GL11.glBegin(GL11.GL_QUADS);
+	glSetColor();
+	addQuadToGL();
+	GL11.glEnd();
+	glResetColor();
 	GL11.glPopMatrix();
     }
 }

@@ -12,9 +12,12 @@ public abstract class Values
 {
     /** ResourceLocation **/
     public static ResourceLocationCustom elementsTexture = new ResourceLocationCustom("drawables/elements.png");
-    
+
     /** Toggleable **/
     public static GuiPosition gui_Position = GuiPosition.BOTTOM_RIGHT;
+
+    /** Values **/
+    public static int clientTicked = 0;
 
     /** Enums **/
     public static enum GuiPosition

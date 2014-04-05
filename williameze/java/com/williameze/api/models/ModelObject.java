@@ -10,6 +10,10 @@ import org.lwjgl.opengl.GL11;
 
 import com.williameze.api.math.Vector;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
+@SideOnly(Side.CLIENT)
 public abstract class ModelObject
 {
     public static Tessellator tess = Tessellator.instance;

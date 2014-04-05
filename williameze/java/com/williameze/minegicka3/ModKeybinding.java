@@ -9,13 +9,12 @@ import net.minecraft.client.settings.KeyBinding;
 
 import org.lwjgl.input.Keyboard;
 
-import com.williameze.minegicka3.core.Element;
+import com.williameze.minegicka3.main.Element;
 
 public class ModKeybinding extends KeyBinding
 {
     public Element element;
     
-    public static int dummy = 1;
     public static Map<Element, ModKeybinding> elementToKeyMap = new HashMap();
     public static ModKeybinding keyWater = new ModKeybinding("Water", Keyboard.KEY_T, Element.Water);
     public static ModKeybinding keyLife = new ModKeybinding("Life", Keyboard.KEY_Y, Element.Life);

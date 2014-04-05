@@ -2,11 +2,13 @@ package com.williameze.minegicka3.bridges;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
+import net.minecraft.world.World;
 
 import com.williameze.minegicka3.ModBase;
-import com.williameze.minegicka3.core.Element;
 
 public abstract class Values
 {
@@ -18,6 +20,7 @@ public abstract class Values
 
     /** Values **/
     public static int clientTicked = 0;
+    public static Map<World, Map<UUID, Entity>> worldEntitiesUUIDMap = new HashMap();
 
     /** Enums **/
     public static enum GuiPosition

@@ -5,6 +5,11 @@ public class Plane
     /** Tangent vector **/
     public Vector tang;
     public double free;
+    
+    public Plane(Vector point1, Vector point2, Vector point3)
+    {
+	this(point3.subtract(point1).crossProduct(point3.subtract(point2)), point3);
+    }
 
     public Plane(Vector t, double f)
     {

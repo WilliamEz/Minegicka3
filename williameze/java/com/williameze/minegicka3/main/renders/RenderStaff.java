@@ -1,4 +1,4 @@
-package com.williameze.minegicka3.core.rendering;
+package com.williameze.minegicka3.main.renders;
 
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.opengl.GL12;
@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.IItemRenderer;
 
-import com.williameze.minegicka3.objects.ItemStaff;
+import com.williameze.minegicka3.main.objects.ItemStaff;
 
 public class RenderStaff implements IItemRenderer
 {

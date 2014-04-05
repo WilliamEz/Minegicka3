@@ -1,4 +1,4 @@
-package com.williameze.minegicka3.core.rendering.models;
+package com.williameze.minegicka3.main.models;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -15,7 +15,6 @@ import com.williameze.api.models.Sphere;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
-@SideOnly(Side.CLIENT)
 public class ModelStaff
 {
     public static ModelStaffDefault defaultStaffModel = new ModelStaffDefault();
@@ -27,9 +26,9 @@ public class ModelStaff
 
     public void addComponents()
     {
-	
+
     }
-    
+
     public void render(ItemStack staff)
     {
 	doRenderParameters(staff);
@@ -38,33 +37,33 @@ public class ModelStaff
     public void doRenderParameters(ItemStack staff)
     {
 	GL11.glPushMatrix();
-	GL11.glScaled(1/16D, 1/16D, 1/16D);
+	GL11.glScaled(1 / 16D, 1 / 16D, 1 / 16D);
 	doRenderComponents(staff);
 	GL11.glPopMatrix();
     }
-    
+
     public void doRenderComponents(ItemStack staff)
     {
-	renderList(components);
-    }
-    
-    public void renderList(List<ModelObject> l)
-    {
-	for(ModelObject o : l)
-	{
-	    onComponentPreRender(o);
-	    o.render();
-	    onComponentPostRender(o);
-	}
-    }
-    
-    public void onComponentPreRender(ModelObject o)
-    {
-	
+	renderList(staff, components);
     }
 
-    public void onComponentPostRender(ModelObject o)
+    public void renderList(ItemStack staff, List<ModelObject> l)
     {
-	
+	for (ModelObject o : l)
+	{
+	    onComponentPreRender(staff, o);
+	    o.render();
+	    onComponentPostRender(staff, o);
+	}
+    }
+
+    public void onComponentPreRender(ItemStack staff, ModelObject o)
+    {
+
+    }
+
+    public void onComponentPostRender(ItemStack staff, ModelObject o)
+    {
+
     }
 }

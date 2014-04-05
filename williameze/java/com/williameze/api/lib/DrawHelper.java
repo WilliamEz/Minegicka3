@@ -1,4 +1,4 @@
-package com.williameze.minegicka3.bridges;
+package com.williameze.api.lib;
 
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.Tessellator;
@@ -7,7 +7,8 @@ import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
 
-import com.williameze.minegicka3.core.Element;
+import com.williameze.minegicka3.bridges.Values;
+import com.williameze.minegicka3.main.Element;
 
 public class DrawHelper
 {

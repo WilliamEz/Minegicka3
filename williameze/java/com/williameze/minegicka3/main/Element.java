@@ -1,4 +1,4 @@
-package com.williameze.minegicka3.core;
+package com.williameze.minegicka3.main;
 
 import net.minecraft.util.ResourceLocation;
 

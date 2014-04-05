@@ -1,26 +1,24 @@
 package com.williameze.api.math;
 
-import net.minecraft.util.Vec3;
-
-public class Vector
+public class IntVector
 {
-    public static Vector unitX = new Vector(1, 0, 0);
-    public static Vector unitY = new Vector(0, 1, 0);
-    public static Vector unitZ = new Vector(0, 0, 1);
+    public static IntVector unitX = new IntVector(1, 0, 0);
+    public static IntVector unitY = new IntVector(0, 1, 0);
+    public static IntVector unitZ = new IntVector(0, 0, 1);
     /**
      * X coordinate of VectorD
      */
-    public double x;
+    public int x;
     /**
      * Y coordinate of VectorD
      */
-    public double y;
+    public int y;
     /**
      * Z coordinate of VectorD
      */
-    public double z;
+    public int z;
 
-    public static Vector median(Vector... vs)
+    public static IntVector median(IntVector... vs)
     {
 	double x = 0;
 	double y = 0;
@@ -34,25 +32,25 @@ public class Vector
 	x/=vs.length;
 	y/=vs.length;
 	z/=vs.length;
-	return new Vector(x, y, z);
+	return new IntVector(x, y, z);
     }
 
-    public Vector(double i, double j, double k)
+    public IntVector(double i, double j, double k)
+    {
+	this((int)i, (int)j, (int)k);
+    }
+
+    public IntVector(int i, int j, int k)
     {
 	x = i;
 	y = j;
 	z = k;
     }
-    
-    public Vector(Vec3 vec)
-    {
-	this(vec.xCoord, vec.yCoord, vec.zCoord);
-    }
 
     /**
      * Sets the x,y,z components of the vector as specified.
      */
-    public Vector setComponents(double par1, double par3, double par5)
+    public IntVector setComponents(int par1, int par3, int par5)
     {
 	x = par1;
 	y = par3;
@@ -60,18 +58,18 @@ public class Vector
 	return this;
     }
 
-    public Vector multiply(double d)
+    public IntVector multiply(double d)
     {
-	return new Vector(x*d, y*d, z*d);
+	return new IntVector(x*d, y*d, z*d);
     }
 
     /**
      * Normalizes the vector to a length of 1 (except if it is the zero vector)
      */
-    public Vector normalize()
+    public IntVector normalize()
     {
 	double d0 = Math.sqrt(x * x + y * y + z * z);
-	return isZeroVector() ? new Vector(0,0,0) : new Vector(x / d0, y / d0, z / d0);
+	return isZeroVector() ? new IntVector(0,0,0) : new IntVector(x / d0, y / d0, z / d0);
     }
     
     /**
@@ -79,12 +77,12 @@ public class Vector
      * @param v
      * @return
      */
-    public double getAngleBetween(Vector v)
+    public double getAngleBetween(IntVector v)
     {
 	return Math.atan2(crossProduct(v).lengthVector(), dotProduct(v));
     }
 
-    public double dotProduct(Vector v)
+    public double dotProduct(IntVector v)
     {
 	return x * v.x + y * v.y + z * v.z;
     }
@@ -93,33 +91,33 @@ public class Vector
      * Returns a new vector with the result of this vector x the specified
      * vector.
      */
-    public Vector crossProduct(Vector v)
+    public IntVector crossProduct(IntVector v)
     {
-	return new Vector(y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x);
+	return new IntVector(y * v.z - z * v.y, z * v.x - x * v.z, x * v.y - y * v.x);
     }
 
-    public Vector add(double i, double j, double k)
+    public IntVector add(double i, double j, double k)
     {
-	return new Vector(x+i, y+j, z+k);
+	return new IntVector(x+i, y+j, z+k);
     }
 
     /**
      * Adds the specified x,y,z vector components to this vector and returns the
      * resulting vector. Does not change this vector.
      */
-    public Vector add(Vector v)
+    public IntVector add(IntVector v)
     {
-	return new Vector(x + v.x, y + v.y, z + v.z);
+	return new IntVector(x + v.x, y + v.y, z + v.z);
     }
 
     /**
      * Returns a new vector with the result of this vector minus the specified
      * vector
      */
-    public Vector subtract(Vector v)
+    public IntVector subtract(IntVector v)
     {
-	if(v==null) v = new Vector(0,0,0);
-	return new Vector(x - v.x, y - v.y, z - v.z);
+	if(v==null) v = new IntVector(0,0,0);
+	return new IntVector(x - v.x, y - v.y, z - v.z);
     }
 
     /**
@@ -135,18 +133,18 @@ public class Vector
 	return "(" + x + ", " + y + ", " + z + ")";
     }
 
-    public Vector rotateTowards(Vector dest)
+    public IntVector rotateTowards(IntVector dest)
     {
-	Vector c = crossProduct(dest);
+	IntVector c = crossProduct(dest);
 	double l = c.lengthVector();
 	if (l > 0)
 	{
-	    Vector axis = c.normalize();
+	    IntVector axis = c.normalize();
 	    return rotateAround(axis, Math.atan2(l, dotProduct(dest)));
 	}
 	else if (dotProduct(dest) < 0)
 	{
-	    return new Vector(-c.x, -c.y, -c.z);
+	    return new IntVector(-c.x, -c.y, -c.z);
 	}
 	else
 	{
@@ -154,15 +152,15 @@ public class Vector
 	}
     }
 
-    public Vector rotateAround(Vector axis, double radian)
+    public IntVector rotateAround(IntVector axis, double radian)
     {
-	Vector ax = axis.normalize();
+	IntVector ax = axis.normalize();
 	double cos = Math.cos(radian);
 	double sin = Math.sin(radian);
-	Vector seg1 = new Vector(x * cos, y * cos, z * cos);
-	Vector seg2 = crossProduct(ax).multiply(sin);
-	Vector seg3 = ax.multiply(dotProduct(ax) * (1 - cos));
-	return new Vector(seg1.x + seg2.x + seg3.x, seg1.y + seg2.y + seg3.y, seg1.z + seg2.z + seg3.z);
+	IntVector seg1 = new IntVector(x * cos, y * cos, z * cos);
+	IntVector seg2 = crossProduct(ax).multiply(sin);
+	IntVector seg3 = ax.multiply(dotProduct(ax) * (1 - cos));
+	return new IntVector(seg1.x + seg2.x + seg3.x, seg1.y + seg2.y + seg3.y, seg1.z + seg2.z + seg3.z);
     }
 
     /**
@@ -175,9 +173,9 @@ public class Vector
 	double d0 = x;
 	double d1 = y * f1 + z * f2;
 	double d2 = z * f1 - y * f2;
-	x = d0;
-	y = d1;
-	z = d2;
+	x = (int) d0;
+	y = (int) d1;
+	z = (int) d2;
     }
 
     /**
@@ -190,9 +188,9 @@ public class Vector
 	double d0 = x * f1 + z * f2;
 	double d1 = y;
 	double d2 = z * f1 - x * f2;
-	x = d0;
-	y = d1;
-	z = d2;
+	x = (int) d0;
+	y = (int) d1;
+	z = (int) d2;
     }
 
     /**
@@ -205,9 +203,9 @@ public class Vector
 	double d0 = x * f1 + y * f2;
 	double d1 = y * f1 - x * f2;
 	double d2 = z;
-	x = d0;
-	y = d1;
-	z = d2;
+	x = (int) d0;
+	y = (int) d1;
+	z = (int) d2;
     }
 
     public boolean isZeroVector()
@@ -215,14 +213,14 @@ public class Vector
 	return x == 0 && y == 0 && z == 0;
     }
 
-    public boolean parallel(Vector v)
+    public boolean parallel(IntVector v)
     {
 	int clamp = 1000000000;
 	return Math.round(crossProduct(v).lengthVector() * clamp) == 0;
     }
     
-    public Vector copy()
+    public IntVector copy()
     {
-	return new Vector(x, y, z);
+	return new IntVector(x, y, z);
     }
 }

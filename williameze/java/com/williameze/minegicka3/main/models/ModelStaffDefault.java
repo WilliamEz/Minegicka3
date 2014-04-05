@@ -1,26 +1,29 @@
-package com.williameze.minegicka3.core.rendering.models;
+package com.williameze.minegicka3.main.models;
 
 import java.awt.Color;
-import java.util.ArrayList;
-import java.util.List;
-
-import org.lwjgl.opengl.GL11;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.item.ItemStack;
 
+import org.lwjgl.opengl.GL11;
+
 import com.williameze.api.math.Vector;
-import com.williameze.api.models.Box;
 import com.williameze.api.models.Cylinder;
 import com.williameze.api.models.ModelObject;
 import com.williameze.api.models.Sphere;
 import com.williameze.api.models.Spiral;
 import com.williameze.minegicka3.bridges.Values;
+import com.williameze.minegicka3.core.CoreBridge;
+import com.williameze.minegicka3.core.CoreClient;
+
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
 
 public class ModelStaffDefault extends ModelStaff
 {
+    public static Color defaultOrbColor = new Color(0.8F, 0, 0.9F, 1);
     public Sphere orb;
-    
+
     public ModelStaffDefault()
     {
 	super();
@@ -34,10 +37,10 @@ public class ModelStaffDefault extends ModelStaff
 	Color c = new Color(255, 255, 100, 255);
 	Color c1 = new Color(255, 255, 130, 255);
 	Color c2 = new Color(255, 255, 70, 255);
-	Color c3 = new Color(150, 0, 150, 255);
+
 	components.add(Spiral.create(new Vector(0, 8, 0), new Vector(0, 11, 0), new Vector(1, 0, 0), 0, Math.PI / 4, 8, 0,
 		0.4685, 16).setColor(c1));
-	components.add(orb = (Sphere) new Sphere(0, 11, 0, 1, 2, 4).setColor(c3));
+	components.add(orb = (Sphere) new Sphere(0, 11, 0, 1, 2, 4).setColor(defaultOrbColor));
 	components.add(Cylinder.create(new Vector(0, 8, 0), new Vector(0, -6, 0), 0.4685, 16).setColor(c));
 	components.add(new Sphere(0, -6.25, 0, 0.75, 2, 4).setColor(c2));
     }
@@ -49,24 +52,33 @@ public class ModelStaffDefault extends ModelStaff
 	addComponents();
 	doRenderParameters(staff);
     }
-    
+
     @Override
-    public void onComponentPreRender(ModelObject o)
+    public void onComponentPreRender(ItemStack staff, ModelObject o)
     {
-        super.onComponentPreRender(o);
-        if(o==orb)
-        {
-            GL11.glRotated(Values.clientTicked*4, 0, 1, 0);
-        }
+	super.onComponentPreRender(staff, o);
+	if (o == orb)
+	{
+	    if (Minecraft.getMinecraft().thePlayer.inventory.hasItemStack(staff))
+	    {
+		float manaRate = (float) ((CoreClient) CoreBridge.instance().client).getManaRate();
+		orb.setColor(new Color(0.8F, 0.8F * Math.max(0, 0.8F - manaRate), 0.9F * manaRate, 1));
+	    }
+	    GL11.glRotated(Values.clientTicked / 2, 0, 2, 0);
+	}
     }
-    
+
     @Override
-    public void onComponentPostRender(ModelObject o)
+    public void onComponentPostRender(ItemStack staff, ModelObject o)
     {
-        super.onComponentPostRender(o);
-        if(o==orb)
-        {
-            GL11.glRotated(-Values.clientTicked*4, 0, 1, 0);
-        }
+	super.onComponentPostRender(staff, o);
+	if (o == orb)
+	{
+	    if (Minecraft.getMinecraft().thePlayer.inventory.hasItemStack(staff))
+	    {
+		orb.setColor(defaultOrbColor);
+	    }
+	    GL11.glRotated(-Values.clientTicked / 2, 0, 2, 0);
+	}
     }
 }

@@ -112,6 +112,7 @@ public class CoreServer
 		ModBase.packetPipeline.sendToAllAround(new PacketStartSpell(s), new TargetPoint(s.dimensionID, caster.posX,
 			caster.posY, caster.posZ, 128));
 		l.add(s);
+		s.startSpell();
 		if (caster instanceof EntityPlayer)
 		{
 		    playerToSpell.put((EntityPlayer) caster, s);
@@ -121,6 +122,7 @@ public class CoreServer
 	    {
 		ModBase.packetPipeline.sendToAllAround(new PacketStopSpell(s), new TargetPoint(s.dimensionID, caster.posX,
 			caster.posY, caster.posZ, 128));
+		s.stopSpell();
 		l.remove(s);
 		if (caster instanceof EntityPlayer)
 		{

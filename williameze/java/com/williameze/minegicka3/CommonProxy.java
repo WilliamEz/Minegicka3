@@ -5,6 +5,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 
 import com.williameze.minegicka3.core.CoreBridge;
+import com.williameze.minegicka3.core.CoreClient;
 import com.williameze.minegicka3.core.CoreServer;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -19,12 +20,12 @@ public class CommonProxy
 	MinecraftForge.EVENT_BUS.register(new EventsHandler());
 	// MinecraftForge.EVENT_BUS.register(CoreBridge.client);
     }
-    
+
     public World getClientWorld()
     {
 	return null;
     }
-    
+
     public void registerRenderHandler()
     {
     }
@@ -37,5 +38,15 @@ public class CommonProxy
     public void initCoreBridge(CoreBridge cb)
     {
 	cb.server = CoreServer.instance();
+    }
+
+    public CoreClient getCoreClient()
+    {
+	return null;
+    }
+
+    public CoreServer getCoreServer()
+    {
+	return (CoreServer) CoreBridge.instance().server;
     }
 }

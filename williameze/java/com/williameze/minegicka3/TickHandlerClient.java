@@ -44,7 +44,7 @@ public class TickHandlerClient implements IEventListener
     @SubscribeEvent
     public void renderGameOverlayTick(RenderGameOverlayEvent event)
     {
-	((CoreClient) CoreBridge.instance().client).onRenderGameOverlayTick(event);
+	ModBase.proxy.getCoreClient().onRenderGameOverlayTick(event);
     }
 
     @Override

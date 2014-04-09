@@ -88,6 +88,14 @@ public class Vector
     {
 	return x * v.x + y * v.y + z * v.z;
     }
+    
+    public void setToLengthOf(Vector v)
+    {
+	double dif = v.lengthVector()/lengthVector();
+	x*=dif;
+	y*=dif;
+	z*=dif;
+    }
 
     /**
      * Returns a new vector with the result of this vector x the specified

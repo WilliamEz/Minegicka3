@@ -5,6 +5,7 @@ import java.util.Arrays;
 import net.minecraft.item.Item;
 
 import com.williameze.minegicka3.core.CoreBridge;
+import com.williameze.minegicka3.main.entities.EntityLightning;
 import com.williameze.minegicka3.main.entities.EntitySprayCold;
 import com.williameze.minegicka3.main.entities.EntitySprayFire;
 import com.williameze.minegicka3.main.entities.EntitySpraySteam;
@@ -99,6 +100,7 @@ public class ModBase
 	registerEntity(EntitySprayFire.class, "SprayFire", 64, Integer.MAX_VALUE);
 	registerEntity(EntitySpraySteam.class, "SpraySteam", 64, Integer.MAX_VALUE);
 	registerEntity(EntitySprayWater.class, "SprayWater", 64, Integer.MAX_VALUE);
+	registerEntity(EntityLightning.class, "Lightning", 64, Integer.MAX_VALUE);
     }
 
     public void registerEntity(Class eClass, String eName, int updateRange, int updateFrequency)

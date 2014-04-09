@@ -9,24 +9,22 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 
-import com.williameze.minegicka3.core.CoreBridge;
-import com.williameze.minegicka3.core.CoreClient;
-import com.williameze.minegicka3.core.CoreServer;
+import com.williameze.minegicka3.ModBase;
 import com.williameze.minegicka3.main.spells.Spell;
 
 public class PacketStopSpell extends Packet
 {
     public Spell spell;
-    
+
     public PacketStopSpell()
     {
     }
-    
+
     public PacketStopSpell(Spell s)
     {
 	spell = s;
     }
-    
+
     @Override
     public void encodeInto(ChannelHandlerContext ctx, ByteBuf buffer)
     {
@@ -62,13 +60,13 @@ public class PacketStopSpell extends Packet
     @Override
     public void handleClientSide(EntityPlayer player)
     {
-	((CoreClient) CoreBridge.instance().client).spellTriggerReceived(spell, false);
+	ModBase.proxy.getCoreClient().spellTriggerReceived(spell, false);
     }
 
     @Override
     public void handleServerSide(EntityPlayer player)
     {
-	((CoreServer) CoreBridge.instance().server).spellTriggerReceived(spell, false);
+	ModBase.proxy.getCoreServer().spellTriggerReceived(spell, false);
     }
 
 }

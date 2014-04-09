@@ -12,6 +12,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 
+import com.williameze.minegicka3.ClientProxy;
 import com.williameze.minegicka3.ModBase;
 import com.williameze.minegicka3.core.CoreBridge;
 import com.williameze.minegicka3.core.CoreClient;
@@ -68,7 +69,7 @@ public class ItemStaff extends Item
     @Override
     public EnumAction getItemUseAction(ItemStack par1ItemStack)
     {
-	return EnumAction.none;
+	return EnumAction.block;
     }
 
     public boolean isCurrentItem(ItemStack is, EntityLivingBase p)
@@ -127,7 +128,7 @@ public class ItemStaff extends Item
 	    {
 		useCount = 0;
 		currentUsing = is;
-		((CoreClient) CoreBridge.instance().client).clientStartUsingStaff(world, player, currentUsing);
+		ModBase.proxy.getCoreClient().clientStartUsingStaff(world, player, currentUsing);
 	    }
 	    else if (!ItemStack.areItemStacksEqual(currentUsing, is))
 	    {
@@ -143,7 +144,7 @@ public class ItemStaff extends Item
 	{
 	    if (currentUsing != null)
 	    {
-		((CoreClient) CoreBridge.instance().client).clientStopUsingStaff(world, player, is, useCount);
+		ModBase.proxy.getCoreClient().clientStopUsingStaff(world, player, is, useCount);
 	    }
 	    currentUsing = null;
 	    useCount = 0;

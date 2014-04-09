@@ -21,6 +21,7 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 import com.williameze.api.lib.DrawHelper;
+import com.williameze.minegicka3.ClientProxy;
 import com.williameze.minegicka3.ModBase;
 import com.williameze.minegicka3.ModKeybinding;
 import com.williameze.minegicka3.bridges.Values;
@@ -101,8 +102,9 @@ public class CoreClient
 	{
 	    if (currentClientCastingSpell == null)
 	    {
-		Spell s = new Spell(queuedElements, w.provider.dimensionId, p.getUniqueID(), CastType.Single,
-			Spell.createAdditionalInfo(is));
+		CastType ct = CastType.Single;
+		if (ModKeybinding.keyArea.isPressed()) ct = CastType.Area;
+		Spell s = new Spell(queuedElements, w.provider.dimensionId, p.getUniqueID(), ct, Spell.createAdditionalInfo(is));
 		currentClientCastingSpell = s;
 		ModBase.packetPipeline.sendToServer(new PacketStartSpell(s));
 	    }
@@ -129,6 +131,10 @@ public class CoreClient
 	    for (ModKeybinding mkb : ModKeybinding.elementKeys)
 	    {
 		if (mkb.isPressed()) playerQueueElement(mkb.element);
+	    }
+	    if (ModKeybinding.keyClear.isPressed())
+	    {
+		ModBase.proxy.getCoreClient().clearQueued();
 	    }
 	}
     }

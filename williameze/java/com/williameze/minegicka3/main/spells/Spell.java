@@ -270,6 +270,11 @@ public class Spell
 	}
     }
 
+    public NBTTagCompound getStaffTag()
+    {
+	return (NBTTagCompound) additionalData.getTag("Staff");
+    }
+
     public NBTTagCompound writeToNBT()
     {
 	NBTTagCompound tag = new NBTTagCompound();
@@ -324,7 +329,8 @@ public class Spell
 	if (obj instanceof Spell)
 	{
 	    Spell o = (Spell) obj;
-	    return o.dimensionID == dimensionID && o.casterUUID.equals(casterUUID);
+	    return o.dimensionID == dimensionID && o.casterUUID.equals(casterUUID) && castType == o.castType
+		    && elements.equals(o.elements);
 	}
 	return false;
     }
@@ -332,6 +338,11 @@ public class Spell
     @Override
     public int hashCode()
     {
-	return (int) (dimensionID + casterUUID.getLeastSignificantBits() * casterUUID.getMostSignificantBits());
+	int i = 0;
+	for (Element e : elements)
+	{
+	    i += e.ordinal();
+	}
+	return (int) (dimensionID + casterUUID.getLeastSignificantBits() * casterUUID.getMostSignificantBits() + i);
     }
 }

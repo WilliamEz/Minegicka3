@@ -1,31 +1,20 @@
 package com.williameze.api.math;
 
-
 public class MathHelper
 {
-    /**
-     * Calculate the angles needed to rotate the vector (0,1,0) around x-axis and z-axis to be parallel with the passed vector
-     * @param vec the passed vector
-     * @return 2 angles to rotate vector (0,1,0) around x-axis and z-axis respectively (in radians)
+    /***
+     * Get cosin of angle between 2 vectors, -1 to 1 inclusive
      */
-    public static double[] getRotatingAngles(Vector vec)
+    public static double getCosAngleBetweenVector(Vector v1, Vector v2)
     {
-	double rotateAroundX = 0;
-	double rotateAroundZ = 0;
-	{
-	    double x = vec.y;
-	    double y = vec.z;
-	    double hyp = Math.sqrt(x*x+y*y);
-	    double aCos = Math.acos(x/hyp);
-	    rotateAroundX = Math.signum(y)*aCos + (x==-hyp ? Math.PI : 0);
-	}
-	{
-	    double x = vec.x;
-	    double y = vec.y;
-	    double hyp = Math.sqrt(x*x+y*y);
-	    double aCos = Math.acos(x/hyp);
-	    rotateAroundZ = Math.signum(y)*aCos + (x==-hyp ? Math.PI : 0);
-	}
-	return new double[]{rotateAroundX, rotateAroundZ};
+	return v1.dotProduct(v2) / v1.lengthVector() / v2.lengthVector();
+    }
+
+    /***
+     * Get angle between 2 vectors, 0 to Pi inclusive
+     */
+    public static double getRadAngleBetweenVector(Vector v1, Vector v2)
+    {
+	return Math.acos(getCosAngleBetweenVector(v1, v2));
     }
 }

@@ -9,9 +9,7 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 
-import com.williameze.minegicka3.core.CoreBridge;
-import com.williameze.minegicka3.core.CoreClient;
-import com.williameze.minegicka3.core.CoreServer;
+import com.williameze.minegicka3.ModBase;
 import com.williameze.minegicka3.main.spells.Spell;
 
 public class PacketStartSpell extends Packet
@@ -62,13 +60,13 @@ public class PacketStartSpell extends Packet
     @Override
     public void handleClientSide(EntityPlayer player)
     {
-	((CoreClient) CoreBridge.instance().client).spellTriggerReceived(spell, true);
+	ModBase.proxy.getCoreClient().spellTriggerReceived(spell, true);
     }
 
     @Override
     public void handleServerSide(EntityPlayer player)
     {
-	((CoreServer) CoreBridge.instance().server).spellTriggerReceived(spell, true);
+	ModBase.proxy.getCoreServer().spellTriggerReceived(spell, true);
     }
 
 }

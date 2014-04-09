@@ -14,7 +14,7 @@ import com.williameze.minegicka3.main.Element;
 public class ModKeybinding extends KeyBinding
 {
     public Element element;
-    
+
     public static Map<Element, ModKeybinding> elementToKeyMap = new HashMap();
     public static ModKeybinding keyWater = new ModKeybinding("Water", Keyboard.KEY_T, Element.Water);
     public static ModKeybinding keyLife = new ModKeybinding("Life", Keyboard.KEY_Y, Element.Life);
@@ -24,8 +24,12 @@ public class ModKeybinding extends KeyBinding
     public static ModKeybinding keyArcane = new ModKeybinding("Arcane", Keyboard.KEY_H, Element.Arcane);
     public static ModKeybinding keyEarth = new ModKeybinding("Earth", Keyboard.KEY_J, Element.Earth);
     public static ModKeybinding keyFire = new ModKeybinding("Fire", Keyboard.KEY_K, Element.Fire);
-    public static List<ModKeybinding> elementKeys = Arrays.asList(keyWater,keyLife,keyShield,keyCold,keyLightning,keyArcane,keyEarth,keyFire);
-    
+    public static List<ModKeybinding> elementKeys = Arrays.asList(keyWater, keyLife, keyShield, keyCold, keyLightning, keyArcane,
+	    keyEarth, keyFire);
+
+    public static KeyBinding keyArea = new KeyBinding("Area Cast", Keyboard.KEY_F, ModBase.MODNAME);
+    public static KeyBinding keyClear = new KeyBinding("Clear Queued", Keyboard.KEY_V, ModBase.MODNAME);
+
     public ModKeybinding(String description, int id, Element e)
     {
 	super(description, id, ModBase.MODNAME);

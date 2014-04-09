@@ -41,7 +41,7 @@ public class EntitySpray extends Entity implements IEntityAdditionalSpawnData
 	color = Color.white;
 	setSize(0.06F, 0.06F);
 	gravity = 0;
-	renderDistanceWeight = 32;
+	renderDistanceWeight = 16;
 	maxTicks = 10;
 	spiralCore = null;
 	server = false;

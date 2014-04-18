@@ -13,6 +13,7 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 
 import com.google.common.collect.Sets;
@@ -37,6 +38,12 @@ public class EntityLightning extends Entity implements IEntityAdditionalSpawnDat
 	super(par1World);
 	renderDistanceWeight = 16;
 	setSize(0.01F, 0.01F);
+    }
+
+    @Override
+    public boolean isEntityInvulnerable()
+    {
+	return true;
     }
 
     @Override
@@ -78,7 +85,7 @@ public class EntityLightning extends Entity implements IEntityAdditionalSpawnDat
 	    setDead();
 	    return;
 	}
-	setPosition(e.posX, e.posY + e.getEyeHeight(), e.posZ);
+	setPosition(e.posX, e.posY + e.getEyeHeight()-0.15, e.posZ);
 	if (e.getLookVec() != null)
 	{
 	    posX += e.getLookVec().xCoord * 0.75;
@@ -97,7 +104,8 @@ public class EntityLightning extends Entity implements IEntityAdditionalSpawnDat
 	}
 	int lig = spell.countElement(Element.Lightning);
 	if (level >= 2 + lig) return 0;
-	return 5D * Math.pow(lig, 0.3) * spell.getStaffTag().getDouble("Power") / Math.pow(level + 1, 0.5);
+	double radius = 5D * Math.pow(lig, 0.3) * spell.getStaffTag().getDouble("Power") / Math.pow(level + 1, 0.5);
+	return radius * (spell.castType == CastType.Area ? 1.3 : 1);
     }
 
     public void seekAndAffectTargets()
@@ -125,7 +133,7 @@ public class EntityLightning extends Entity implements IEntityAdditionalSpawnDat
 				|| MathHelper.getCosAngleBetweenVector(toward, newToward) >= minCosConeSeek)
 			{
 			    l.add(e);
-			    spell.damageEntity(e);
+			    spell.damageEntity(e, 30);
 			    seekTargets(e, level + 1, newToward);
 			}
 		    }

@@ -13,6 +13,7 @@ import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.IItemRenderer;
 
+import com.williameze.api.lib.DrawHelper;
 import com.williameze.minegicka3.TickHandlerClient;
 import com.williameze.minegicka3.bridges.Values;
 import com.williameze.minegicka3.main.objects.ItemStaff;
@@ -23,6 +24,11 @@ public class RenderStaff implements IItemRenderer
     @Override
     public boolean handleRenderType(ItemStack item, ItemRenderType type)
     {
+	if (item.getItem() instanceof ItemStaff && type != ItemRenderType.INVENTORY)
+	{
+	    DrawHelper.enableLighting(1.8f);
+	}
+
 	return true;
     }
 
@@ -60,10 +66,10 @@ public class RenderStaff implements IItemRenderer
 	    {
 		if (Minecraft.getMinecraft().thePlayer.getItemInUseCount() > 0)
 		{
-		    GL11.glRotatef(-20.0F, 0.0F, 0.0F, 1.0F);
+		    GL11.glRotatef(-30.0F, 0.0F, 0.0F, 1.0F);
 		    GL11.glRotatef(-60.0F, 0.0F, 1.0F, 0.0F);
 		    GL11.glRotatef(+80.0F, 1.0F, 0.0F, 0.0F);
-		    GL11.glTranslatef(0F, -1F, -1.2F);
+		    GL11.glTranslatef(0F, -1F, -1.6F);
 		}
 		GL11.glRotated(15, -1, 0, 1);
 		GL11.glScaled(1, 1, -1);
@@ -79,16 +85,12 @@ public class RenderStaff implements IItemRenderer
 		GL11.glScaled(4, 4, 4);
 		GL11.glRotated(45, 0, 1, 0);
 	    }
-	    GL11.glPushMatrix();
-	    GL11.glRotated(-66, 1, 1, 0);
-	    RenderHelper.enableStandardItemLighting();
-	    GL11.glPopMatrix();
 
 	    ((ItemStaff) item.getItem()).getModel(item).render(item);
 
 	    if (type != ItemRenderType.INVENTORY)
 	    {
-		RenderHelper.disableStandardItemLighting();
+		DrawHelper.disableLighting();
 	    }
 	    GL11.glEnable(GL11.GL_CULL_FACE);
 	    GL11.glDisable(GL11.GL_BLEND);

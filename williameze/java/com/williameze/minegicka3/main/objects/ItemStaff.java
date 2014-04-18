@@ -2,6 +2,8 @@ package com.williameze.minegicka3.main.objects;
 
 import java.util.List;
 
+import net.minecraft.client.gui.GuiScreen;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
@@ -27,6 +29,7 @@ public class ItemStaff extends Item
     private Object model;
     public static int useCount;
     public double basePower;
+    public double baseATKSpeed;
     public double baseConsume;
     public double baseRecover;
 
@@ -36,7 +39,7 @@ public class ItemStaff extends Item
 	ModBase.proxy.registerItemRenderer(this);
 	setMaxStackSize(1);
 	setCreativeTab(ModBase.modCreativeTab);
-	setBaseStats(1, 1, 1);
+	setBaseStats(1, 1, 1, 1);
     }
 
     @SideOnly(Side.CLIENT)
@@ -52,11 +55,12 @@ public class ItemStaff extends Item
 	return (ModelStaff) (model == null ? (model = ModelStaff.defaultStaffModel) : model);
     }
 
-    public ItemStaff setBaseStats(double i, double j, double k)
+    public ItemStaff setBaseStats(double i, double j, double k, double l)
     {
 	basePower = i;
-	baseConsume = j;
-	baseRecover = k;
+	baseATKSpeed = j;
+	baseConsume = k;
+	baseRecover = l;
 	return this;
     }
 
@@ -169,6 +173,11 @@ public class ItemStaff extends Item
 	return getStaffTag(is).getDouble("Power");
     }
 
+    public double getATKSpeed(ItemStack is)
+    {
+	return getStaffTag(is).getDouble("ATKSpeed");
+    }
+
     public double getConsume(ItemStack is)
     {
 	return getStaffTag(is).getDouble("Consume");
@@ -183,12 +192,39 @@ public class ItemStaff extends Item
     public void addInformation(ItemStack is, EntityPlayer p, List l, boolean advancedItemTooltip)
     {
 	super.addInformation(is, p, l, advancedItemTooltip);
+	
+	if (this == ModBase.staff)
+	{
+	    String s = (String) l.get(0);
+	    s += EnumChatFormatting.DARK_GRAY + "" + EnumChatFormatting.ITALIC
+		    + (GuiScreen.isShiftKeyDown() ? "" : " (press Shift for more details)");
+	    l.set(0, s);
+	}
+	
 	NBTTagCompound tag = getStaffTag(is);
-	String power = EnumChatFormatting.RED + "" + Math.round(tag.getDouble("Power") * 100) + "%";
-	String consume = EnumChatFormatting.GREEN + "" + Math.round(tag.getDouble("Consume") * 100) + "%";
-	String Recover = EnumChatFormatting.BLUE + "" + Math.round(tag.getDouble("Recover") * 100) + "%";
-	l.add("[ " + power + EnumChatFormatting.GRAY + " ; " + consume + EnumChatFormatting.GRAY + " ; " + Recover
-		+ EnumChatFormatting.GRAY + " ]");
+	if (!GuiScreen.isShiftKeyDown())
+	{
+	    String power = EnumChatFormatting.RED + "" + Math.round(tag.getDouble("Power") * 100) + "%" + EnumChatFormatting.GRAY;
+	    String atkSpeed = EnumChatFormatting.GREEN + "" + Math.round(tag.getDouble("ATKSpeed") * 100) + "%"
+		    + EnumChatFormatting.GRAY;
+	    String consume = EnumChatFormatting.BLUE + "" + Math.round(tag.getDouble("Consume") * 100) + "%"
+		    + EnumChatFormatting.GRAY;
+	    String recover = EnumChatFormatting.LIGHT_PURPLE + "" + Math.round(tag.getDouble("Recover") * 100) + "%"
+		    + EnumChatFormatting.GRAY;
+	    l.add("[ " + power + " ; " + atkSpeed + " ; " + consume + " ; " + recover + " ]");
+	}
+	else
+	{
+
+	    l.add("[ " + EnumChatFormatting.RED + "Power: " + Math.round(tag.getDouble("Power") * 100) + "%"
+		    + EnumChatFormatting.GRAY + " ]");
+	    l.add("[ " + EnumChatFormatting.GREEN + "ATK Rate: " + Math.round(tag.getDouble("ATKSpeed") * 100) + "%"
+		    + EnumChatFormatting.GRAY + " ]");
+	    l.add("[ " + EnumChatFormatting.BLUE + "Mana Consume Rate: " + Math.round(tag.getDouble("Consume") * 100) + "%"
+		    + EnumChatFormatting.GRAY + " ]");
+	    l.add("[ " + EnumChatFormatting.LIGHT_PURPLE + "Mana Recovery Rate: " + Math.round(tag.getDouble("Recover") * 100)
+		    + "%" + EnumChatFormatting.GRAY + " ]");
+	}
     }
 
     public NBTTagCompound getStaffTag(ItemStack is)
@@ -207,15 +243,26 @@ public class ItemStaff extends Item
 	    isTag.setTag(tagName, staffTag);
 	}
 
-	return isTag.getCompoundTag(tagName);
+	NBTTagCompound staffTag = isTag.getCompoundTag(tagName);
+	checkStaffTag(staffTag);
+	return staffTag;
     }
 
     public NBTTagCompound getDefaultStaffTag()
     {
 	NBTTagCompound staffTag = new NBTTagCompound();
 	staffTag.setDouble("Power", basePower);
+	staffTag.setDouble("ATKSpeed", baseATKSpeed);
 	staffTag.setDouble("Consume", baseConsume);
 	staffTag.setDouble("Recover", baseRecover);
 	return staffTag;
+    }
+
+    public void checkStaffTag(NBTTagCompound tag)
+    {
+	if (!tag.hasKey("Power")) tag.setDouble("Power", basePower);
+	if (!tag.hasKey("ATKSpeed")) tag.setDouble("ATKSpeed", baseATKSpeed);
+	if (!tag.hasKey("Consume")) tag.setDouble("Consume", baseConsume);
+	if (!tag.hasKey("Recover")) tag.setDouble("Recover", baseRecover);
     }
 }

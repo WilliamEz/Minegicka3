@@ -1,9 +1,13 @@
 package com.williameze.api.math;
 
+import java.util.Random;
+
 import net.minecraft.util.Vec3;
 
 public class Vector
 {
+    public static Random rnd = new Random();
+    public static Vector root = new Vector(0, 0, 0);
     public static Vector unitX = new Vector(1, 0, 0);
     public static Vector unitY = new Vector(0, 1, 0);
     public static Vector unitZ = new Vector(0, 0, 1);
@@ -25,15 +29,15 @@ public class Vector
 	double x = 0;
 	double y = 0;
 	double z = 0;
-	for(int a=0 ; a<vs.length ; a++)
+	for (int a = 0; a < vs.length; a++)
 	{
-	    x+=vs[a].x;
-	    y+=vs[a].y;
-	    z+=vs[a].z;
+	    x += vs[a].x;
+	    y += vs[a].y;
+	    z += vs[a].z;
 	}
-	x/=vs.length;
-	y/=vs.length;
-	z/=vs.length;
+	x /= vs.length;
+	y /= vs.length;
+	z /= vs.length;
 	return new Vector(x, y, z);
     }
 
@@ -43,7 +47,7 @@ public class Vector
 	y = j;
 	z = k;
     }
-    
+
     public Vector(Vec3 vec)
     {
 	this(vec.xCoord, vec.yCoord, vec.zCoord);
@@ -60,9 +64,22 @@ public class Vector
 	return this;
     }
 
+    public Vector reverse()
+    {
+	return new Vector(-x, -y, -z);
+    }
+
     public Vector multiply(double d)
     {
-	return new Vector(x*d, y*d, z*d);
+	return new Vector(x * d, y * d, z * d);
+    }
+
+    public Vector randomizeDirection(double d)
+    {
+	Plane p = new Plane(this, this);
+	Vector vplane = p.getPointLackX(1, 1);
+	Vector toward = vplane.subtract(this).normalize().rotateAround(this, rnd.nextDouble() * Math.PI * 2).multiply(d);
+	return this.add(toward);
     }
 
     /**
@@ -71,11 +88,12 @@ public class Vector
     public Vector normalize()
     {
 	double d0 = Math.sqrt(x * x + y * y + z * z);
-	return isZeroVector() ? new Vector(0,0,0) : new Vector(x / d0, y / d0, z / d0);
+	return isZeroVector() ? new Vector(0, 0, 0) : new Vector(x / d0, y / d0, z / d0);
     }
-    
+
     /**
      * Get angle between vector, frmo 0 -> pi
+     * 
      * @param v
      * @return
      */
@@ -89,12 +107,20 @@ public class Vector
 	return x * v.x + y * v.y + z * v.z;
     }
     
+    public void setToLength(double d)
+    {
+	double dif = d / lengthVector();
+	x *= dif;
+	y *= dif;
+	z *= dif;
+    }
+
     public void setToLengthOf(Vector v)
     {
-	double dif = v.lengthVector()/lengthVector();
-	x*=dif;
-	y*=dif;
-	z*=dif;
+	double dif = v.lengthVector() / lengthVector();
+	x *= dif;
+	y *= dif;
+	z *= dif;
     }
 
     /**
@@ -108,7 +134,7 @@ public class Vector
 
     public Vector add(double i, double j, double k)
     {
-	return new Vector(x+i, y+j, z+k);
+	return new Vector(x + i, y + j, z + k);
     }
 
     /**
@@ -126,7 +152,7 @@ public class Vector
      */
     public Vector subtract(Vector v)
     {
-	if(v==null) v = new Vector(0,0,0);
+	if (v == null) v = new Vector(0, 0, 0);
 	return new Vector(x - v.x, y - v.y, z - v.z);
     }
 
@@ -136,6 +162,11 @@ public class Vector
     public double lengthVector()
     {
 	return Math.sqrt(x * x + y * y + z * z);
+    }
+    
+    public double lengthSqrVector()
+    {
+	return x * x + y * y + z * z;
     }
 
     public String toString()
@@ -228,9 +259,14 @@ public class Vector
 	int clamp = 1000000000;
 	return Math.round(crossProduct(v).lengthVector() * clamp) == 0;
     }
-    
+
     public Vector copy()
     {
 	return new Vector(x, y, z);
+    }
+
+    public Vec3 vec3()
+    {
+	return Vec3.fakePool.getVecFromPool(x, y, z);
     }
 }

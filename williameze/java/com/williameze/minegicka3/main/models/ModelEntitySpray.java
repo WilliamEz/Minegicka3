@@ -10,7 +10,7 @@ import com.williameze.minegicka3.main.entities.EntitySpray;
 
 public class ModelEntitySpray extends ModelBase
 {
-    public static Box box = new Box(new Vector(0, 0, 0), 1);
+    public static Box box = Box.create(new Vector(0, 0, 0), 1);
 
     @Override
     public void addComponents()

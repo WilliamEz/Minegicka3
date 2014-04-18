@@ -47,7 +47,7 @@ public class PlayerData
     {
 	if (mana < maxMana)
 	{
-	    double recover = 1/12D;
+	    double recover = 1/6D;
 	    ItemStack is = ref.getCurrentEquippedItem();
 	    if (is != null && is.getItem() instanceof ItemStaff)
 	    {

@@ -3,6 +3,9 @@ package com.williameze.api.lib;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.lwjgl.opengl.GL11;
+
+import net.minecraft.client.Minecraft;
 import net.minecraft.command.IEntitySelector;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.AxisAlignedBB;
@@ -11,6 +14,10 @@ import net.minecraft.world.World;
 import com.williameze.api.math.Line;
 import com.williameze.api.math.Plane;
 import com.williameze.api.math.Vector;
+import com.williameze.minegicka3.ModBase;
+
+import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.relauncher.Side;
 
 public class FuncHelper
 {
@@ -18,66 +25,88 @@ public class FuncHelper
 	    IEntitySelector ies)
     {
 	List<Entity> l = new ArrayList();
-	AxisAlignedBB aabb1 = aabb0.getOffsetBoundingBox(motion.x, motion.y, motion.z);
-	AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(Math.min(aabb0.minX, aabb1.minX), Math.min(aabb0.minY, aabb1.minY),
-		Math.min(aabb0.minZ, aabb1.minZ), Math.max(aabb0.maxX, aabb1.maxX), Math.max(aabb0.maxY, aabb1.maxY),
-		Math.max(aabb0.maxZ, aabb1.maxZ));
-	l.addAll(world.selectEntitiesWithinAABB(clazz, aabb0, ies));
-	l.addAll(world.selectEntitiesWithinAABB(clazz, aabb1, ies));
-	List<Entity> l1 = world.selectEntitiesWithinAABB(clazz, aabb, ies);
-	for (Entity e : l1)
+
+	if (motion.lengthSqrVector() > 260)
 	{
-	    if (e != null && !l.contains(e))
+	    double times = motion.lengthVector() / 16D;
+	    Vector motionPer16 = motion.multiply(1 / times);
+	    int loopTimes = (int) Math.ceil(times);
+	    for (int a = 0; a < loopTimes; a++)
 	    {
-		AxisAlignedBB eaabb = e.getBoundingBox();
-		if (aabb == null) eaabb = e.boundingBox;
-		try
+		AxisAlignedBB aabb = aabb0.getOffsetBoundingBox(motionPer16.x * a, motionPer16.y * a, motionPer16.z * a);
+		double motionRate = a == loopTimes - 1 ? times - loopTimes + 1 : 1;
+		Vector newMotion = motionPer16.copy();
+		if(a==loopTimes-1) newMotion.setToLength(16D*(times-(loopTimes-1)));
+		l.addAll(getEntitiesWithinBoundingBoxMovement(world, aabb, newMotion, clazz, ies));
+	    }
+	}
+	else
+	{
+	    // AxisAlignedBB aabb1 = AxisAlignedBB.getBoundingBox(aabb0.minX +
+	    // motion.x, aabb0.minY + motion.y, aabb0.minZ
+	    // + motion.z, aabb0.maxX + motion.x, aabb0.maxY + motion.y,
+	    // aabb0.maxZ + motion.z);
+	    AxisAlignedBB aabb1 = aabb0.getOffsetBoundingBox(motion.x, motion.y, motion.z);
+	    AxisAlignedBB aabb = AxisAlignedBB.getBoundingBox(Math.min(aabb0.minX, aabb1.minX), Math.min(aabb0.minY, aabb1.minY),
+		    Math.min(aabb0.minZ, aabb1.minZ), Math.max(aabb0.maxX, aabb1.maxX), Math.max(aabb0.maxY, aabb1.maxY),
+		    Math.max(aabb0.maxZ, aabb1.maxZ));
+	    l.addAll(world.selectEntitiesWithinAABB(clazz, aabb0, ies));
+	    l.addAll(world.selectEntitiesWithinAABB(clazz, aabb1, ies));
+	    List<Entity> l1 = world.selectEntitiesWithinAABB(clazz, aabb, ies);
+	    for (Entity e : l1)
+	    {
+		if (e != null && !l.contains(e))
 		{
-		    if (aabb == null) eaabb = e.getCollisionBox(null);
-		}
-		catch (NullPointerException nullp)
-		{
-		}
-		if (aabb == null) continue;
-		if (doesLineIntersectAABB(new Line(new Vector(aabb0.minX, aabb0.minY, aabb0.minZ), motion), eaabb))
-		{
-		    l.add(e);
-		    continue;
-		}
-		if (doesLineIntersectAABB(new Line(new Vector(aabb0.minX, aabb0.minY, aabb0.maxZ), motion), eaabb))
-		{
-		    l.add(e);
-		    continue;
-		}
-		if (doesLineIntersectAABB(new Line(new Vector(aabb0.minX, aabb0.maxY, aabb0.minZ), motion), eaabb))
-		{
-		    l.add(e);
-		    continue;
-		}
-		if (doesLineIntersectAABB(new Line(new Vector(aabb0.minX, aabb0.maxY, aabb0.maxZ), motion), eaabb))
-		{
-		    l.add(e);
-		    continue;
-		}
-		if (doesLineIntersectAABB(new Line(new Vector(aabb0.maxX, aabb0.minY, aabb0.minZ), motion), eaabb))
-		{
-		    l.add(e);
-		    continue;
-		}
-		if (doesLineIntersectAABB(new Line(new Vector(aabb0.maxX, aabb0.minY, aabb0.maxZ), motion), eaabb))
-		{
-		    l.add(e);
-		    continue;
-		}
-		if (doesLineIntersectAABB(new Line(new Vector(aabb0.maxX, aabb0.maxY, aabb0.minZ), motion), eaabb))
-		{
-		    l.add(e);
-		    continue;
-		}
-		if (doesLineIntersectAABB(new Line(new Vector(aabb0.maxX, aabb0.maxY, aabb0.maxZ), motion), eaabb))
-		{
-		    l.add(e);
-		    continue;
+		    AxisAlignedBB eaabb = e.getBoundingBox();
+		    if (eaabb == null) eaabb = e.boundingBox;
+		    try
+		    {
+			if (eaabb == null) eaabb = e.getCollisionBox(null);
+		    }
+		    catch (NullPointerException nullp)
+		    {
+		    }
+		    if (eaabb == null) continue;
+		    if (doesLineIntersectAABB(new Line(new Vector(aabb0.minX, aabb0.minY, aabb0.minZ), motion), eaabb))
+		    {
+			l.add(e);
+			continue;
+		    }
+		    if (doesLineIntersectAABB(new Line(new Vector(aabb0.minX, aabb0.minY, aabb0.maxZ), motion), eaabb))
+		    {
+			l.add(e);
+			continue;
+		    }
+		    if (doesLineIntersectAABB(new Line(new Vector(aabb0.minX, aabb0.maxY, aabb0.minZ), motion), eaabb))
+		    {
+			l.add(e);
+			continue;
+		    }
+		    if (doesLineIntersectAABB(new Line(new Vector(aabb0.minX, aabb0.maxY, aabb0.maxZ), motion), eaabb))
+		    {
+			l.add(e);
+			continue;
+		    }
+		    if (doesLineIntersectAABB(new Line(new Vector(aabb0.maxX, aabb0.minY, aabb0.minZ), motion), eaabb))
+		    {
+			l.add(e);
+			continue;
+		    }
+		    if (doesLineIntersectAABB(new Line(new Vector(aabb0.maxX, aabb0.minY, aabb0.maxZ), motion), eaabb))
+		    {
+			l.add(e);
+			continue;
+		    }
+		    if (doesLineIntersectAABB(new Line(new Vector(aabb0.maxX, aabb0.maxY, aabb0.minZ), motion), eaabb))
+		    {
+			l.add(e);
+			continue;
+		    }
+		    if (doesLineIntersectAABB(new Line(new Vector(aabb0.maxX, aabb0.maxY, aabb0.maxZ), motion), eaabb))
+		    {
+			l.add(e);
+			continue;
+		    }
 		}
 	    }
 	}
@@ -147,5 +176,20 @@ public class FuncHelper
 		+ e1.width / 2, e1.posY + e1.height, e1.posZ + e1.width / 2);
 
 	return new Vector((aabb1.maxX + aabb1.minX) / 2, (aabb1.maxY + aabb1.minY) / 2, (aabb1.maxZ + aabb1.minZ) / 2);
+    }
+
+    public static Entity getEntityClosestTo(double x, double y, double z, List<Entity> l)
+    {
+	double dsqr = -1;
+	Entity e1 = null;
+	for (Entity e : l)
+	{
+	    double de = e.getDistanceSq(x, y, z);
+	    if (dsqr == -1 || de < dsqr)
+	    {
+		e1 = e;
+	    }
+	}
+	return e1;
     }
 }

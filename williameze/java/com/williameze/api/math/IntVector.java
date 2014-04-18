@@ -2,6 +2,7 @@ package com.williameze.api.math;
 
 public class IntVector
 {
+    public static IntVector root = new IntVector(0, 0, 0);
     public static IntVector unitX = new IntVector(1, 0, 0);
     public static IntVector unitY = new IntVector(0, 1, 0);
     public static IntVector unitZ = new IntVector(0, 0, 1);

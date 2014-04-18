@@ -24,14 +24,19 @@ public class SpellExecuteLightning extends SpellExecute
 	{
 	    caster.worldObj.spawnEntityInWorld(lightning);
 	}
+	lightnings.put(s, lightning);
     }
 
     @Override
     public void updateSpell(Spell s)
     {
-	if(consumeMana(s, s.countElements()*2.2, true, false, 0)==0)
+	EntityLightning lig = lightnings.get(s);
+	if (lig != null && !lig.originAndChainedMap.isEmpty())
 	{
-	    s.toBeStopped = true;
+	    if (consumeMana(s, s.countElements() * 2.2, true, false, 0) == 0)
+	    {
+		s.toBeStopped = true;
+	    }
 	}
 	if (s.spellTicks > 75 + s.countElements() * 25 || s.castType == CastType.Single && s.getCaster().getLookVec() == null)
 	{
@@ -43,5 +48,6 @@ public class SpellExecuteLightning extends SpellExecute
     public void stopSpell(Spell s)
     {
 	s.toBeStopped = true;
+	lightnings.remove(s);
     }
 }

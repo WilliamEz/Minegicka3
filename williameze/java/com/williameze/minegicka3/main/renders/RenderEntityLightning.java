@@ -20,6 +20,7 @@ import com.williameze.api.math.PositionedVector;
 import com.williameze.api.math.Vector;
 import com.williameze.minegicka3.main.Element;
 import com.williameze.minegicka3.main.entities.EntityLightning;
+import com.williameze.minegicka3.main.spells.Spell.CastType;
 
 public class RenderEntityLightning extends Render
 {
@@ -89,7 +90,7 @@ public class RenderEntityLightning extends Render
 	else if (e == Element.Fire) GL11.glColor3d(1, 0.7, 0.4);
 	else if (e == Element.Cold) GL11.glColor3d(1, 1, 1);
 	else if (e == Element.Steam) GL11.glColor3d(0.4, 0.4, 0.4);
-	else GL11.glColor3d(1, 0.75, 1);
+	else GL11.glColor3d(1, 0.85, 1);
     }
 
     public List<PositionedVector> getLightningsFragments(EntityLightning li, Map<Entity, List<Entity>> m)
@@ -104,6 +105,27 @@ public class RenderEntityLightning extends Render
 		l.addAll(getLightningFragments(li, entry.getKey(), e));
 	    }
 	}
+	if (l.isEmpty())
+	{
+	    if (li.spell.castType == CastType.Single)
+	    {
+		double d = li.getSeekRadius(0);
+		Vector v = new Vector(li.spell.getCaster().getLookVec()).multiply(d).randomizeDirection(0.6);
+		subdivideVector(0, 0, 0, v, v.lengthVector() / 8, 8, l);
+	    }
+	}
+	if (li.spell.castType == CastType.Area)
+	{
+	    double d = li.getSeekRadius(0);
+	    Vector v = new Vector(d, 0, 0);
+	    for (int a = 0; a < 6; a++)
+	    {
+		Vector v1 = v.rotateAround(Vector.unitY, a * Math.PI / 3);
+		Vector v2 = v.rotateAround(Vector.unitY, (a + 1) * Math.PI / 3);
+		subdivideVector(0, 0, 0, v1, v1.lengthVector() / 4, 6, l);
+		subdivideVector(v1.x, v1.y, v1.z, v2.subtract(v1), v2.subtract(v1).lengthVector() / 2, 8, l);
+	    }
+	}
 	return l;
     }
 
@@ -114,19 +136,18 @@ public class RenderEntityLightning extends Render
 	double x = center.x - li.posX;
 	double y = center.y - li.posY;
 	double z = center.z - li.posZ;
-	Vector v = FuncHelper.vectorToCenterEntity(from, to);
-	subdivideVector(x, y, z, v, v.lengthVector() / 8, 0, l);
+	Vector v = FuncHelper.vectorToCenterEntity(from, to).randomizeDirection(Math.min(to.width / 2, to.height / 2));
+	subdivideVector(x, y, z, v, v.lengthVector() / 8, 8, l);
 	return l;
     }
 
     public void subdivideVector(double x, double y, double z, Vector v, double maxDisturbance, int index, List<PositionedVector> l)
     {
 	Random rnd = new Random();
-	int maxDivideTime = 10;
-	double branchChance = 0.8;
+	double branchChance = 0.12;
 	double minDisturbance = maxDisturbance / 16;
 
-	if (index >= maxDivideTime)
+	if (index < 0)
 	{
 	    l.add(new PositionedVector(x, y, z, v));
 	}
@@ -154,10 +175,10 @@ public class RenderEntityLightning extends Render
 		double d = 1D / 8;
 		Vector v1 = new Vector(midX - x, midY - y, midZ - z);
 		Vector v2 = new Vector(x + v.x - midX, y + v.y - midY, z + v.z - midZ);
-		index++;
+		index--;
 		subdivideVector(x, y, z, v1, v1.lengthVector() * d, index, l);
 		subdivideVector(midX, midY, midZ, v2, v2.lengthVector() * d, index, l);
-		if (rnd.nextDouble() <= branchChance / (index + 1))
+		if (rnd.nextDouble() <= branchChance * index)
 		{
 		    Vector v3 = new Vector(rnd.nextDouble() - 0.5, rnd.nextDouble() - 0.5, rnd.nextDouble() - 0.5);
 		    Vector v4 = v1.multiply(0.5);

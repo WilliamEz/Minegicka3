@@ -8,12 +8,14 @@ import net.minecraftforge.common.MinecraftForge;
 
 import com.williameze.minegicka3.core.CoreBridge;
 import com.williameze.minegicka3.core.CoreClient;
+import com.williameze.minegicka3.main.entities.EntityBeam;
 import com.williameze.minegicka3.main.entities.EntityLightning;
 import com.williameze.minegicka3.main.entities.EntitySprayCold;
 import com.williameze.minegicka3.main.entities.EntitySprayFire;
 import com.williameze.minegicka3.main.entities.EntitySpraySteam;
 import com.williameze.minegicka3.main.entities.EntitySprayWater;
 import com.williameze.minegicka3.main.objects.ItemStaff;
+import com.williameze.minegicka3.main.renders.RenderEntityBeam;
 import com.williameze.minegicka3.main.renders.RenderEntityLightning;
 import com.williameze.minegicka3.main.renders.RenderEntitySpray;
 import com.williameze.minegicka3.main.renders.RenderStaff;
@@ -45,6 +47,7 @@ public class ClientProxy extends CommonProxy
 	RenderingRegistry.registerEntityRenderingHandler(EntitySpraySteam.class, new RenderEntitySpray());
 	RenderingRegistry.registerEntityRenderingHandler(EntitySprayWater.class, new RenderEntitySpray());
 	RenderingRegistry.registerEntityRenderingHandler(EntityLightning.class, new RenderEntityLightning());
+	RenderingRegistry.registerEntityRenderingHandler(EntityBeam.class, new RenderEntityBeam());
     }
 
     @Override

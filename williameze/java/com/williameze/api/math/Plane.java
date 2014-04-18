@@ -5,10 +5,10 @@ public class Plane
     /** Tangent vector **/
     public Vector tang;
     public double free;
-    
+
     public Plane(Vector point1, Vector point2, Vector point3)
     {
-	this(point3.subtract(point1).crossProduct(point3.subtract(point2)), point3);
+	this(point3.subtract(point1).crossProduct(point3.subtract(point2)), point1);
     }
 
     public Plane(Vector t, double f)
@@ -20,7 +20,7 @@ public class Plane
     public Plane(Vector t, Vector point)
     {
 	tang = t;
-	free = tang.x * point.x + tang.y * point.y + tang.z * point.z;
+	free = -(tang.x * point.x + tang.y * point.y + tang.z * point.z);
     }
 
     public Vector getPointLackX(double y, double z)
@@ -37,7 +37,7 @@ public class Plane
     {
 	return new Vector(x, y, (free - tang.x * x - tang.y * y) / tang.z);
     }
-    
+
     public Vector intersectWith(Line l)
     {
 	return l.intersectWith(this);
@@ -70,5 +70,11 @@ public class Plane
 	    return tang.parallel(p.tang) && free == p.free;
 	}
 	return false;
+    }
+    
+    @Override
+    public String toString()
+    {
+        return (tang.x!=0?(tang.x>0?"+":"")+tang.x+"*x":"")+(tang.y!=0?(tang.y>0?"+":"")+tang.y+"*y":"")+(tang.z!=0?(tang.z>0?"+":"")+tang.z+"*z":"")+(free!=0?" + "+free:"")+" = 0";
     }
 }

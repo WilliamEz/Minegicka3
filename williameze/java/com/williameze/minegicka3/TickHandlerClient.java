@@ -2,9 +2,11 @@ package com.williameze.minegicka3;
 
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
+import com.williameze.api.math.Line;
+import com.williameze.api.math.Plane;
+import com.williameze.api.math.Vector;
 import com.williameze.minegicka3.bridges.Values;
 import com.williameze.minegicka3.core.CoreBridge;
-import com.williameze.minegicka3.core.CoreClient;
 
 import cpw.mods.fml.common.eventhandler.Event;
 import cpw.mods.fml.common.eventhandler.IEventListener;
@@ -25,7 +27,7 @@ public class TickHandlerClient implements IEventListener
     @SubscribeEvent
     public void worldTick(WorldTickEvent event)
     {
-	//CoreBridge.instance().onTick(event);
+	// CoreBridge.instance().onTick(event);
 	Values.clientTicked++;
     }
 
@@ -35,7 +37,7 @@ public class TickHandlerClient implements IEventListener
 	CoreBridge.instance().onTick(event);
     }
 
-    //@SubscribeEvent
+    // @SubscribeEvent
     public void playerTick(PlayerTickEvent event)
     {
 	CoreBridge.instance().onTick(event);

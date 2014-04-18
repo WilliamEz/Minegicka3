@@ -21,6 +21,7 @@ import net.minecraft.world.World;
 import com.williameze.api.lib.FuncHelper;
 import com.williameze.api.math.IntVector;
 import com.williameze.api.math.Vector;
+import com.williameze.minegicka3.main.spells.DefaultSpellSelector;
 import com.williameze.minegicka3.main.spells.Spell;
 
 import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
@@ -137,7 +138,7 @@ public class EntitySpray extends Entity implements IEntityAdditionalSpawnData
 	    }
 
 	    List<Entity> entities = FuncHelper.getEntitiesWithinBoundingBoxMovement(worldObj, boundingBox, new Vector(motionX,
-		    motionY, motionZ), EntityLivingBase.class, null);
+		    motionY, motionZ), EntityLivingBase.class, new DefaultSpellSelector(getSpell()));
 	    entities.remove(spell.getCaster());
 	    for (Entity e : entities)
 	    {
@@ -184,9 +185,9 @@ public class EntitySpray extends Entity implements IEntityAdditionalSpawnData
 
     public void affectEntity(Entity e)
     {
-	if (e != null && ticksExisted % 5 == 0)
+	if (e != null)
 	{
-	    spell.damageEntity(e);
+	    spell.damageEntity(e, 20);
 	}
     }
 

@@ -34,6 +34,7 @@ import com.williameze.minegicka3.main.spells.Spell;
 import com.williameze.minegicka3.main.spells.Spell.CastType;
 
 import cpw.mods.fml.common.gameevent.TickEvent.ClientTickEvent;
+import cpw.mods.fml.common.gameevent.TickEvent.Phase;
 import cpw.mods.fml.common.gameevent.TickEvent.PlayerTickEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.RenderTickEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.WorldTickEvent;
@@ -141,7 +142,7 @@ public class CoreClient
 
     public void onClientPlayerTick(PlayerTickEvent event)
     {
-	if (event.player == mc.thePlayer)
+	if (event.phase==Phase.END && event.player == mc.thePlayer)
 	{
 	    updateSpells();
 	    if (currentClientCastingSpell == null || !currentWorldSpells.contains(currentClientCastingSpell)

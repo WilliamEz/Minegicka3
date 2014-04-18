@@ -52,7 +52,7 @@ public class CoreServer
 
     public void onServerWorldTick(WorldTickEvent event)
     {
-	updateSpells(event.world);
+	if(event.phase==Phase.END) updateSpells(event.world);
     }
 
     public void onServerPlayerTick(PlayerTickEvent event)

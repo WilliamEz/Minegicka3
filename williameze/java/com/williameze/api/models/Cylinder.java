@@ -57,7 +57,7 @@ public class Cylinder extends ModelObject
 	}
 	else
 	{
-	    return new Cylinder(cen1, cen2, cen1.subtract(cen1.add(cen2).multiply(0.5)), cen2.subtract(cen1.add(cen2).multiply(
+	    return new Cylinder(cen1, cen2, cen2.subtract(cen1.add(cen2).multiply(0.5)), cen1.subtract(cen1.add(cen2).multiply(
 		    0.5)), radius1, radius2, cuts);
 	}
     }
@@ -164,7 +164,7 @@ public class Cylinder extends ModelObject
 	}
 	GL11.glEnd();
 	glResetColor();
-	
+
 	GL11.glPopMatrix();
     }
 

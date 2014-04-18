@@ -1,6 +1,7 @@
 package com.williameze.minegicka3.main.spells;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -113,6 +114,36 @@ public class Spell
 	return caster;
     }
 
+    public boolean hasAllElements(Element... es)
+    {
+	List<Element> list = Arrays.asList(es);
+	for(Element e1 : elements)
+	{
+	    if(list.contains(e1)) list.remove(e1);
+	}
+	return list.isEmpty();
+    }
+    
+    
+    public boolean hasEitherElement(Element... es)
+    {
+	List<Element> list = Arrays.asList(es);
+	for(Element e1 : elements)
+	{
+	    if(list.contains(e1)) return true;
+	}
+	return false;
+    }
+    
+    public boolean hasElement(Element e)
+    {
+	for(Element e1 : elements)
+	{
+	    if(e1==e) return true;
+	}
+	return false;
+    }
+
     public int countElements()
     {
 	return elements.size();
@@ -170,12 +201,12 @@ public class Spell
 	getExecute().stopSpell(this);
     }
 
-    public void damageEntity(Entity e)
+    public void damageEntity(Entity e, int cooldownTime)
     {
-	damageEntity(e, SpellDamageModifier.defau);
+	damageEntity(e, cooldownTime, SpellDamageModifier.defau);
     }
 
-    public void damageEntity(Entity e, SpellDamageModifier mod)
+    public void damageEntity(Entity e, int cooldownTime, SpellDamageModifier mod)
     {
 	int countWater = countElement(Element.Water);
 	int countLife = countElement(Element.Life);
@@ -258,15 +289,19 @@ public class Spell
 
 	if (!recentlyAffected.containsKey(e))
 	{
-	    e.attackEntityFrom(
-		    getCaster() instanceof EntityLivingBase ? DamageSource.causeMobDamage((EntityLivingBase) getCaster())
-			    : DamageSource.magic, (float) (waterDamage + fireDamage + arcaneDamage + lightningDamage
-			    + earthDamage + iceDamage + coldDamage + steamDamage));
+	    float totalDamage = (float) (waterDamage + fireDamage + arcaneDamage + lightningDamage + earthDamage + iceDamage
+		    + coldDamage + steamDamage);
+	    if (totalDamage > 0)
+	    {
+		e.attackEntityFrom(
+			getCaster() instanceof EntityLivingBase ? DamageSource.causeMobDamage((EntityLivingBase) getCaster())
+				: DamageSource.magic, totalDamage);
+	    }
 	    if (lifeHeal > 0 && e instanceof EntityLivingBase)
 	    {
 		((EntityLivingBase) e).heal((float) lifeHeal);
 	    }
-	    recentlyAffected.put(e, 20);
+	    recentlyAffected.put(e, (int) (cooldownTime / getStaffTag().getDouble("ATKSpeed")));
 	}
     }
 

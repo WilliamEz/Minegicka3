@@ -41,12 +41,17 @@ public class SpellExecuteSpray extends SpellExecute
 	    Vector dir = new Vector(caster.getLookVec());
 	    if (s.castType == CastType.Area)
 	    {
-		dir.y = 0;
+		if (dir.y == 1D || dir.y == -1D)
+		{
+		    dir.x = 1;
+		    dir.z = 1;
+		}
+		dir.y = dir.y / 100;
 		dir = dir.normalize();
-		dir.rotateAroundY(Math.PI / 20 * (s.spellTicks)
+		dir.rotateAroundY(Math.PI / 16 * (s.spellTicks)
 			* ((NBTTagCompound) s.additionalData.getTag("Staff")).getDouble("Power"));
 		loop *= 2;
-		consume *= 2;
+		consume *= 1.5;
 	    }
 
 	    double consumeRate = consumeMana(s, consume, true, false, 0);
@@ -86,7 +91,7 @@ public class SpellExecuteSpray extends SpellExecute
 	sp.server = !client;
 
 	Plane p = new Plane(dir, dir);
-	Vector apoint = p.getPointLackZ(1, 1);
+	Vector apoint = p.getPointLackY(1, 1);
 	Vector topoint = apoint.subtract(dir).normalize().multiply(rnd.nextDouble() * scatter);
 	topoint = topoint.rotateAround(dir, rnd.nextDouble() * Math.PI * 2);
 	Vector motion = dir.add(topoint).multiply(power);

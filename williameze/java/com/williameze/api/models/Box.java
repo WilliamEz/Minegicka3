@@ -13,20 +13,27 @@ public class Box extends ModelObject
     public Vector med;
     public List<Quad> faces = new ArrayList();
 
-    public Box(Vector mid, double halfSize)
+    public static Box create(Vector mid, double halfSize)
     {
-	this(mid, halfSize, halfSize, halfSize);
+	return create(mid, halfSize, halfSize, halfSize);
     }
 
-    public Box(Vector mid, double xhalf, double yhalf, double zhalf)
+    public static Box create(Vector mid, double xhalf, double yhalf, double zhalf)
     {
-	this(mid.x - xhalf, mid.y - yhalf, mid.z - zhalf, mid.x + xhalf, mid.y + yhalf, mid.z + zhalf);
+	return create(mid.x - xhalf, mid.y - yhalf, mid.z - zhalf, mid.x + xhalf, mid.y + yhalf, mid.z + zhalf);
     }
 
-    public Box(double minx, double miny, double minz, double maxx, double maxy, double maxz)
+    public static Box create(double minx, double miny, double minz, double maxx, double maxy, double maxz)
     {
-	this(new Vector(minx, maxy, minz), new Vector(minx, maxy, maxz), new Vector(maxx, maxy, maxz), new Vector(maxx, maxy, minz), new Vector(minx, miny, minz),
-		new Vector(minx, miny, maxz), new Vector(maxx, miny, maxz), new Vector(maxx, miny, minz));
+	Vector v01 = new Vector(minx, maxy, minz);
+	Vector v02 = new Vector(minx, maxy, maxz);
+	Vector v03 = new Vector(maxx, maxy, maxz);
+	Vector v04 = new Vector(maxx, maxy, minz);
+	Vector v11 = new Vector(minx, miny, minz);
+	Vector v12 = new Vector(minx, miny, maxz);
+	Vector v13 = new Vector(maxx, miny, maxz);
+	Vector v14 = new Vector(maxx, miny, minz);
+	return new Box(v01, v02, v03, v04, v11, v12, v13, v14);
     }
 
     public Box(Vector v01, Vector v02, Vector v03, Vector v04, Vector v11, Vector v12, Vector v13, Vector v14)
@@ -34,10 +41,10 @@ public class Box extends ModelObject
 	med = Vector.median(v01, v02, v03, v04, v11, v12, v13, v14);
 	Quad top = new Quad(v01, v02, v03, v04, v01.subtract(med), false).orderVertexesCounterClockwise();
 	Quad bottom = new Quad(v11, v12, v13, v14, v11.subtract(med), false).orderVertexesCounterClockwise();
-	Quad left = new Quad(top.v1, top.v2, bottom.v2, bottom.v1, top.v1.subtract(med), false).orderVertexesCounterClockwise();
-	Quad front = new Quad(top.v3, top.v2, bottom.v2, bottom.v3, top.v3.subtract(med), false).orderVertexesCounterClockwise();
-	Quad right = new Quad(top.v3, top.v4, bottom.v4, bottom.v3, top.v3.subtract(med), false).orderVertexesCounterClockwise();
-	Quad back = new Quad(top.v1, top.v4, bottom.v4, bottom.v1, top.v1.subtract(med), false).orderVertexesCounterClockwise();
+	Quad left = new Quad(v01, v02, v12, v11, v01.subtract(med), false).orderVertexesCounterClockwise();
+	Quad front = new Quad(v03, v02, v12, v13, v03.subtract(med), false).orderVertexesCounterClockwise();
+	Quad right = new Quad(v03, v04, v14, v13, v03.subtract(med), false).orderVertexesCounterClockwise();
+	Quad back = new Quad(v01, v04, v14, v11, v01.subtract(med), false).orderVertexesCounterClockwise();
 	faces.clear();
 	faces.addAll(Arrays.asList(top, bottom, left, front, right, back));
     }

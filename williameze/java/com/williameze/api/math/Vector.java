@@ -1,11 +1,13 @@
 package com.williameze.api.math;
 
 import java.util.Random;
+import java.util.UUID;
 
 import net.minecraft.util.Vec3;
 
 public class Vector
 {
+    public static int vectorIndex;
     public static Random rnd = new Random();
     public static Vector root = new Vector(0, 0, 0);
     public static Vector unitX = new Vector(1, 0, 0);
@@ -23,7 +25,7 @@ public class Vector
      * Z coordinate of VectorD
      */
     public double z;
-
+    
     public static Vector median(Vector... vs)
     {
 	double x = 0;
@@ -106,7 +108,7 @@ public class Vector
     {
 	return x * v.x + y * v.y + z * v.z;
     }
-    
+
     public void setToLength(double d)
     {
 	double dif = d / lengthVector();
@@ -163,7 +165,7 @@ public class Vector
     {
 	return Math.sqrt(x * x + y * y + z * z);
     }
-    
+
     public double lengthSqrVector()
     {
 	return x * x + y * y + z * z;
@@ -258,6 +260,12 @@ public class Vector
     {
 	int clamp = 1000000000;
 	return Math.round(crossProduct(v).lengthVector() * clamp) == 0;
+    }
+
+    @Override
+    public boolean equals(Object obj)
+    {
+	return obj instanceof Vector && ((Vector) obj).x == x && ((Vector) obj).y == y && ((Vector) obj).z == z;
     }
 
     public Vector copy()

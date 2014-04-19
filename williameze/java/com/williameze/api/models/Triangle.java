@@ -34,7 +34,7 @@ public class Triangle extends ModelObject
 	    if (n.dotProduct(nor) >= 0) normal = n;
 	    else normal = n.multiply(-1);
 	}
-	orderVertexesCounterClockwise();
+	//orderVertexesCounterClockwise();
     }
 
     public Triangle orderVertexesCounterClockwise()

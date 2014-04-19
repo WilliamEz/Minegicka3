@@ -44,8 +44,8 @@ public class ModelStaffDefault extends ModelStaff
     @Override
     public void render(ItemStack staff)
     {
-	components.clear();
-	addComponents();
+	//components.clear();
+	//addComponents();
 	doRenderParameters(staff);
     }
 

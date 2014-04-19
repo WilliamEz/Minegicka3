@@ -42,7 +42,8 @@ public class Sphere extends ModelObject
 		Vector v1 = vert.rotateAround(Vector.unitX, a * vertRotAngle).rotateAround(Vector.unitY, b * horzRotAngle);
 		Vector v2 = vert.rotateAround(Vector.unitX, (a + 1) * vertRotAngle).rotateAround(Vector.unitY, b * horzRotAngle);
 		Vector v3 = vert.rotateAround(Vector.unitX, a * vertRotAngle).rotateAround(Vector.unitY, (b + 1) * horzRotAngle);
-		Vector v4 = vert.rotateAround(Vector.unitX, (a + 1) * vertRotAngle).rotateAround(Vector.unitY, (b + 1) * horzRotAngle);
+		Vector v4 = vert.rotateAround(Vector.unitX, (a + 1) * vertRotAngle).rotateAround(Vector.unitY,
+			(b + 1) * horzRotAngle);
 		if (a < stacks - 1)
 		{
 		    Triangle tri1 = new Triangle(v1, v2, v4);

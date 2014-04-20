@@ -17,7 +17,7 @@ import com.williameze.minegicka3.main.Element;
 public class DrawHelper
 {
     public static FloatBuffer colorBuffer = GLAllocation.createDirectFloatBuffer(16);
-    public static Vector lighting1 = new Vector(1,1,1).normalize();
+    public static Vector lighting1 = new Vector(1, 1, 1).normalize();
     public static Vector lighting2 = lighting1.reverse();
 
     public static void drawRect(double x1, double y1, double x2, double y2, double r, double g, double b, double a)
@@ -41,15 +41,22 @@ public class DrawHelper
 	Tessellator tessellator = Tessellator.instance;
 	GL11.glPushMatrix();
 	GL11.glEnable(GL11.GL_BLEND);
+	GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 	GL11.glDisable(GL11.GL_TEXTURE_2D);
-	OpenGlHelper.glBlendFunc(770, 771, 1, 0);
+	// OpenGlHelper.glBlendFunc(770, 771, 1, 0);
 	GL11.glColor4d(r, g, b, a);
-	tessellator.startDrawingQuads();
-	tessellator.addVertex((double) x1, (double) y2, 0.0D);
-	tessellator.addVertex((double) x2, (double) y2, 0.0D);
-	tessellator.addVertex((double) x2, (double) y1, 0.0D);
-	tessellator.addVertex((double) x1, (double) y1, 0.0D);
-	tessellator.draw();
+	GL11.glBegin(GL11.GL_QUADS);
+	GL11.glVertex3d(x1, y2, 0.0D);
+	GL11.glVertex3d(x2, y2, 0.0D);
+	GL11.glVertex3d(x2, y1, 0.0D);
+	GL11.glVertex3d(x1, y1, 0.0D);
+	GL11.glEnd();
+	//tessellator.startDrawingQuads();
+	//tessellator.addVertex((double) x1, (double) y2, 0.0D);
+	//tessellator.addVertex((double) x2, (double) y2, 0.0D);
+	//tessellator.addVertex((double) x2, (double) y1, 0.0D);
+	//tessellator.addVertex((double) x1, (double) y1, 0.0D);
+	//tessellator.draw();
 	GL11.glEnable(GL11.GL_TEXTURE_2D);
 	GL11.glDisable(GL11.GL_BLEND);
 	GL11.glPopMatrix();
@@ -132,9 +139,9 @@ public class DrawHelper
 	GL11.glEnable(GL11.GL_LIGHT1);
 	GL11.glEnable(GL11.GL_COLOR_MATERIAL);
 	GL11.glColorMaterial(GL11.GL_FRONT_AND_BACK, GL11.GL_AMBIENT_AND_DIFFUSE);
-	float f = 0.3F*intensity;
-	float f1 = 0.25F*intensity;
-	float f2 = 0.1F*intensity;
+	float f = 0.3F * intensity;
+	float f1 = 0.25F * intensity;
+	float f2 = 0.1F * intensity;
 	GL11.glLight(GL11.GL_LIGHT0, GL11.GL_POSITION, setColorBuffer(lighting1.x, lighting1.y, lighting1.z, 0.0D));
 	GL11.glLight(GL11.GL_LIGHT0, GL11.GL_DIFFUSE, setColorBuffer(f1, f1, f1, 1.0F));
 	GL11.glLight(GL11.GL_LIGHT0, GL11.GL_AMBIENT, setColorBuffer(0.0F, 0.0F, 0.0F, 1.0F));

@@ -250,8 +250,8 @@ public class CoreClient
 	    double partialTranslucent = 0.25F + 0.75F * fullTranslucent;
 	    double partialTranslucent1 = 0.4F + 0.6F * fullTranslucent;
 
-	    int i = scaledResolution.getScaledWidth();
-	    int j = scaledResolution.getScaledHeight();
+	    double i = scaledResolution.getScaledWidth_double();
+	    double j = scaledResolution.getScaledHeight_double();
 
 	    boolean positionTop = (Values.gui_Position.toString().contains("TOP"));
 	    // positionTop = true;

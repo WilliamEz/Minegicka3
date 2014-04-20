@@ -1,7 +1,9 @@
 package com.williameze.minegicka3;
 
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
+import net.minecraftforge.client.event.RenderGameOverlayEvent.ElementType;
 
+import com.williameze.api.TestOverlay;
 import com.williameze.api.math.Line;
 import com.williameze.api.math.Plane;
 import com.williameze.api.math.Vector;
@@ -22,6 +24,7 @@ public class TickHandlerClient implements IEventListener
     public void clientTick(ClientTickEvent event)
     {
 	CoreBridge.instance().onTick(event);
+	if (TestOverlay.keyToggleTestOverlay.isPressed()) TestOverlay.enabled = !TestOverlay.enabled;
     }
 
     @SubscribeEvent
@@ -47,6 +50,7 @@ public class TickHandlerClient implements IEventListener
     public void renderGameOverlayTick(RenderGameOverlayEvent event)
     {
 	ModBase.proxy.getCoreClient().onRenderGameOverlayTick(event);
+	if (TestOverlay.enabled) TestOverlay.render();
     }
 
     @Override

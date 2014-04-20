@@ -1,5 +1,7 @@
 package com.williameze.api.math;
 
+import net.minecraft.util.Vec3;
+
 public class IntVector
 {
     public static IntVector root = new IntVector(0, 0, 0);
@@ -219,9 +221,20 @@ public class IntVector
 	int clamp = 1000000000;
 	return Math.round(crossProduct(v).lengthVector() * clamp) == 0;
     }
-    
+
+    @Override
+    public boolean equals(Object obj)
+    {
+	return obj instanceof IntVector && ((IntVector) obj).x == x && ((IntVector) obj).y == y && ((IntVector) obj).z == z;
+    }
+
     public IntVector copy()
     {
 	return new IntVector(x, y, z);
+    }
+
+    public Vec3 vec3()
+    {
+	return Vec3.fakePool.getVecFromPool(x, y, z);
     }
 }

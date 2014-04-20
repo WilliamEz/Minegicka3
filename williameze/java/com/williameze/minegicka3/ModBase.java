@@ -7,6 +7,7 @@ import net.minecraft.item.Item;
 import com.williameze.minegicka3.core.CoreBridge;
 import com.williameze.minegicka3.main.entities.EntityBeam;
 import com.williameze.minegicka3.main.entities.EntityLightning;
+import com.williameze.minegicka3.main.entities.EntityProjectile;
 import com.williameze.minegicka3.main.entities.EntitySprayCold;
 import com.williameze.minegicka3.main.entities.EntitySprayFire;
 import com.williameze.minegicka3.main.entities.EntitySpraySteam;
@@ -103,6 +104,7 @@ public class ModBase
 	registerEntity(EntitySprayWater.class, "SprayWater", 64, Integer.MAX_VALUE);
 	registerEntity(EntityLightning.class, "Lightning", 64, Integer.MAX_VALUE);
 	registerEntity(EntityBeam.class, "Beam", 64, Integer.MAX_VALUE);
+	registerEntity(EntityProjectile.class, "Proj", 64, 1);
     }
 
     public void registerEntity(Class eClass, String eName, int updateRange, int updateFrequency)

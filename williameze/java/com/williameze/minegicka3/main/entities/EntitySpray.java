@@ -122,6 +122,7 @@ public class EntitySpray extends Entity implements IEntityAdditionalSpawnData
     public void onUpdate()
     {
 	super.onUpdate();
+	ticksExisted++;
 	this.prevPosX = this.posX;
 	this.prevPosY = this.posY;
 	this.prevPosZ = this.posZ;

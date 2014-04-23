@@ -36,7 +36,7 @@ public class ModBase
     public static final String PACKAGE = "com.williameze.minegicka3";
     public static final String MODNAME = "Minegicka III";
     public static final String MODID = "minegicka3";
-    public static final String VERSION = "1.0";
+    public static final String VERSION = "0.0";
 
     @Instance("minegicka3")
     public static ModBase instance;

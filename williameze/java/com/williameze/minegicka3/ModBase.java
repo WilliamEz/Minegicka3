@@ -6,18 +6,21 @@ import net.minecraft.item.Item;
 
 import com.williameze.minegicka3.core.CoreBridge;
 import com.williameze.minegicka3.main.entities.EntityBeam;
+import com.williameze.minegicka3.main.entities.EntityBeamArea;
+import com.williameze.minegicka3.main.entities.EntityBoulder;
 import com.williameze.minegicka3.main.entities.EntityLightning;
-import com.williameze.minegicka3.main.entities.EntityProjectile;
 import com.williameze.minegicka3.main.entities.EntitySprayCold;
 import com.williameze.minegicka3.main.entities.EntitySprayFire;
 import com.williameze.minegicka3.main.entities.EntitySpraySteam;
 import com.williameze.minegicka3.main.entities.EntitySprayWater;
+import com.williameze.minegicka3.main.models.ModelEntityBoulder;
 import com.williameze.minegicka3.main.objects.ItemStaff;
 import com.williameze.minegicka3.main.packets.PacketPipeline;
 import com.williameze.minegicka3.main.packets.PacketPlayerData;
 import com.williameze.minegicka3.main.packets.PacketPlayerMana;
 import com.williameze.minegicka3.main.packets.PacketStartSpell;
 import com.williameze.minegicka3.main.packets.PacketStopSpell;
+import com.williameze.minegicka3.main.renders.RenderEntityBeamArea;
 
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -77,6 +80,7 @@ public class ModBase
     public void postInit(FMLPostInitializationEvent event)
     {
 	packetPipeline.postInitialise();
+	loadStaticClasses();
     }
 
     public void initBlocksAndItems()
@@ -93,7 +97,12 @@ public class ModBase
 
     public void initRecipes()
     {
+    }
 
+    public void loadStaticClasses()
+    {
+	ModelEntityBoulder.load();
+	RenderEntityBeamArea.load();
     }
 
     public void registerEntities()
@@ -104,7 +113,8 @@ public class ModBase
 	registerEntity(EntitySprayWater.class, "SprayWater", 64, Integer.MAX_VALUE);
 	registerEntity(EntityLightning.class, "Lightning", 64, Integer.MAX_VALUE);
 	registerEntity(EntityBeam.class, "Beam", 64, Integer.MAX_VALUE);
-	registerEntity(EntityProjectile.class, "Proj", 64, 1);
+	registerEntity(EntityBeamArea.class, "BeamArea", 64, Integer.MAX_VALUE);
+	registerEntity(EntityBoulder.class, "Boulder", 64, 1);
     }
 
     public void registerEntity(Class eClass, String eName, int updateRange, int updateFrequency)

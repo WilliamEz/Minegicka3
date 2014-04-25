@@ -40,6 +40,11 @@ public class EntitySprayCold extends EntitySpray
 	    worldObj.setBlock(x, y + 1, z, Blocks.snow_layer);
 	    setDead();
 	}
+	if (worldObj.getBlock(x, y, z) == Blocks.lava)
+	{
+	    worldObj.setBlock(x, y, z, Blocks.cobblestone);
+	    setDead();
+	}
     }
 
     @Override

@@ -9,11 +9,13 @@ import org.lwjgl.opengl.GL11;
 
 import com.williameze.api.lib.DrawHelper;
 import com.williameze.minegicka3.bridges.Values;
+import com.williameze.minegicka3.main.models.ModelEntityBoulder;
 import com.williameze.minegicka3.main.models.ModelEntitySpray;
 
-public class RenderEntitySpray extends Render
+public class RenderEntityBoulder extends Render
 {
-    public ModelEntitySpray model = new ModelEntitySpray();
+    public ModelEntityBoulder model = new ModelEntityBoulder();
+    
     protected void bindEntityTexture(Entity par1Entity)
     {
     }
@@ -30,12 +32,14 @@ public class RenderEntitySpray extends Render
 	GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 	GL11.glDisable(GL11.GL_TEXTURE_2D);
 	GL11.glDisable(GL11.GL_CULL_FACE);
-	GL11.glTranslated(x, y + var1.width / 2, z);
-	GL11.glRotated(Values.clientTicked+var1.hashCode(), var1.motionX, var1.motionY, var1.motionZ);
+	GL11.glTranslated(x, y + var1.height / 2, z);
+	//GL11.glRotated(Values.clientTicked+var1.hashCode(), var1.motionX, var1.motionY, var1.motionZ);
 
 	DrawHelper.enableLighting(1);
 	model.render(var1, partialTick);
 	DrawHelper.disableLighting();
+	RenderHelper.enableStandardItemLighting();
+	RenderHelper.disableStandardItemLighting();
 
 	GL11.glEnable(GL11.GL_CULL_FACE);
 	GL11.glEnable(GL11.GL_TEXTURE_2D);

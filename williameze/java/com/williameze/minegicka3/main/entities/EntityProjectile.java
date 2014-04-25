@@ -25,15 +25,16 @@ import net.minecraft.world.World;
 
 public class EntityProjectile extends Entity implements IEntityAdditionalSpawnData
 {
-    public Spell spell;
+    public Spell spell = Spell.none;
     public double gravity;
     public double friction;
 
     public EntityProjectile(World par1World)
     {
 	super(par1World);
-	gravity = 0.01;
-	friction = 9.9;
+	setSize(0.5F, 0.5F);
+	gravity = 0.001;
+	friction = 9.8;
     }
 
     @Override
@@ -100,7 +101,8 @@ public class EntityProjectile extends Entity implements IEntityAdditionalSpawnDa
 	    entities.remove(spell.getCaster());
 	    collideWithEntity(FuncHelper.getEntityClosestTo(posX, posY, posZ, entities));
 	}
-
+	
+	if(ticksExisted>=200) setDead();
     }
 
     public void collideWithBlock(int x, int y, int z)

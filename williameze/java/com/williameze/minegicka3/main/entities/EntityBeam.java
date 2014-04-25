@@ -34,7 +34,7 @@ import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 
 public class EntityBeam extends Entity implements IEntityAdditionalSpawnData
 {
-    public Spell spell;
+    public Spell spell = Spell.none;
     public Vector towardTarget;
     public int lastAffectedBlock;
 
@@ -95,7 +95,7 @@ public class EntityBeam extends Entity implements IEntityAdditionalSpawnData
 	if (e.getLookVec() != null)
 	{
 	    Vector v = new Vector(e.getLookVec());
-	    v = v.multiply(0.75);
+	    v = v.multiply(0.3);
 	    posX += v.x;
 	    posY += v.y;
 	    posZ += v.z;

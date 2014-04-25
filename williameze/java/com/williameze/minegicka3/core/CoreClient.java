@@ -10,6 +10,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
@@ -61,6 +62,7 @@ public class CoreClient
     public List<Entry<Element, long[]>> removingElements = new ArrayList();
 
     public Spell currentClientCastingSpell;
+    public CastType currentClientSpellCastType = CastType.Single;
     public List<Spell> currentWorldSpells = new ArrayList();
 
     public boolean isWizard()
@@ -70,8 +72,7 @@ public class CoreClient
 
     public boolean isWizardnessApplicable()
     {
-	return isWizard() && mc.thePlayer.getCurrentEquippedItem() != null
-		&& mc.thePlayer.getCurrentEquippedItem().getItem() instanceof ItemStaff;
+	return isWizard() && mc.thePlayer.getCurrentEquippedItem() != null && mc.thePlayer.getCurrentEquippedItem().getItem() instanceof ItemStaff;
     }
 
     public double getManaRate()
@@ -103,9 +104,7 @@ public class CoreClient
 	{
 	    if (currentClientCastingSpell == null)
 	    {
-		CastType ct = CastType.Single;
-		if (ModKeybinding.keyArea.isPressed()) ct = CastType.Area;
-		Spell s = new Spell(queuedElements, w.provider.dimensionId, p.getUniqueID(), ct, Spell.createAdditionalInfo(is));
+		Spell s = new Spell(queuedElements, w.provider.dimensionId, p.getUniqueID(), currentClientSpellCastType, Spell.createAdditionalInfo(is));
 		currentClientCastingSpell = s;
 		ModBase.packetPipeline.sendToServer(new PacketStartSpell(s));
 	    }
@@ -133,20 +132,26 @@ public class CoreClient
 	    {
 		if (mkb.isPressed()) playerQueueElement(mkb.element);
 	    }
+
 	    if (ModKeybinding.keyClear.isPressed())
 	    {
 		ModBase.proxy.getCoreClient().clearQueued();
 	    }
+
+	    if (ModKeybinding.keyArea.getIsKeyPressed())
+	    {
+		currentClientSpellCastType = CastType.Area;
+	    }
+	    else currentClientSpellCastType = CastType.Single;
 	}
     }
 
     public void onClientPlayerTick(PlayerTickEvent event)
     {
-	if (event.phase==Phase.END && event.player == mc.thePlayer)
+	if (event.phase == Phase.END && event.player == mc.thePlayer)
 	{
 	    updateSpells();
-	    if (currentClientCastingSpell == null || !currentWorldSpells.contains(currentClientCastingSpell)
-		    || currentClientCastingSpell.toBeStopped) recoverMana();
+	    if (currentClientCastingSpell == null || !currentWorldSpells.contains(currentClientCastingSpell) || currentClientCastingSpell.toBeStopped) recoverMana();
 	}
     }
 
@@ -243,8 +248,7 @@ public class CoreClient
 	/** Render hud **/
 	if (isWizard() && event instanceof RenderGameOverlayEvent.Post && event.type == ElementType.ALL)
 	{
-	    alphaCounterTick += 20 * ((isWizardnessApplicable() && alphaCounterTick < maxACT) ? 1
-		    : (!isWizardnessApplicable() && alphaCounterTick > 0) ? -1 : 0);
+	    alphaCounterTick += 20 * ((isWizardnessApplicable() && alphaCounterTick < maxACT) ? 1 : (!isWizardnessApplicable() && alphaCounterTick > 0) ? -1 : 0);
 	    alphaCounterTick = Math.max(0, Math.min(alphaCounterTick, maxACT));
 	    double fullTranslucent = (double) alphaCounterTick / (double) maxACT;
 	    double partialTranslucent = 0.25F + 0.75F * fullTranslucent;
@@ -275,10 +279,8 @@ public class CoreClient
 	    double queuedElementSize = 15;
 	    double queuedElementGapX = 2;
 	    double queuedElementGapY = 0;
-	    double queuedWidth = queuedElementSize * queuedElementsPerRow + queuedElementGapX
-		    * (Math.max(0, queuedElementsPerRow - 1));
-	    double queuedHeight = queuedElementSize * queuedElementsRows + queuedElementGapY
-		    * (Math.max(0, queuedElementsRows - 1));
+	    double queuedWidth = queuedElementSize * queuedElementsPerRow + queuedElementGapX * (Math.max(0, queuedElementsPerRow - 1));
+	    double queuedHeight = queuedElementSize * queuedElementsRows + queuedElementGapY * (Math.max(0, queuedElementsRows - 1));
 
 	    double guiWidth = Math.max(hotkeyWidth, Math.max(queuedWidth, manaBarWidth));
 	    double guiHeight = hotkeyHeight + queuedHeight + manaBarHeight;
@@ -308,9 +310,8 @@ public class CoreClient
 		GL11.glTranslated((guiWidth - manaBarWidth) / 2, 0, 0);
 		DrawHelper.drawRect(0, 0, manaBarWidth, manaBarHeight, 0.2, 0.2, 0.2, partialTranslucent1);
 		DrawHelper.drawRect(0.5, 0.5, manaBarWidth - 0.5, manaBarHeight - 0.5, 0, 0, 0, partialTranslucent1);
-		DrawHelper.drawRect(manaBarWidth / 2 - (manaBarWidth - 2) / 2 * manaRate, 1, manaBarWidth / 2
-			+ (manaBarWidth - 2) / 2 * manaRate, manaBarHeight - 1, 0.7, 0.7 * Math.max(0, 0.7F - manaRate),
-			0.8 * manaRate, partialTranslucent1);
+		DrawHelper.drawRect(manaBarWidth / 2 - (manaBarWidth - 2) / 2 * manaRate, 1, manaBarWidth / 2 + (manaBarWidth - 2) / 2 * manaRate, manaBarHeight - 1,
+			0.7, 0.7 * Math.max(0, 0.7F - manaRate), 0.8 * manaRate, partialTranslucent1);
 		GL11.glTranslated(-(guiWidth - manaBarWidth) / 2, 0, 0);
 		if (positionTop) GL11.glTranslated(0, manaBarHeight, 0);
 	    }
@@ -319,10 +320,8 @@ public class CoreClient
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glTranslated((guiWidth - queuedWidth) / 2, 0, 0);
 		GL11.glColor4d(1, 1, 1, fullTranslucent);
-		drawQueuedElement(queuedElementSize, queuedElementSize, queuedElementGapX, queuedElementGapY,
-			queuedElementsPerRow);
-		drawRemovingElement(queuedElementSize, queuedElementSize, queuedElementGapX, queuedElementGapY,
-			queuedElementsPerRow, positionTop);
+		drawQueuedElement(queuedElementSize, queuedElementSize, queuedElementGapX, queuedElementGapY, queuedElementsPerRow);
+		drawRemovingElement(queuedElementSize, queuedElementSize, queuedElementGapX, queuedElementGapY, queuedElementsPerRow, positionTop);
 		GL11.glTranslated(-(guiWidth - queuedWidth) / 2, 0, 0);
 	    }
 	    GL11.glDisable(GL11.GL_BLEND);
@@ -334,8 +333,7 @@ public class CoreClient
     public void drawHotkeyElements(double unitWidth, double unitHeight, double gapX, double gapY)
     {
 	mc.renderEngine.bindTexture(Values.elementsTexture);
-	List<Element> l = Arrays.asList(Element.Water, Element.Life, Element.Shield, Element.Cold, Element.Lightning,
-		Element.Arcane, Element.Earth, Element.Fire);
+	List<Element> l = Arrays.asList(Element.Water, Element.Life, Element.Shield, Element.Cold, Element.Lightning, Element.Arcane, Element.Earth, Element.Fire);
 	double x = 0;
 	double y = 0;
 	for (int a = 0; a < l.size(); a++)
@@ -358,8 +356,7 @@ public class CoreClient
 	    {
 		Element e = l.get(a);
 		String hotkey = Keyboard.getKeyName(ModKeybinding.elementToKeyMap.get(e).getKeyCode());
-		mc.fontRenderer.drawStringWithShadow(hotkey, (int) (x + unitWidth - mc.fontRenderer.getStringWidth(hotkey)),
-			(int) (y + unitHeight - 7), 0xffffffff);
+		mc.fontRenderer.drawStringWithShadow(hotkey, (int) (x + unitWidth - mc.fontRenderer.getStringWidth(hotkey)), (int) (y + unitHeight - 7), 0xffffffff);
 		x += unitWidth + gapX;
 		if ((a + 1) % 4 == 0)
 		{

@@ -1,8 +1,6 @@
 package com.williameze.minegicka3.main;
 
-import net.minecraft.util.ResourceLocation;
-
-import com.williameze.minegicka3.bridges.Values;
+import java.awt.Color;
 
 public enum Element
 {
@@ -12,7 +10,7 @@ public enum Element
     {
 	return ordinal() * 2 + (disabled ? 1 : 0);
     }
-    
+
     public static boolean areOpposite(Element el1, Element el2)
     {
 	return el1.isOpposite(el2);
@@ -22,7 +20,7 @@ public enum Element
     {
 	return el1.combineWith(el2);
     }
-    
+
     public static Element breakDown(Element el1, Element el2)
     {
 	return el1.breakDown(el2);
@@ -71,7 +69,7 @@ public enum Element
 		return null;
 	}
     }
-    
+
     public Element breakDown(Element el)
     {
 	switch (this)
@@ -85,5 +83,19 @@ public enum Element
 	    default:
 		return null;
 	}
+    }
+
+    public Color getColor()
+    {
+	if (this == Arcane) return new Color(255, 0, 0);
+	else if (this == Cold) return new Color(0, 0, 0);
+	else if (this == Earth) return new Color(80, 60, 27);
+	else if (this == Fire) return new Color(255, 100, 0);
+	else if (this == Ice) return new Color(144, 255, 255);
+	else if (this == Life) return new Color(0, 255, 0);
+	else if (this == Lightning) return new Color(255, 84, 253);
+	else if (this == Shield) return new Color(255, 246, 56);
+	else if (this == Steam) return new Color(171, 171, 171);
+	else return new Color(37, 41, 255);
     }
 }

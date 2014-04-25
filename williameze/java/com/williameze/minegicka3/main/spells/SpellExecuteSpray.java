@@ -34,8 +34,8 @@ public class SpellExecuteSpray extends SpellExecute
 	{
 	    Entity caster = s.getCaster();
 	    boolean client = FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT;
-	    double power = Math.pow(s.countElements(), 0.3) * s.getStaffTag().getDouble("Power") * 1.25D;
-	    double consume = Math.pow(s.countElements(), 1.2) * s.getStaffTag().getDouble("Consume") * 1.5D;
+	    double power = Math.pow(s.countElements(), 0.3) * s.getPower() * 1.25D;
+	    double consume = Math.pow(s.countElements(), 1.2) * s.getManaConsumeRate() * 1.5D;
 	    int loop = client ? 2 : 1;
 
 	    Vector dir = new Vector(caster.getLookVec());
@@ -48,8 +48,7 @@ public class SpellExecuteSpray extends SpellExecute
 		}
 		dir.y = dir.y / 100;
 		dir = dir.normalize();
-		dir.rotateAroundY(Math.PI / 16 * (s.spellTicks)
-			* ((NBTTagCompound) s.additionalData.getTag("Staff")).getDouble("Power"));
+		dir.rotateAroundY(Math.PI / 16 * (s.spellTicks) * s.getPower());
 		loop *= 2;
 		consume *= 1.5;
 	    }
@@ -58,7 +57,7 @@ public class SpellExecuteSpray extends SpellExecute
 	    power *= consumeRate;
 	    if (!client && consumeRate < 1) s.toBeStopped = true;
 
-	    Vector pos = (new Vector(caster.posX, caster.posY + caster.getEyeHeight(), caster.posZ)).add(dir.multiply(0.8));
+	    Vector pos = (new Vector(caster.posX, caster.posY + caster.getEyeHeight(), caster.posZ)).add(dir.multiply(0.2));
 	    if (s.castType == CastType.Area)
 	    {
 		pos.y += caster.getLookVec().yCoord;

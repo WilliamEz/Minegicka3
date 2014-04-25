@@ -9,6 +9,8 @@ import net.minecraftforge.common.MinecraftForge;
 import com.williameze.minegicka3.core.CoreBridge;
 import com.williameze.minegicka3.core.CoreClient;
 import com.williameze.minegicka3.main.entities.EntityBeam;
+import com.williameze.minegicka3.main.entities.EntityBeamArea;
+import com.williameze.minegicka3.main.entities.EntityBoulder;
 import com.williameze.minegicka3.main.entities.EntityLightning;
 import com.williameze.minegicka3.main.entities.EntitySprayCold;
 import com.williameze.minegicka3.main.entities.EntitySprayFire;
@@ -16,6 +18,8 @@ import com.williameze.minegicka3.main.entities.EntitySpraySteam;
 import com.williameze.minegicka3.main.entities.EntitySprayWater;
 import com.williameze.minegicka3.main.objects.ItemStaff;
 import com.williameze.minegicka3.main.renders.RenderEntityBeam;
+import com.williameze.minegicka3.main.renders.RenderEntityBeamArea;
+import com.williameze.minegicka3.main.renders.RenderEntityBoulder;
 import com.williameze.minegicka3.main.renders.RenderEntityLightning;
 import com.williameze.minegicka3.main.renders.RenderEntitySpray;
 import com.williameze.minegicka3.main.renders.RenderStaff;
@@ -28,17 +32,17 @@ public class ClientProxy extends CommonProxy
     @Override
     public void load()
     {
-        super.load();
+	super.load();
 	FMLCommonHandler.instance().bus().register(new TickHandlerClient());
 	MinecraftForge.EVENT_BUS.register(new TickHandlerClient());
     }
-    
+
     @Override
     public World getClientWorld()
     {
 	return Minecraft.getMinecraft().theWorld;
     }
-    
+
     @Override
     public void registerRenderHandler()
     {
@@ -48,27 +52,29 @@ public class ClientProxy extends CommonProxy
 	RenderingRegistry.registerEntityRenderingHandler(EntitySprayWater.class, new RenderEntitySpray());
 	RenderingRegistry.registerEntityRenderingHandler(EntityLightning.class, new RenderEntityLightning());
 	RenderingRegistry.registerEntityRenderingHandler(EntityBeam.class, new RenderEntityBeam());
+	RenderingRegistry.registerEntityRenderingHandler(EntityBeamArea.class, new RenderEntityBeamArea());
+	RenderingRegistry.registerEntityRenderingHandler(EntityBoulder.class, new RenderEntityBoulder());
     }
 
     @Override
     public void registerItemRenderer(Item i)
     {
-	if(i instanceof ItemStaff)
+	if (i instanceof ItemStaff)
 	{
 	    MinecraftForgeClient.registerItemRenderer(i, new RenderStaff());
 	}
     }
-    
+
     @Override
     public void initCoreBridge(CoreBridge cb)
     {
-        super.initCoreBridge(cb);
-        cb.client = CoreClient.instance();
+	super.initCoreBridge(cb);
+	cb.client = CoreClient.instance();
     }
-    
+
     @Override
     public CoreClient getCoreClient()
     {
-	return (CoreClient)CoreBridge.instance().client;
+	return (CoreClient) CoreBridge.instance().client;
     }
 }

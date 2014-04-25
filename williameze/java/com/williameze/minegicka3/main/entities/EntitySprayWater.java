@@ -4,6 +4,7 @@ import java.awt.Color;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
+import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 
 public class EntitySprayWater extends EntitySpray
@@ -24,6 +25,11 @@ public class EntitySprayWater extends EntitySpray
 	if (worldObj.getBlock(x, y, z).getMaterial() == Material.fire)
 	{
 	    worldObj.setBlockToAir(x, y, z);
+	    setDead();
+	}
+	if (worldObj.getBlock(x, y, z) == Blocks.lava)
+	{
+	    worldObj.setBlock(x, y, z, Blocks.cobblestone);
 	    setDead();
 	}
     }

@@ -28,7 +28,7 @@ import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 
 public class EntitySpray extends Entity implements IEntityAdditionalSpawnData
 {
-    private Spell spell;
+    private Spell spell = Spell.none;
     public Color color;
     public double gravity;
     public int maxTicks;
@@ -71,8 +71,7 @@ public class EntitySpray extends Entity implements IEntityAdditionalSpawnData
 	this.posX = par1;
 	this.posY = par3;
 	this.posZ = par5;
-	boundingBox.setBounds(posX - width / 2, posY - height / 2, posZ - width / 2, posX + width / 2, posY + height / 2, posZ
-		+ width / 2);
+	boundingBox.setBounds(posX - width / 2, posY - height / 2, posZ - width / 2, posX + width / 2, posY + height / 2, posZ + width / 2);
     }
 
     @Override
@@ -98,6 +97,12 @@ public class EntitySpray extends Entity implements IEntityAdditionalSpawnData
 
     @Override
     public boolean canBePushed()
+    {
+	return false;
+    }
+
+    @Override
+    protected boolean canTriggerWalking()
     {
 	return false;
     }
@@ -138,8 +143,8 @@ public class EntitySpray extends Entity implements IEntityAdditionalSpawnData
 		}
 	    }
 
-	    List<Entity> entities = FuncHelper.getEntitiesWithinBoundingBoxMovement(worldObj, boundingBox, new Vector(motionX,
-		    motionY, motionZ), EntityLivingBase.class, new DefaultSpellSelector(getSpell()));
+	    List<Entity> entities = FuncHelper.getEntitiesWithinBoundingBoxMovement(worldObj, boundingBox, new Vector(motionX, motionY, motionZ), EntityLivingBase.class,
+		    new DefaultSpellSelector(getSpell()));
 	    entities.remove(spell.getCaster());
 	    for (Entity e : entities)
 	    {

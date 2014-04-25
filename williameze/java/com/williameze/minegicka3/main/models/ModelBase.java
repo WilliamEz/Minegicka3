@@ -46,10 +46,15 @@ public class ModelBase
     {
 	for (ModelObject o : l)
 	{
-	    onComponentPreRender(e, f, o);
-	    o.render();
-	    onComponentPostRender(e, f, o);
+	    renderComponent(e, f, o);
 	}
+    }
+
+    public void renderComponent(Entity e, float f, ModelObject o)
+    {
+	onComponentPreRender(e, f, o);
+	o.render();
+	onComponentPostRender(e, f, o);
     }
 
     public void onComponentPreRender(Entity e, float f, ModelObject o)

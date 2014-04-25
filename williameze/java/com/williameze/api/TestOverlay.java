@@ -12,6 +12,7 @@ import com.williameze.api.lib.NoiseGen1D;
 import com.williameze.api.lib.NoiseGen2D;
 import com.williameze.minegicka3.ModBase;
 import com.williameze.minegicka3.bridges.Values;
+import com.williameze.minegicka3.main.models.ModelEntityBoulder;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;

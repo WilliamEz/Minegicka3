@@ -21,6 +21,11 @@ public class NoiseGen2D
     public double maxR, minR;
     public double transformCap;
 
+    public NoiseGen2D(long l, int i, int j)
+    {
+	this((Long) l, i, j);
+    }
+
     public NoiseGen2D(Long l, int i, int j)
     {
 	if (l != null) seed = new Random().nextLong();
@@ -73,13 +78,22 @@ public class NoiseGen2D
 	}
     }
 
+    public double getValueAt(double x, double y)
+    {
+	int minX = (int) Math.max(Math.min(rangeX - 1, Math.floor(x)), 0);
+	int maxX = (int) Math.max(Math.min(rangeX - 1, Math.ceil(x)), 0);
+	int minY = (int) Math.max(Math.min(rangeY - 1, Math.floor(y)), 0);
+	int maxY = (int) Math.max(Math.min(rangeY - 1, Math.ceil(y)), 0);
+	return (noises[minX][minY] + noises[maxX][minY] + noises[maxX][maxY] + noises[minX][maxY]) / 4D;
+    }
+
     public void reset(double resetToValue)
     {
 	resetToValue = Math.max(Math.min(resetToValue, maxCap), minCap);
 	noises = new double[rangeX][rangeY];
 	fixedPoints = new boolean[rangeX][rangeY];
 	fixedPointsList.clear();
-	setFixed(0, 0, true);
+	//setFixed(0, 0, true);
 	noises[0][0] = resetToValue;
 
 	for (int i = 0; i < rangeX; i++)
@@ -233,6 +247,36 @@ public class NoiseGen2D
 		    if (count > 0) med = med / count;
 		    double current = noises[i][j];
 		    noises[i][j] = current + (med - current) * smooth;
+		}
+	    }
+	}
+    }
+
+    public void mirrorOver(boolean overX, boolean keepLeftOrBottomHalf)
+    {
+	if (overX)
+	{
+	    int maxX = rangeX - 1;
+	    int increX = keepLeftOrBottomHalf ? 1 : -1;
+	    int startX = (int) Math.ceil(maxX / 2D);
+	    for (int x = startX; x >= 0 && x <= maxX; x += increX)
+	    {
+		for (int y = 0; y < rangeY; y++)
+		{
+		    noises[maxX - x][y] = noises[x][y];
+		}
+	    }
+	}
+	else
+	{
+	    int maxY = rangeY - 1;
+	    int increY = keepLeftOrBottomHalf ? 1 : -1;
+	    int startY = (int) Math.ceil(maxY / 2D);
+	    for (int y = startY; y >= 0 && y <= maxY; y += increY)
+	    {
+		for (int x = 0; x < rangeX; x++)
+		{
+		    noises[x][maxY - y] = noises[x][y];
 		}
 	    }
 	}

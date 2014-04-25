@@ -28,6 +28,7 @@ public class DefaultSpellSelector implements IEntitySelector
 	if (var1 instanceof EntitySpray && ((EntitySpray) var1).getSpell().equals(spell)) return false;
 	if (var1 instanceof EntityLightning && ((EntityLightning) var1).spell.equals(spell)) return false;
 	if (var1 instanceof EntityPlayer && ((EntityPlayer) var1).capabilities.disableDamage) return false;
+	if (var1 instanceof EntityPlayer && spell.getCaster() instanceof EntityPlayer && forceNonPVP) return false;
 	if (var1 == spell.getCaster()) return false;
 	return true;
     }

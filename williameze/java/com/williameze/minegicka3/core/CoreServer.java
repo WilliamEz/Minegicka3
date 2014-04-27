@@ -13,6 +13,7 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
 
 import com.williameze.minegicka3.ModBase;
+import com.williameze.minegicka3.main.Values;
 import com.williameze.minegicka3.main.objects.ItemStaff;
 import com.williameze.minegicka3.main.packets.PacketPlayerMana;
 import com.williameze.minegicka3.main.packets.PacketStartSpell;
@@ -52,7 +53,7 @@ public class CoreServer
 
     public void onServerWorldTick(WorldTickEvent event)
     {
-	if(event.phase==Phase.END) updateSpells(event.world);
+	if (event.phase == Phase.END) updateSpells(event.world);
     }
 
     public void onServerPlayerTick(PlayerTickEvent event)
@@ -82,7 +83,10 @@ public class CoreServer
 	for (Spell s : l)
 	{
 	    s.updateSpell();
-	    if (s.toBeStopped) toRemove.add(s);
+	    if (s.toBeInvalidated)
+	    {
+		toRemove.add(s);
+	    }
 	}
 	for (Spell s : toRemove)
 	{
@@ -109,10 +113,13 @@ public class CoreServer
 	    List<Spell> l = worldsSpellsList.get(w);
 	    if (start)
 	    {
-		ModBase.packetPipeline.sendToAllAround(new PacketStartSpell(s), new TargetPoint(s.dimensionID, caster.posX,
-			caster.posY, caster.posZ, 128));
-		l.add(s);
-		s.startSpell();
+		ModBase.packetPipeline.sendToAllAround(new PacketStartSpell(s), new TargetPoint(s.dimensionID, caster.posX, caster.posY, caster.posZ,
+			Values.spellUpdateRange));
+		if (!l.contains(s))
+		{
+		    s.startSpell();
+		    l.add(s);
+		}
 		if (caster instanceof EntityPlayer)
 		{
 		    playerToSpell.put((EntityPlayer) caster, s);
@@ -120,10 +127,13 @@ public class CoreServer
 	    }
 	    else
 	    {
-		ModBase.packetPipeline.sendToAllAround(new PacketStopSpell(s), new TargetPoint(s.dimensionID, caster.posX,
-			caster.posY, caster.posZ, 128));
-		s.stopSpell();
-		l.remove(s);
+		ModBase.packetPipeline.sendToAllAround(new PacketStopSpell(s), new TargetPoint(s.dimensionID, caster.posX, caster.posY, caster.posZ,
+			Values.spellUpdateRange));
+		if (l.contains(s))
+		{
+		    s.stopSpell();
+		    l.remove(s);
+		}
 		if (caster instanceof EntityPlayer)
 		{
 		    playerToSpell.remove(caster);

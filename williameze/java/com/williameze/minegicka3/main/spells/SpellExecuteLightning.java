@@ -4,6 +4,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 
 import com.williameze.minegicka3.main.entities.EntityLightning;
 import com.williameze.minegicka3.main.spells.Spell.CastType;
@@ -17,7 +18,7 @@ public class SpellExecuteLightning extends SpellExecute
     {
 	Entity caster = s.getCaster();
 	if (caster == null) return;
-	if (!caster.isWet())
+	if (!caster.isWet() || caster instanceof EntityPlayer && ((EntityPlayer) caster).capabilities.disableDamage)
 	{
 	    EntityLightning lightning = new EntityLightning(caster.worldObj);
 	    lightning.spell = s;
@@ -31,7 +32,7 @@ public class SpellExecuteLightning extends SpellExecute
 	else
 	{
 	    s.damageEntity(caster, 1);
-	    s.toBeStopped = true;
+	    s.toBeInvalidated = true;
 	}
     }
 
@@ -41,21 +42,20 @@ public class SpellExecuteLightning extends SpellExecute
 	EntityLightning lig = lightnings.get(s);
 	if (lig != null && !lig.originAndChainedMap.isEmpty())
 	{
-	    if (consumeMana(s, s.countElements() * 2.2 * s.getManaConsumeRate(), true, false, 0) == 0)
+	    if (consumeMana(s, s.countElements() * 2.2 * s.getManaConsumeRate(), true, false, 0) < 1)
 	    {
-		s.toBeStopped = true;
+		s.toBeInvalidated = true;
 	    }
 	}
 	if (s.spellTicks > 75 + s.countElements() * 25 || s.castType == CastType.Single && s.getCaster().getLookVec() == null)
 	{
-	    s.toBeStopped = true;
+	    s.toBeInvalidated = true;
 	}
     }
 
     @Override
     public void stopSpell(Spell s)
     {
-	s.toBeStopped = true;
 	lightnings.remove(s);
     }
 }

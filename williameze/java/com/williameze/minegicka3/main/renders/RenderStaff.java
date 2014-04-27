@@ -15,7 +15,7 @@ import net.minecraftforge.client.IItemRenderer;
 
 import com.williameze.api.lib.DrawHelper;
 import com.williameze.minegicka3.TickHandlerClient;
-import com.williameze.minegicka3.bridges.Values;
+import com.williameze.minegicka3.main.Values;
 import com.williameze.minegicka3.main.objects.ItemStaff;
 
 public class RenderStaff implements IItemRenderer

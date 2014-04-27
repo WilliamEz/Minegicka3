@@ -2,7 +2,6 @@ package com.williameze.minegicka3;
 
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
-import com.williameze.minegicka3.bridges.Values;
 import com.williameze.minegicka3.core.CoreBridge;
 import com.williameze.minegicka3.core.PlayersData;
 

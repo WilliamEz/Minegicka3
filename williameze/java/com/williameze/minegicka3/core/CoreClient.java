@@ -25,8 +25,8 @@ import com.williameze.api.lib.DrawHelper;
 import com.williameze.minegicka3.ClientProxy;
 import com.williameze.minegicka3.ModBase;
 import com.williameze.minegicka3.ModKeybinding;
-import com.williameze.minegicka3.bridges.Values;
 import com.williameze.minegicka3.main.Element;
+import com.williameze.minegicka3.main.Values;
 import com.williameze.minegicka3.main.objects.ItemStaff;
 import com.williameze.minegicka3.main.packets.PacketPlayerMana;
 import com.williameze.minegicka3.main.packets.PacketStartSpell;
@@ -86,12 +86,15 @@ public class CoreClient
 	{
 	    if (start)
 	    {
-		if (!currentWorldSpells.contains(s)) currentWorldSpells.add(s);
-		s.startSpell();
+		if (!currentWorldSpells.contains(s))
+		{
+		    currentWorldSpells.add(s);
+		    s.startSpell();
+		}
 	    }
 	    else
 	    {
-		s.stopSpell();
+		if (currentWorldSpells.contains(s)) s.stopSpell();
 		currentWorldSpells.remove(s);
 		if (s == currentClientCastingSpell) currentClientCastingSpell = null;
 	    }
@@ -115,9 +118,10 @@ public class CoreClient
     {
 	if (p == mc.thePlayer)
 	{
-	    if (currentClientCastingSpell != null)
+	    if (currentClientCastingSpell != null && currentWorldSpells.contains(currentClientCastingSpell))
 	    {
-		ModBase.packetPipeline.sendToServer(new PacketStopSpell(currentClientCastingSpell));
+		int index = currentWorldSpells.indexOf(currentClientCastingSpell);
+		ModBase.packetPipeline.sendToServer(new PacketStopSpell(currentWorldSpells.get(index)));
 		currentClientCastingSpell = null;
 	    }
 	    clearQueued();
@@ -143,6 +147,7 @@ public class CoreClient
 		currentClientSpellCastType = CastType.Area;
 	    }
 	    else currentClientSpellCastType = CastType.Single;
+
 	}
     }
 
@@ -151,7 +156,10 @@ public class CoreClient
 	if (event.phase == Phase.END && event.player == mc.thePlayer)
 	{
 	    updateSpells();
-	    if (currentClientCastingSpell == null || !currentWorldSpells.contains(currentClientCastingSpell) || currentClientCastingSpell.toBeStopped) recoverMana();
+	    if (currentClientCastingSpell == null || !currentWorldSpells.contains(currentClientCastingSpell) || currentClientCastingSpell.toBeInvalidated) recoverMana();
+	    else
+	    {
+	    }
 	}
     }
 
@@ -162,18 +170,24 @@ public class CoreClient
     public void updateSpells()
     {
 	List<Spell> toRemove = new ArrayList();
-	for (int a = 0; a < currentWorldSpells.size(); a++)
+	for (Spell s : currentWorldSpells)
 	{
-	    Spell s = currentWorldSpells.get(a);
 	    if (s.dimensionID != mc.theWorld.provider.dimensionId)
 	    {
 		toRemove.add(s);
 		continue;
 	    }
 	    s.updateSpell();
-	    if (s.toBeStopped) toRemove.add(s);
+	    if (s.toBeInvalidated)
+	    {
+		toRemove.add(s);
+	    }
 	}
-	currentWorldSpells.removeAll(toRemove);
+	for (Spell s : toRemove)
+	{
+	    spellTriggerReceived(s, false);
+	}
+	if (currentClientCastingSpell != null && currentClientCastingSpell.toBeInvalidated) currentClientCastingSpell = null;
     }
 
     public void recoverMana()

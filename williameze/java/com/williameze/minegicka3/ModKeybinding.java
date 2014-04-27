@@ -1,15 +1,19 @@
 package com.williameze.minegicka3;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 
 import org.lwjgl.input.Keyboard;
 
 import com.williameze.minegicka3.main.Element;
+
+import cpw.mods.fml.client.registry.ClientRegistry;
 
 public class ModKeybinding extends KeyBinding
 {
@@ -24,15 +28,24 @@ public class ModKeybinding extends KeyBinding
     public static ModKeybinding keyArcane = new ModKeybinding("Arcane", Keyboard.KEY_J, Element.Arcane);
     public static ModKeybinding keyEarth = new ModKeybinding("Earth", Keyboard.KEY_K, Element.Earth);
     public static ModKeybinding keyFire = new ModKeybinding("Fire", Keyboard.KEY_L, Element.Fire);
-    public static List<ModKeybinding> elementKeys = Arrays.asList(keyWater, keyLife, keyShield, keyCold, keyLightning, keyArcane,
-	    keyEarth, keyFire);
+    public static List<ModKeybinding> elementKeys = Arrays.asList(keyWater, keyLife, keyShield, keyCold, keyLightning, keyArcane, keyEarth, keyFire);
 
-    public static KeyBinding keyArea = new KeyBinding("Area Cast", Keyboard.KEY_F, ModBase.MODNAME);
-    public static KeyBinding keyClear = new KeyBinding("Clear Queued", Keyboard.KEY_V, ModBase.MODNAME);
+    public static KeyBinding keyArea = new KeyBinding("Area Cast", Keyboard.KEY_F, "key.categories.gameplay");
+    public static KeyBinding keyClear = new KeyBinding("Clear Queued", Keyboard.KEY_V, "key.categories.gameplay");
+
+    public static void load()
+    {
+	for (ModKeybinding k : elementKeys)
+	{
+	    ClientRegistry.registerKeyBinding(k);
+	}
+	ClientRegistry.registerKeyBinding(keyArea);
+	ClientRegistry.registerKeyBinding(keyClear);
+    }
 
     public ModKeybinding(String description, int id, Element e)
     {
-	super(description, id, ModBase.MODNAME);
+	super(description, id, "key.categories." + ModBase.MODID);
 	element = e;
 	elementToKeyMap.put(e, this);
     }

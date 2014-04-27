@@ -1,5 +1,6 @@
 package com.williameze.minegicka3;
 
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
@@ -19,6 +20,16 @@ public class CommonProxy
 	MinecraftForge.EVENT_BUS.register(new TickHandler());
 	MinecraftForge.EVENT_BUS.register(new EventsHandler());
 	// MinecraftForge.EVENT_BUS.register(CoreBridge.client);
+    }
+
+    public void postLoad()
+    {
+
+    }
+
+    public EntityPlayer getClientPlayer()
+    {
+	return null;
     }
 
     public World getClientWorld()

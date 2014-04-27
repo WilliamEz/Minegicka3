@@ -26,6 +26,8 @@ import com.williameze.api.math.MathHelper;
 import com.williameze.api.math.Vector;
 import com.williameze.minegicka3.ModBase;
 import com.williameze.minegicka3.main.Element;
+import com.williameze.minegicka3.main.SpellDamageModifier;
+import com.williameze.minegicka3.main.Values;
 import com.williameze.minegicka3.main.spells.DefaultSpellSelector;
 import com.williameze.minegicka3.main.spells.Spell;
 import com.williameze.minegicka3.main.spells.Spell.CastType;
@@ -37,11 +39,12 @@ public class EntityBeamArea extends Entity implements IEntityAdditionalSpawnData
     public Spell spell = Spell.none;
     public boolean searched;
     public List<Entity> targets = new ArrayList();
+    public SpellDamageModifier damMod = SpellDamageModifier.defau;
 
     public EntityBeamArea(World par1World)
     {
 	super(par1World);
-	renderDistanceWeight = 16;
+	renderDistanceWeight = Values.renderDistance;
 	setSize(4F, 20F);
 	searched = false;
     }
@@ -49,7 +52,7 @@ public class EntityBeamArea extends Entity implements IEntityAdditionalSpawnData
     @Override
     public boolean isInRangeToRenderDist(double par1)
     {
-	return par1 < renderDistanceWeight * 16;
+	return par1 < renderDistanceWeight * renderDistanceWeight;
     }
 
     @Override
@@ -94,7 +97,7 @@ public class EntityBeamArea extends Entity implements IEntityAdditionalSpawnData
 	    {
 		if (ent.getDistanceSqToEntity(this) <= maxAtkDistSqr)
 		{
-		    spell.damageEntity(ent, 0);
+		    spell.damageEntity(ent, 0, damMod);
 		    toRemove.add(ent);
 		}
 	    }
@@ -104,12 +107,12 @@ public class EntityBeamArea extends Entity implements IEntityAdditionalSpawnData
 
     public double maxRange()
     {
-	return spell.elements.size() * 4 + 12;
+	return (spell.elements.size() * 4D + 12D);
     }
 
     public int maxTick()
     {
-	return (int) Math.round(maxRange() / 16 * 15);
+	return (int) Math.round(maxRange() / 16 * 20);
     }
 
     @Override
@@ -131,6 +134,9 @@ public class EntityBeamArea extends Entity implements IEntityAdditionalSpawnData
 	    byte[] b = CompressedStreamTools.compress(spell.writeToNBT());
 	    buffer.writeInt(b.length);
 	    buffer.writeBytes(b);
+	    byte[] b1 = damMod.toString().getBytes();
+	    buffer.writeInt(b1.length);
+	    buffer.writeBytes(b1);
 	}
 	catch (IOException e)
 	{
@@ -147,6 +153,10 @@ public class EntityBeamArea extends Entity implements IEntityAdditionalSpawnData
 	    additionalData.readBytes(b);
 	    NBTTagCompound tag = CompressedStreamTools.decompress(b);
 	    spell = Spell.createFromNBT(tag);
+
+	    byte[] b1 = new byte[additionalData.readInt()];
+	    additionalData.readBytes(b1);
+	    damMod = new SpellDamageModifier(new String(b1));
 	}
 	catch (IOException e)
 	{

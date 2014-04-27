@@ -26,6 +26,7 @@ import com.williameze.api.math.MathHelper;
 import com.williameze.api.math.Vector;
 import com.williameze.minegicka3.ModBase;
 import com.williameze.minegicka3.main.Element;
+import com.williameze.minegicka3.main.Values;
 import com.williameze.minegicka3.main.spells.DefaultSpellSelector;
 import com.williameze.minegicka3.main.spells.Spell;
 import com.williameze.minegicka3.main.spells.Spell.CastType;
@@ -42,8 +43,14 @@ public class EntityBeam extends Entity implements IEntityAdditionalSpawnData
     {
 	super(par1World);
 	lastAffectedBlock = 0;
-	renderDistanceWeight = 16;
+	renderDistanceWeight = Values.renderDistance;
 	setSize(0.1F, 0.1F);
+    }
+
+    @Override
+    public boolean isInRangeToRenderDist(double par1)
+    {
+	return par1 < renderDistanceWeight * renderDistanceWeight;
     }
 
     @Override
@@ -61,12 +68,12 @@ public class EntityBeam extends Entity implements IEntityAdditionalSpawnData
     public void onUpdate()
     {
 	super.onUpdate();
-	if (spell == null || spell.toBeStopped)
+	if (spell == null || spell.toBeInvalidated)
 	{
 	    setDead();
 	    return;
 	}
-	if (!spell.toBeStopped)
+	if (!spell.toBeInvalidated)
 	{
 	    if (worldObj.isRemote)
 	    {
@@ -124,8 +131,8 @@ public class EntityBeam extends Entity implements IEntityAdditionalSpawnData
 	double mopdsq = lengthSqrToTarget;
 	if (mop != null) mopdsq = getDistanceSq(mop.blockX + 0.5, mop.blockY + 0.5, mop.blockZ + 0.5);
 
-	List<Entity> l = FuncHelper.getEntitiesWithinBoundingBoxMovement(worldObj, boundingBox, vec.multiply(mopdsq),
-		EntityLivingBase.class, new DefaultSpellSelector(spell));
+	List<Entity> l = FuncHelper.getEntitiesWithinBoundingBoxMovement(worldObj, boundingBox, vec.multiply(mopdsq), EntityLivingBase.class, new DefaultSpellSelector(
+		spell));
 	Entity pointingAt = FuncHelper.getEntityClosestTo(posX, posY, posZ, l);
 
 	if (pointingAt != null)
@@ -138,13 +145,12 @@ public class EntityBeam extends Entity implements IEntityAdditionalSpawnData
 	    if (lastAffectedBlock == 0) affectBlock(mop, mop.blockX, mop.blockY, mop.blockZ);
 	    lengthSqrToTarget = mopdsq;
 	}
-	towardTarget = vec.multiply(Math.sqrt(lengthSqrToTarget)).add(posX - caster.posX,
-		posY - caster.posY - caster.getEyeHeight() + 0.25, posZ - caster.posZ);
+	towardTarget = vec.multiply(Math.sqrt(lengthSqrToTarget)).add(posX - caster.posX, posY - caster.posY - caster.getEyeHeight() + 0.25, posZ - caster.posZ);
     }
 
     public void affectBlock(MovingObjectPosition mop, int x, int y, int z)
     {
-	if(worldObj.isRemote) return;
+	if (worldObj.isRemote) return;
 	if (mop != null)
 	{
 	    switch (mop.sideHit)

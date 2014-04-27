@@ -27,7 +27,7 @@ public class SpellExecuteBeam extends SpellExecute
 	{
 	    Entity caster = s.getCaster();
 	    if (caster == null) return;
-	    double manaToConsume = s.countElements() * 60 * s.getManaConsumeRate();
+	    double manaToConsume = s.countElements() * s.countElements() * 100 * s.getManaConsumeRate();
 	    if (consumeMana(s, manaToConsume, true, true, 2) > 0)
 	    {
 		EntityBeamArea beamA = new EntityBeamArea(caster.worldObj);
@@ -38,7 +38,7 @@ public class SpellExecuteBeam extends SpellExecute
 		    caster.worldObj.spawnEntityInWorld(beamA);
 		}
 	    }
-	    s.toBeStopped = true;
+	    s.toBeInvalidated = true;
 	}
     }
 
@@ -49,18 +49,13 @@ public class SpellExecuteBeam extends SpellExecute
 	{
 	    if (consumeMana(s, s.countElements() * 2.2 * s.getManaConsumeRate(), true, false, 0) == 0)
 	    {
-		s.toBeStopped = true;
+		s.toBeInvalidated = true;
 	    }
 	    if (s.spellTicks > 75 + s.countElements() * 25 || s.castType == CastType.Single && s.getCaster().getLookVec() == null)
 	    {
-		s.toBeStopped = true;
+		s.toBeInvalidated = true;
 	    }
 	}
     }
 
-    @Override
-    public void stopSpell(Spell s)
-    {
-	s.toBeStopped = true;
-    }
 }

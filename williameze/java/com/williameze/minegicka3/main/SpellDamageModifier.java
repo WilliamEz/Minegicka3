@@ -15,6 +15,11 @@ public class SpellDamageModifier
 	arcaneMod = coldMod = earthMod = fireMod = iceMod = lifeMod = lightningMod = shieldMod = steamMod = waterMod = 1;
     }
 
+    public SpellDamageModifier(double d)
+    {
+	arcaneMod = coldMod = earthMod = fireMod = iceMod = lifeMod = lightningMod = shieldMod = steamMod = waterMod = d;
+    }
+
     /**
      * lightning will be indicated by letter H, shield will be indicated by
      * letter D. The rest are indicated by the first letter.
@@ -90,6 +95,13 @@ public class SpellDamageModifier
     @Override
     public int hashCode()
     {
-	return (int) (arcaneMod + coldMod + earthMod + fireMod + iceMod + lifeMod + lightningMod + steamMod + waterMod);
+	return (int) (arcaneMod + coldMod + earthMod + fireMod + iceMod + lifeMod + lightningMod + steamMod + shieldMod + waterMod);
+    }
+
+    @Override
+    public String toString()
+    {
+	return arcaneMod + "a" + coldMod + "c" + shieldMod + "d" + earthMod + "e" + fireMod + "f" + lightningMod + "h" + iceMod + "i" + lifeMod + "l" + steamMod + "s"
+		+ waterMod + "w";
     }
 }

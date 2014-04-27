@@ -7,8 +7,8 @@ import net.minecraft.world.World;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.world.WorldEvent;
 
-import com.williameze.minegicka3.bridges.Values;
 import com.williameze.minegicka3.core.PlayersData;
+import com.williameze.minegicka3.main.Values;
 
 import cpw.mods.fml.common.eventhandler.Event;
 import cpw.mods.fml.common.eventhandler.IEventListener;

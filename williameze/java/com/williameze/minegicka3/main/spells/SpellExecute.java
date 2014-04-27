@@ -55,7 +55,7 @@ public class SpellExecute
 	if (e instanceof EntityPlayer)
 	{
 	    EntityPlayer p = (EntityPlayer) e;
-	    if(p.capabilities.isCreativeMode) return 1;
+	    if (p.capabilities.isCreativeMode) return 1;
 	    PlayersData psd = PlayersData.getWorldPlayersData(p.worldObj);
 	    PlayerData pd = psd.getPlayerData(p);
 
@@ -64,7 +64,7 @@ public class SpellExecute
 	    {
 		canConsume = 0;
 	    }
-	    s.toBeStopped = pd.mana < m ? true : s.toBeStopped;
+	    boolean nope = pd.mana < m;
 	    if (canConsume > 0)
 	    {
 		if (reallyConsume)
@@ -73,19 +73,18 @@ public class SpellExecute
 		    if (!p.worldObj.isRemote) psd.sendPlayerManaToClient(p, p);
 		}
 	    }
-	    if (s.toBeStopped)
+	    if (nope)
 	    {
 		if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
 		{
 		    if (showChatMessage == 1)
 		    {
-			p.addChatMessage(new ChatComponentText("Mana too low.").setChatStyle(new ChatStyle().setItalic(true)
-				.setColor(EnumChatFormatting.RED)));
+			p.addChatMessage(new ChatComponentText("Mana too low.").setChatStyle(new ChatStyle().setItalic(true).setColor(EnumChatFormatting.RED)));
 		    }
 		    else if (showChatMessage == 2)
 		    {
-			p.addChatMessage(new ChatComponentText("Mana too low. Requires " + (int) (Math.round(m * 10) / 10)
-				+ " mana.").setChatStyle(new ChatStyle().setItalic(true).setColor(EnumChatFormatting.RED)));
+			p.addChatMessage(new ChatComponentText("Mana too low. Requires " + (int) (Math.round(m * 10) / 10) + " mana.").setChatStyle(new ChatStyle()
+				.setItalic(true).setColor(EnumChatFormatting.RED)));
 		    }
 		}
 	    }

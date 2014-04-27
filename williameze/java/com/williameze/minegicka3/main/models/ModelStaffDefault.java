@@ -13,7 +13,7 @@ import com.williameze.api.models.CylinderConjunc;
 import com.williameze.api.models.ModelObject;
 import com.williameze.api.models.Sphere;
 import com.williameze.minegicka3.ModBase;
-import com.williameze.minegicka3.bridges.Values;
+import com.williameze.minegicka3.main.Values;
 
 public class ModelStaffDefault extends ModelStaff
 {

@@ -88,7 +88,7 @@ public enum Element
     public Color getColor()
     {
 	if (this == Arcane) return new Color(255, 0, 0);
-	else if (this == Cold) return new Color(0, 0, 0);
+	else if (this == Cold) return new Color(255, 255, 255);
 	else if (this == Earth) return new Color(80, 60, 27);
 	else if (this == Fire) return new Color(255, 100, 0);
 	else if (this == Ice) return new Color(144, 255, 255);

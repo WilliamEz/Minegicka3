@@ -21,6 +21,7 @@ import net.minecraft.world.World;
 import com.williameze.api.lib.FuncHelper;
 import com.williameze.api.math.IntVector;
 import com.williameze.api.math.Vector;
+import com.williameze.minegicka3.main.Values;
 import com.williameze.minegicka3.main.spells.DefaultSpellSelector;
 import com.williameze.minegicka3.main.spells.Spell;
 
@@ -42,10 +43,16 @@ public class EntitySpray extends Entity implements IEntityAdditionalSpawnData
 	color = Color.white;
 	setSize(0.06F, 0.06F);
 	gravity = 0;
-	renderDistanceWeight = 16;
+	renderDistanceWeight = Values.renderDistance;
 	maxTicks = 10;
 	spiralCore = null;
 	server = false;
+    }
+
+    @Override
+    public boolean isInRangeToRenderDist(double par1)
+    {
+	return par1 < renderDistanceWeight * renderDistanceWeight;
     }
 
     public void setSpell(Spell s)

@@ -9,6 +9,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.UUID;
 
+import javax.swing.text.html.HTMLDocument.HTMLReader.IsindexAction;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -26,9 +28,9 @@ import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 
-import com.williameze.minegicka3.bridges.Values;
 import com.williameze.minegicka3.main.Element;
 import com.williameze.minegicka3.main.SpellDamageModifier;
+import com.williameze.minegicka3.main.Values;
 import com.williameze.minegicka3.main.objects.ItemStaff;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -56,14 +58,14 @@ public class Spell
     public CastType castType;
     public SpellType spellType;
     public NBTTagCompound additionalData;
-    public boolean toBeStopped;
+    public boolean toBeInvalidated;
 
     public Entity caster;
     public Map<Entity, Integer> recentlyAffected = new HashMap();
 
     public Spell(List<Element> l, int dimID, UUID entityID, CastType type, NBTTagCompound addi)
     {
-	toBeStopped = false;
+	toBeInvalidated = false;
 	spellTicks = 0;
 	elements.clear();
 	elements.addAll(l);
@@ -179,7 +181,7 @@ public class Spell
 
     public void updateSpell()
     {
-	if (!toBeStopped)
+	if (!toBeInvalidated)
 	{
 	    spellTicks++;
 	    getExecute().updateSpell(this);
@@ -201,6 +203,7 @@ public class Spell
 
     public void stopSpell()
     {
+	toBeInvalidated = true;
 	getExecute().stopSpell(this);
     }
 
@@ -314,7 +317,7 @@ public class Spell
     {
 	return (NBTTagCompound) additionalData.getTag("Staff");
     }
-    
+
     public double getManaConsumeRate()
     {
 	return getStaffTag().getDouble("Consume");
@@ -324,17 +327,17 @@ public class Spell
     {
 	return getStaffTag().getDouble("Power");
     }
-    
+
     public double getManaRechargeRate()
     {
 	return getStaffTag().getDouble("Recharge");
     }
-    
+
     public double getAtkSpeed()
     {
 	return getStaffTag().getDouble("ATKSpeed");
     }
-    
+
     public NBTTagCompound writeToNBT()
     {
 	NBTTagCompound tag = new NBTTagCompound();

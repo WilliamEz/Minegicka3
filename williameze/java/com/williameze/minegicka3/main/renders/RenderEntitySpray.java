@@ -8,7 +8,7 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 import com.williameze.api.lib.DrawHelper;
-import com.williameze.minegicka3.bridges.Values;
+import com.williameze.minegicka3.main.Values;
 import com.williameze.minegicka3.main.models.ModelEntitySpray;
 
 public class RenderEntitySpray extends Render

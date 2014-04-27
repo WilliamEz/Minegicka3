@@ -22,6 +22,7 @@ import com.williameze.api.math.MathHelper;
 import com.williameze.api.math.Vector;
 import com.williameze.minegicka3.ModBase;
 import com.williameze.minegicka3.main.Element;
+import com.williameze.minegicka3.main.Values;
 import com.williameze.minegicka3.main.spells.Spell;
 import com.williameze.minegicka3.main.spells.Spell.CastType;
 
@@ -36,8 +37,14 @@ public class EntityLightning extends Entity implements IEntityAdditionalSpawnDat
     public EntityLightning(World par1World)
     {
 	super(par1World);
-	renderDistanceWeight = 16;
+	renderDistanceWeight = Values.renderDistance;
 	setSize(0.01F, 0.01F);
+    }
+
+    @Override
+    public boolean isInRangeToRenderDist(double par1)
+    {
+	return par1 < renderDistanceWeight * renderDistanceWeight;
     }
 
     @Override
@@ -55,12 +62,12 @@ public class EntityLightning extends Entity implements IEntityAdditionalSpawnDat
     public void onUpdate()
     {
 	super.onUpdate();
-	if (spell == null || spell.toBeStopped)
+	if (spell == null || spell.toBeInvalidated)
 	{
 	    setDead();
 	    return;
 	}
-	if (!spell.toBeStopped)
+	if (!spell.toBeInvalidated)
 	{
 	    if (worldObj.isRemote)
 	    {
@@ -85,7 +92,7 @@ public class EntityLightning extends Entity implements IEntityAdditionalSpawnDat
 	    setDead();
 	    return;
 	}
-	setPosition(e.posX, e.posY + e.getEyeHeight()-0.15, e.posZ);
+	setPosition(e.posX, e.posY + e.getEyeHeight() - 0.15, e.posZ);
 	if (e.getLookVec() != null)
 	{
 	    posX += e.getLookVec().xCoord * 0.3;
@@ -129,8 +136,7 @@ public class EntityLightning extends Entity implements IEntityAdditionalSpawnDat
 		    if (e.getDistanceSqToEntity(start) <= radius * radius)
 		    {
 			Vector newToward = FuncHelper.vectorToEntity(start, e);
-			if (spell.castType == CastType.Area
-				|| MathHelper.getCosAngleBetweenVector(toward, newToward) >= minCosConeSeek)
+			if (spell.castType == CastType.Area || MathHelper.getCosAngleBetweenVector(toward, newToward) >= minCosConeSeek)
 			{
 			    l.add(e);
 			    spell.damageEntity(e, 30);

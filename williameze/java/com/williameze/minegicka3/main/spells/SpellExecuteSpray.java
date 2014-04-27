@@ -27,7 +27,7 @@ public class SpellExecuteSpray extends SpellExecute
     {
 	if (s.spellTicks > 75 + s.countElements() * 25 || s.getCaster().getLookVec() == null)
 	{
-	    s.toBeStopped = true;
+	    s.toBeInvalidated = true;
 	    return;
 	}
 	else
@@ -55,7 +55,7 @@ public class SpellExecuteSpray extends SpellExecute
 
 	    double consumeRate = consumeMana(s, consume, true, false, 0);
 	    power *= consumeRate;
-	    if (!client && consumeRate < 1) s.toBeStopped = true;
+	    if (consumeRate < 1) s.toBeInvalidated = true;
 
 	    Vector pos = (new Vector(caster.posX, caster.posY + caster.getEyeHeight(), caster.posZ)).add(dir.multiply(0.2));
 	    if (s.castType == CastType.Area)

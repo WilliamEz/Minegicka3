@@ -1,6 +1,5 @@
 package com.williameze.minegicka3.main.renders;
 
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
@@ -8,14 +7,13 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 import com.williameze.api.lib.DrawHelper;
-import com.williameze.minegicka3.main.Values;
-import com.williameze.minegicka3.main.models.ModelEntityBoulder;
-import com.williameze.minegicka3.main.models.ModelEntitySpray;
+import com.williameze.api.math.Vector;
+import com.williameze.api.models.Cylinder;
+import com.williameze.minegicka3.main.Element;
+import com.williameze.minegicka3.main.entities.EntityIcicle;
 
-public class RenderEntityBoulder extends Render
+public class RenderEntityIcicle extends Render
 {
-    public ModelEntityBoulder model = new ModelEntityBoulder();
-
     protected void bindEntityTexture(Entity par1Entity)
     {
     }
@@ -32,16 +30,26 @@ public class RenderEntityBoulder extends Render
 	GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 	GL11.glDisable(GL11.GL_TEXTURE_2D);
 	GL11.glDisable(GL11.GL_CULL_FACE);
-	GL11.glTranslated(x, y + var1.height / 2, z);
-	GL11.glRotated(var1.hashCode(), var1.hashCode(), var1.getPersistentID().hashCode(), var1.getEntityId());
+	GL11.glTranslated(x, y, z);
 
-	DrawHelper.enableLighting(1);
-	model.render(var1, partialTick);
+	DrawHelper.enableLighting(1.6F);
+	doTheRender((EntityIcicle) var1, partialTick);
 	DrawHelper.disableLighting();
 
 	GL11.glEnable(GL11.GL_CULL_FACE);
 	GL11.glEnable(GL11.GL_TEXTURE_2D);
 	GL11.glPopMatrix();
+    }
+
+    public void doTheRender(EntityIcicle ice, float partialTick)
+    {
+	GL11.glTranslated(-ice.headingX / 2, -ice.headingY / 2, -ice.headingZ / 2);
+	if (ice.motionX != 0 && ice.motionY != 0 && ice.motionZ != 0) GL11.glRotated(ice.ticksExisted, ice.headingX, ice.headingY, ice.headingZ);
+	Vector v1 = new Vector(0, 0, 0);
+	Vector v2 = new Vector(ice.headingX, ice.headingY, ice.headingZ).multiply(((ice.hashCode() % 5) + 3) * 0.2);
+	Cylinder cyl = Cylinder.create(v1, v2, 0.1, 0.001, 4 + ice.hashCode() % 5, 0);
+	cyl.setColor(Element.Ice.getColor());
+	cyl.render();
     }
 
     @Override

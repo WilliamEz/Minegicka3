@@ -20,7 +20,7 @@ public class Sphere extends ModelObject
     public List<Triangle> faces = new ArrayList();
     public List<Triangle> distortedFaces = new ArrayList();
     public Map<Vector, IntVector> vectorFlatmap = new HashMap();
-    public NoiseGen2D noiseMap;
+    public NoiseGen2D currentNoiseMap;
 
     public Sphere(double orX, double orY, double orZ, double r, int stack, int slice)
     {
@@ -67,12 +67,12 @@ public class Sphere extends ModelObject
 	distortedFaces.addAll(faces);
     }
 
-    public void setNoiseMap(NoiseGen2D noise)
+    public void applyNoiseMap(NoiseGen2D noise)
     {
-	noiseMap = noise;
+	currentNoiseMap = noise;
 	distortedFaces.clear();
-	int noiseRangeX = noiseMap.rangeX;
-	int noiseRangeY = noiseMap.rangeY;
+	int noiseRangeX = currentNoiseMap.rangeX;
+	int noiseRangeY = currentNoiseMap.rangeY;
 	for (Triangle tri : faces)
 	{
 	    Vector v1 = tri.v1.copy();

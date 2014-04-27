@@ -27,7 +27,7 @@ public class RenderEntityBeamArea extends Render
 	{
 	    NoiseGen2D noise = new NoiseGen2D(pregeneratedNoises.hashCode(), 385, 385);
 	    noise.setCap(-2, 2);
-	    noise.setNoisetainProps((noise.rangeX - 1) / 16, (noise.rangeX - 1) / 6, 2);
+	    noise.setNoisetainProps((noise.rangeX - 1) / 16, (noise.rangeX - 1) / 6, 1);
 	    noise.reset(0);
 	    noise.setFixed((noise.rangeX - 1) / 2, (noise.rangeY - 1) / 2, true);
 	    noise.generate(32, false, 0);
@@ -68,6 +68,7 @@ public class RenderEntityBeamArea extends Render
 	NoiseGen2D noise = pregeneratedNoises.get(ba.hashCode() % pregeneratedNoises.size());
 
 	double maxRadiusRate = (noise.rangeX - 1) / 2D / ba.maxRange();
+	double opacity = 1D - Math.pow((double) ba.ticksExisted / (double) ba.maxTick(), 8);
 	for (int a = 0; a < ba.spell.elements.size(); a++)
 	{
 	    Element e1 = ba.spell.elements.get(a);
@@ -107,11 +108,11 @@ public class RenderEntityBeamArea extends Render
 			v3.y = noise.getValueAt((noise.rangeX - 1) / 2D - v1.x * maxRadiusRate, (noise.rangeY - 1) / 2D - v1.z * maxRadiusRate);
 
 			Vector normal = v2.subtract(v1).crossProduct(v3.subtract(v1));
-			GL11.glColor4d(redOut, greenOut, blueOut, 0.95);
+			GL11.glColor4d(redOut, greenOut, blueOut, opacity);
 			GL11.glNormal3d(normal.x, normal.y, normal.z);
 			GL11.glVertex3d(v1.x, v1.y, v1.z);
 
-			GL11.glColor4d(redIn, greenIn, blueIn, 0.95);
+			GL11.glColor4d(redIn, greenIn, blueIn, opacity);
 			GL11.glNormal3d(normal.x, normal.y, normal.z);
 			GL11.glVertex3d(v2.x, v2.y, v2.z);
 		    }

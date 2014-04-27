@@ -16,8 +16,8 @@ import com.williameze.api.math.Plane;
 import com.williameze.api.math.PositionedVector;
 import com.williameze.api.math.Vector;
 import com.williameze.api.models.Cylinder;
-import com.williameze.minegicka3.bridges.Values;
 import com.williameze.minegicka3.main.Element;
+import com.williameze.minegicka3.main.Values;
 import com.williameze.minegicka3.main.entities.EntityBeam;
 import com.williameze.minegicka3.main.entities.EntityLightning;
 
@@ -45,13 +45,13 @@ public class RenderEntityBeam extends Render
 	GL11.glEnable(GL11.GL_BLEND);
 	GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 	GL11.glDisable(GL11.GL_TEXTURE_2D);
+	GL11.glDisable(GL11.GL_CULL_FACE);
 	GL11.glTranslated(x, y, z);
-	//GL11.glTranslated(30, 0, 0);
-	//GL11.glRotated(80, 0, 1, 0);
-
+	
 	doTheRender(b, partialTick);
 
 	GL11.glLineWidth(1);
+	GL11.glEnable(GL11.GL_CULL_FACE);
 	GL11.glColor4d(1, 1, 1, 1);
 	GL11.glEnable(GL11.GL_TEXTURE_2D);
 	GL11.glPopMatrix();
@@ -123,8 +123,7 @@ public class RenderEntityBeam extends Render
 	    GL11.glBegin(GL11.GL_LINE_STRIP);
 	    for (int b = 0; b <= towardCuts; b++)
 	    {
-		Vector thisPoint = towardTarget.multiply((double) b / (double) towardCuts).add(
-			base.rotateAround(towardNor, Math.PI / 8D * b));
+		Vector thisPoint = towardTarget.multiply((double) b / (double) towardCuts).add(base.rotateAround(towardNor, Math.PI / 8D * b));
 		GL11.glVertex3d(thisPoint.x, thisPoint.y, thisPoint.z);
 	    }
 	    GL11.glEnd();

@@ -6,7 +6,7 @@ import java.util.Random;
 
 import com.williameze.api.math.IntVector;
 import com.williameze.api.math.PositionedVector;
-import com.williameze.minegicka3.bridges.Values;
+import com.williameze.minegicka3.main.Values;
 
 public class NoiseGen2D
 {

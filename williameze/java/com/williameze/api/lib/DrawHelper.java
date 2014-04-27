@@ -11,8 +11,8 @@ import net.minecraft.client.renderer.texture.TextureManager;
 import org.lwjgl.opengl.GL11;
 
 import com.williameze.api.math.Vector;
-import com.williameze.minegicka3.bridges.Values;
 import com.williameze.minegicka3.main.Element;
+import com.williameze.minegicka3.main.Values;
 
 public class DrawHelper
 {

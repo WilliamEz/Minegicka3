@@ -114,8 +114,8 @@ public class ModBase
     public void registerEntity(Class eClass, String eName, int updateRange, int updateFrequency)
     {
 	int entityID = EntityRegistry.findGlobalUniqueEntityId();
-	EntityRegistry.registerGlobalEntityID(eClass, eName, entityID);
-	EntityRegistry.registerModEntity(eClass, eName, entityID, instance, updateRange, updateFrequency, true);
+	EntityRegistry.registerGlobalEntityID(eClass, MODID + "_" + eName, entityID);
+	EntityRegistry.registerModEntity(eClass, MODID + "_" + eName, entityID, instance, updateRange, updateFrequency, true);
 
 	/*
 	 * long seed = eName.hashCode(); Random rand = new Random(seed); int

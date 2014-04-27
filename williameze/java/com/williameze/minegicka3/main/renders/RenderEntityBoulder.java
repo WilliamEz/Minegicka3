@@ -33,12 +33,12 @@ public class RenderEntityBoulder extends Render
 	GL11.glDisable(GL11.GL_TEXTURE_2D);
 	GL11.glDisable(GL11.GL_CULL_FACE);
 	GL11.glTranslated(x, y + var1.height / 2, z);
-	GL11.glRotated(var1.hashCode(), var1.hashCode(), var1.getPersistentID().hashCode(), var1.getEntityId());
-
 	DrawHelper.enableLighting(1);
-	model.render(var1, partialTick);
-	DrawHelper.disableLighting();
 
+	GL11.glRotated(90, 1, 0, 0.3);
+	model.render(var1, partialTick);
+
+	DrawHelper.disableLighting();
 	GL11.glEnable(GL11.GL_CULL_FACE);
 	GL11.glEnable(GL11.GL_TEXTURE_2D);
 	GL11.glPopMatrix();

@@ -1,5 +1,10 @@
 package com.williameze.minegicka3.main.renders;
 
+import java.awt.Color;
+import java.util.ArrayList;
+import java.util.List;
+
+import net.minecraft.client.renderer.culling.ICamera;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
@@ -32,8 +37,9 @@ public class RenderEntityIcicle extends Render
 	GL11.glDisable(GL11.GL_CULL_FACE);
 	GL11.glTranslated(x, y, z);
 
-	DrawHelper.enableLighting(1.6F);
+	DrawHelper.enableLighting(2F);
 	doTheRender((EntityIcicle) var1, partialTick);
+	doTheRender_followLine((EntityIcicle) var1, partialTick);
 	DrawHelper.disableLighting();
 
 	GL11.glEnable(GL11.GL_CULL_FACE);
@@ -44,12 +50,36 @@ public class RenderEntityIcicle extends Render
     public void doTheRender(EntityIcicle ice, float partialTick)
     {
 	GL11.glTranslated(-ice.headingX / 2, -ice.headingY / 2, -ice.headingZ / 2);
-	if (ice.motionX != 0 && ice.motionY != 0 && ice.motionZ != 0) GL11.glRotated(ice.ticksExisted, ice.headingX, ice.headingY, ice.headingZ);
+	if (ice.motionX != 0 && ice.motionY != 0 && ice.motionZ != 0) GL11.glRotated((ice.ticksExisted + partialTick) * 4D, ice.headingX, ice.headingY, ice.headingZ);
 	Vector v1 = new Vector(0, 0, 0);
 	Vector v2 = new Vector(ice.headingX, ice.headingY, ice.headingZ).multiply(((ice.hashCode() % 5) + 3) * 0.2);
 	Cylinder cyl = Cylinder.create(v1, v2, 0.1, 0.001, 4 + ice.hashCode() % 5, 0);
 	cyl.setColor(Element.Ice.getColor());
 	cyl.render();
+    }
+
+    public void doTheRender_followLine(EntityIcicle ice, float partialTick)
+    {
+	List<Vector> toRemove = new ArrayList();
+	int max = 60;
+	GL11.glLineWidth(2F);
+	GL11.glBegin(GL11.GL_LINE_STRIP);
+	for (int a = 0; a < ice.prevPos.size() - 1; a++)
+	{
+	    Vector now = ice.prevPos.get(a);
+	    if (ice.prevPos.size() - a >= max)
+	    {
+		toRemove.add(now);
+		continue;
+	    }
+	    double opa = (double) (a - ice.prevPos.size() + max) / (double) max;
+	    Color c = ice.getSpell().elements.get((ice.hashCode() + a) % ice.getSpell().countElements()).getColor();
+	    GL11.glColor4d(c.getRed() / 255D, c.getGreen() / 255D, c.getBlue() / 255D, opa);
+	    GL11.glVertex3d(now.x - ((ice.posX - ice.prevPosX) * partialTick + ice.prevPosX), now.y - ((ice.posY - ice.prevPosY) * partialTick + ice.prevPosY), now.z
+		    - ((ice.posZ - ice.prevPosZ) * partialTick + ice.prevPosZ));
+	}
+	GL11.glEnd();
+	GL11.glLineWidth(1);
     }
 
     @Override

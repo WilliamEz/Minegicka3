@@ -40,6 +40,7 @@ public class ModelEntityBoulder extends ModelBase
 	    noise.generate(16, true, 0);
 	    noise.smooth(0.3, 2);
 	    noise.mirrorOver(true, true);
+	    noise.mirrorOver(false, true);
 	    sp.applyNoiseMap(noise);
 	    pregeneratedModels.add(sp);
 	}
@@ -58,7 +59,7 @@ public class ModelEntityBoulder extends ModelBase
 	    noise.setNoisetainProps(sp.stacks / 100D, sp.stacks / 10D, (noise.maxCap - noise.minCap) / 2D);
 	    noise.generate(16, true, 0);
 	    noise.smooth(0.3, 2);
-	    noise.mirrorOver(true, true);
+	    // noise.mirrorOver(true, true);
 	    sp.applyNoiseMap(noise);
 	    pregeneratedIceModels.add(sp);
 	}
@@ -67,7 +68,7 @@ public class ModelEntityBoulder extends ModelBase
     @Override
     public void doRenderParameters(Entity e, float f)
     {
-	// load();
+	//load();
 	super.doRenderParameters(e, f);
 	GL11.glScaled(e.width, e.height, e.width);
     }

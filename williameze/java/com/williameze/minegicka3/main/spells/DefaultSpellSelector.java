@@ -4,8 +4,8 @@ import net.minecraft.command.IEntitySelector;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 
+import com.williameze.minegicka3.main.entities.EntityIcicle;
 import com.williameze.minegicka3.main.entities.EntityLightning;
-import com.williameze.minegicka3.main.entities.EntityProjectile;
 import com.williameze.minegicka3.main.entities.EntitySpray;
 
 public class DefaultSpellSelector implements IEntitySelector
@@ -24,7 +24,7 @@ public class DefaultSpellSelector implements IEntitySelector
     @Override
     public boolean isEntityApplicable(Entity var1)
     {
-	if (var1 instanceof EntityProjectile && ((EntityProjectile) var1).getSpell().equals(spell)) return false;
+	if (var1 instanceof EntityIcicle && ((EntityIcicle) var1).getSpell().equals(spell)) return false;
 	if (var1 instanceof EntitySpray && ((EntitySpray) var1).getSpell().equals(spell)) return false;
 	if (var1 instanceof EntityLightning && ((EntityLightning) var1).spell.equals(spell)) return false;
 	if (var1 instanceof EntityPlayer && ((EntityPlayer) var1).capabilities.disableDamage) return false;

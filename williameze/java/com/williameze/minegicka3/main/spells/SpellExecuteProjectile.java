@@ -71,12 +71,13 @@ public class SpellExecuteProjectile extends SpellExecute
 		double flyPower = s.getPower() * (1 + s.additionalData.getDouble("Projectile charged"));
 		for (int a = 0; a < count; a++)
 		{
-		    Vector motion = look.randomizeDirection(new Random().nextDouble()*maxDirectionRandom).normalize();
+		    Vector motion = look.randomizeDirection(new Random().nextDouble() * maxDirectionRandom).normalize();
 		    EntityIcicle ici = new EntityIcicle(caster.worldObj);
 		    ici.setSpell(s);
 		    ici.posX = caster.posX + look.x * 0.2;
 		    ici.posY = caster.posY + look.y * 0.2 + caster.getEyeHeight() - 0.2;
 		    ici.posZ = caster.posZ + look.z * 0.2;
+		    ici.setPosition(ici.posX, ici.posY, ici.posZ);
 		    ici.motionX = motion.x * flyPower;
 		    ici.motionY = motion.y * flyPower;
 		    ici.motionZ = motion.z * flyPower;

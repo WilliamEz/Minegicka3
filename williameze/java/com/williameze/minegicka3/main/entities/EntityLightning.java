@@ -111,7 +111,7 @@ public class EntityLightning extends Entity implements IEntityAdditionalSpawnDat
 	}
 	int lig = spell.countElement(Element.Lightning);
 	if (level >= 2 + lig) return 0;
-	double radius = 5D * Math.pow(lig, 0.3) * spell.getPower() / Math.pow(level + 1, 0.5);
+	double radius = 6D * Math.pow(lig, 0.5) * spell.getPower() / Math.pow(level + 1, 0.5);
 	return radius * (spell.castType == CastType.Area ? 1.3 : 1);
     }
 

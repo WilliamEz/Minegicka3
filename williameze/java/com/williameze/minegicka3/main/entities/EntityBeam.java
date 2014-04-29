@@ -3,33 +3,25 @@ package com.williameze.minegicka3.main.entities;
 import io.netty.buffer.ByteBuf;
 
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
+import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
-import com.google.common.collect.Sets;
 import com.williameze.api.lib.FuncHelper;
-import com.williameze.api.math.MathHelper;
 import com.williameze.api.math.Vector;
 import com.williameze.minegicka3.ModBase;
 import com.williameze.minegicka3.main.Element;
 import com.williameze.minegicka3.main.Values;
 import com.williameze.minegicka3.main.spells.DefaultSpellSelector;
 import com.williameze.minegicka3.main.spells.Spell;
-import com.williameze.minegicka3.main.spells.Spell.CastType;
 
 import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 
@@ -131,8 +123,8 @@ public class EntityBeam extends Entity implements IEntityAdditionalSpawnData
 	double mopdsq = lengthSqrToTarget;
 	if (mop != null) mopdsq = getDistanceSq(mop.blockX + 0.5, mop.blockY + 0.5, mop.blockZ + 0.5);
 
-	List<Entity> l = FuncHelper.getEntitiesWithinBoundingBoxMovement(worldObj, boundingBox, vec.multiply(mopdsq), EntityLivingBase.class, new DefaultSpellSelector(
-		spell));
+	List<Entity> l = FuncHelper.getEntitiesWithinBoundingBoxMovement(worldObj, boundingBox, vec.multiply(mopdsq),
+		EntityLivingBase.class, new DefaultSpellSelector(spell));
 	Entity pointingAt = FuncHelper.getEntityClosestTo(posX, posY, posZ, l);
 
 	if (pointingAt != null)
@@ -145,7 +137,8 @@ public class EntityBeam extends Entity implements IEntityAdditionalSpawnData
 	    if (lastAffectedBlock == 0) affectBlock(mop, mop.blockX, mop.blockY, mop.blockZ);
 	    lengthSqrToTarget = mopdsq;
 	}
-	towardTarget = vec.multiply(Math.sqrt(lengthSqrToTarget)).add(posX - caster.posX, posY - caster.posY - caster.getEyeHeight() + 0.25, posZ - caster.posZ);
+	towardTarget = vec.multiply(Math.sqrt(lengthSqrToTarget)).add(posX - caster.posX,
+		posY - caster.posY - caster.getEyeHeight() + 0.25, posZ - caster.posZ);
     }
 
     public void affectBlock(MovingObjectPosition mop, int x, int y, int z)
@@ -181,7 +174,8 @@ public class EntityBeam extends Entity implements IEntityAdditionalSpawnData
 	int water = spell.countElement(Element.Water);
 	int cold = spell.countElement(Element.Cold);
 	int steam = spell.countElement(Element.Steam);
-	if (worldObj.isAirBlock(x, y, z) || worldObj.getBlock(x, y, z).getMaterial().isReplaceable())
+	Block b = worldObj.getBlock(x, y, z);
+	if (worldObj.isAirBlock(x, y, z) || b.getMaterial().isReplaceable())
 	{
 	    if (fire > 0 && Blocks.fire.canPlaceBlockAt(worldObj, x, y, z))
 	    {
@@ -196,16 +190,28 @@ public class EntityBeam extends Entity implements IEntityAdditionalSpawnData
 		return;
 	    }
 	}
-	if (fire > 0 && worldObj.getBlock(x, y, z) == Blocks.snow_layer)
+	if (fire > 0 && b == Blocks.snow_layer)
 	{
 	    worldObj.setBlock(x, y, z, Blocks.air);
 	    lastAffectedBlock = 40 / fire;
 	    return;
 	}
-	if (worldObj.getBlock(x, y, z).getMaterial() == Material.fire && cold + water + steam > 0)
+	if (b.getMaterial() == Material.fire && cold + water + steam > 0)
 	{
 	    worldObj.setBlock(x, y, z, Blocks.air);
 	    lastAffectedBlock = 40 / (cold + water + steam);
+	    return;
+	}
+	if (b == Blocks.dirt && spell.hasElement(Element.Life))
+	{
+	    worldObj.setBlock(x, y, z, Blocks.grass);
+	    lastAffectedBlock = 40 / spell.countElement(Element.Life);
+	    return;
+	}
+	if (b == Blocks.grass && spell.hasElement(Element.Arcane))
+	{
+	    worldObj.setBlockToAir(x, y, z);
+	    lastAffectedBlock = 40 / spell.countElement(Element.Arcane);
 	    return;
 	}
     }

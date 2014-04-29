@@ -55,12 +55,12 @@ public class ItemStaff extends Item
 	return (ModelStaff) (model == null ? (model = ModelStaff.defaultStaffModel) : model);
     }
 
-    public ItemStaff setBaseStats(double i, double j, double k, double l)
+    public ItemStaff setBaseStats(double power, double atkspd, double consume, double recover)
     {
-	basePower = i;
-	baseATKSpeed = j;
-	baseConsume = k;
-	baseRecover = l;
+	basePower = power;
+	baseATKSpeed = atkspd;
+	baseConsume = consume;
+	baseRecover = recover;
 	return this;
     }
 

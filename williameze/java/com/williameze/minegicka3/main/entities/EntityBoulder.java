@@ -12,9 +12,13 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.potion.Potion;
+import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
+import net.minecraftforge.common.ForgeHooks;
 
 import com.williameze.api.lib.FuncHelper;
 import com.williameze.api.math.IntVector;
@@ -37,6 +41,7 @@ public class EntityBoulder extends Entity implements IEntityAdditionalSpawnData
     public double friction;
     public int onGroundTick;
     public int collideLeft;
+    public List<List<Vector>> prevPos = new ArrayList();
 
     public EntityBoulder(World par1World)
     {
@@ -74,6 +79,12 @@ public class EntityBoulder extends Entity implements IEntityAdditionalSpawnData
     }
 
     @Override
+    public boolean canBePushed()
+    {
+	return true;
+    }
+
+    @Override
     protected void entityInit()
     {
     }
@@ -94,7 +105,7 @@ public class EntityBoulder extends Entity implements IEntityAdditionalSpawnData
 	setSize(radius * 2, radius * 2);
 	collideLeft = eCount + 2;
 	friction = 0.99 - eCount * 0.005;
-	gravity = 0.01 * Math.sqrt(eCount);
+	gravity = 0.01 * eCount;
     }
 
     public boolean isIce()
@@ -135,19 +146,139 @@ public class EntityBoulder extends Entity implements IEntityAdditionalSpawnData
 	}
 	if (!isDead)
 	{
-	    List<Entity> entities = FuncHelper.getEntitiesWithinBoundingBoxMovement(worldObj, boundingBox, new Vector(motionX, motionY, motionZ), EntityLivingBase.class,
-		    new DefaultSpellSelector(getSpell()));
+	    List<Entity> entities = FuncHelper.getEntitiesWithinBoundingBoxMovement(worldObj, boundingBox, new Vector(motionX, motionY,
+		    motionZ), EntityLivingBase.class, new DefaultSpellSelector(getSpell()));
 	    entities.remove(spell.getCaster());
 	    Entity e = FuncHelper.getEntityClosestTo(posX, posY, posZ, entities);
 	    collideWithEntity(e);
 	}
 
-	// if (onGroundTick >= 200 || ticksExisted >= 2000) setDead();
+	if (onGroundTick >= 200 || ticksExisted >= 2000) setDead();
 
-	if (ticksExisted >= 200 && getSpell().countElements() > getSpell().countElements(Element.Earth, Element.Ice))
+	if (ticksExisted >= 400 && getSpell().countElements() > getSpell().countElements(Element.Earth, Element.Ice))
 	{
 	    novaHere();
+	    setDead();
 	}
+
+	if (worldObj.isRemote)
+	{
+	    addPrevPos();
+	    if (onGround && (motionX * motionX + motionY * motionY + motionZ * motionZ) >= 0.1)
+	    {
+		int j = MathHelper.floor_double(posX);
+		int k = MathHelper.floor_double(posY - 0.20000000298023224D - (double) yOffset);
+		int l = MathHelper.floor_double(posZ);
+		Block block = worldObj.getBlock(j, k, l);
+		for (int a = 0; a < 4; a++)
+		{
+		    worldObj.spawnParticle("blockcrack_" + Block.getIdFromBlock(block) + "_" + worldObj.getBlockMetadata(j, k, l), posX
+			    + ((double) rand.nextFloat() - 0.5D) * (double) width, boundingBox.minY + 0.1D,
+			    posZ + ((double) rand.nextFloat() - 0.5D) * (double) width, -motionX * 4.0D, 1.5D, -motionZ * 4.0D);
+		}
+	    }
+	}
+    }
+
+    protected void updateFallState(double par1, boolean par3)
+    {
+	if (!isInWater())
+	{
+	    handleWaterMovement();
+	}
+
+	if (par3 && fallDistance > 0.0F)
+	{
+	    int i = MathHelper.floor_double(posX);
+	    int j = MathHelper.floor_double(posY - 0.20000000298023224D - (double) yOffset);
+	    int k = MathHelper.floor_double(posZ);
+	    Block block = worldObj.getBlock(i, j, k);
+
+	    if (block.getMaterial() == Material.air)
+	    {
+		int l = worldObj.getBlock(i, j - 1, k).getRenderType();
+
+		if (l == 11 || l == 32 || l == 21)
+		{
+		    block = worldObj.getBlock(i, j - 1, k);
+		}
+	    }
+	    else if (!worldObj.isRemote && fallDistance > 3.0F)
+	    {
+		worldObj.playAuxSFX(2006, i, j, k, MathHelper.ceiling_float_int(fallDistance - 3.0F));
+	    }
+
+	    block.onFallenUpon(worldObj, i, j, k, this, fallDistance);
+	}
+
+	super.updateFallState(par1, par3);
+    }
+
+    @Override
+    protected void fall(float par1)
+    {
+	if (par1 <= 0) return;
+	super.fall(par1);
+	float f1 = 0.0F;
+	int i = MathHelper.ceiling_float_int(par1 - 3.0F - f1);
+
+	if (i > 0)
+	{
+	    playSound("game.neutral.hurt.fall.small", 1.0F, 1.0F);
+	    int j = MathHelper.floor_double(posX);
+	    int k = MathHelper.floor_double(posY - 0.20000000298023224D - (double) yOffset);
+	    int l = MathHelper.floor_double(posZ);
+	    Block block = worldObj.getBlock(j, k, l);
+
+	    for (int a = 0; a < 8; a++)
+	    {
+		worldObj.spawnParticle("blockcrack_" + Block.getIdFromBlock(block) + "_" + worldObj.getBlockMetadata(j, k, l), posX
+			+ ((double) rand.nextFloat() - 0.5D) * (double) width, boundingBox.minY + 0.1D, posZ
+			+ ((double) rand.nextFloat() - 0.5D) * (double) width, -motionX * 4.0D, 1.5D, -motionZ * 4.0D);
+	    }
+	    if (block.getMaterial() != Material.air)
+	    {
+		Block.SoundType soundtype = block.stepSound;
+		playSound(soundtype.getStepResourcePath(), soundtype.getVolume() * 0.5F, soundtype.getPitch() * 0.75F);
+	    }
+	}
+    }
+
+    public void addPrevPos()
+    {
+	if (boundingBox == null) return;
+	if (prevPos.size() < 8)
+	{
+	    prevPos.clear();
+	    for (int a = 0; a < 8; a++)
+	    {
+		prevPos.add(new ArrayList());
+	    }
+	}
+	prevPos.get(0).add(
+		new Vector(0.75 * boundingBox.maxX + 0.25 * boundingBox.minX, 0.75 * boundingBox.maxY + 0.25 * boundingBox.minY, 0.75
+			* boundingBox.maxZ + 0.25 * boundingBox.minZ));
+	prevPos.get(1).add(
+		new Vector(0.25 * boundingBox.maxX + 0.75 * boundingBox.minX, 0.75 * boundingBox.maxY + 0.25 * boundingBox.minY, 0.75
+			* boundingBox.maxZ + 0.25 * boundingBox.minZ));
+	prevPos.get(2).add(
+		new Vector(0.25 * boundingBox.maxX + 0.75 * boundingBox.minX, 0.75 * boundingBox.maxY + 0.25 * boundingBox.minY, 0.25
+			* boundingBox.maxZ + 0.75 * boundingBox.minZ));
+	prevPos.get(3).add(
+		new Vector(0.75 * boundingBox.maxX + 0.25 * boundingBox.minX, 0.75 * boundingBox.maxY + 0.25 * boundingBox.minY, 0.25
+			* boundingBox.maxZ + 0.75 * boundingBox.minZ));
+	prevPos.get(4).add(
+		new Vector(0.75 * boundingBox.maxX + 0.25 * boundingBox.minX, 0.25 * boundingBox.maxY + 0.75 * boundingBox.minY, 0.75
+			* boundingBox.maxZ + 0.25 * boundingBox.minZ));
+	prevPos.get(5).add(
+		new Vector(0.25 * boundingBox.maxX + 0.75 * boundingBox.minX, 0.25 * boundingBox.maxY + 0.75 * boundingBox.minY, 0.75
+			* boundingBox.maxZ + 0.25 * boundingBox.minZ));
+	prevPos.get(6).add(
+		new Vector(0.25 * boundingBox.maxX + 0.75 * boundingBox.minX, 0.25 * boundingBox.maxY + 0.75 * boundingBox.minY, 0.25
+			* boundingBox.maxZ + 0.75 * boundingBox.minZ));
+	prevPos.get(7).add(
+		new Vector(0.75 * boundingBox.maxX + 0.25 * boundingBox.minX, 0.25 * boundingBox.maxY + 0.75 * boundingBox.minY, 0.25
+			* boundingBox.maxZ + 0.75 * boundingBox.minZ));
     }
 
     public void collideWithBlock(int x, int y, int z)
@@ -206,7 +337,7 @@ public class EntityBoulder extends Entity implements IEntityAdditionalSpawnData
 	    EntityBeamArea beamA = new EntityBeamArea(worldObj);
 	    beamA.spell = s;
 	    beamA.setPosition(posX, posY + 1, posZ);
-	    beamA.damMod = new SpellDamageModifier(0.5 + getSpell().additionalData.getDouble("Projectile charged"));
+	    beamA.damMod = new SpellDamageModifier(0.1 + getSpell().additionalData.getDouble("Projectile charged"));
 	    worldObj.spawnEntityInWorld(beamA);
 	}
     }

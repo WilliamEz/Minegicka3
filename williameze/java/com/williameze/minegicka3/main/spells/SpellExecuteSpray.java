@@ -90,7 +90,7 @@ public class SpellExecuteSpray extends SpellExecute
 	sp.server = !client;
 
 	Plane p = new Plane(dir, dir);
-	Vector apoint = p.getPointLackY(1, 1);
+	Vector apoint = p.getAssurancePoint();
 	Vector topoint = apoint.subtract(dir).normalize().multiply(rnd.nextDouble() * scatter);
 	topoint = topoint.rotateAround(dir, rnd.nextDouble() * Math.PI * 2);
 	Vector motion = dir.add(topoint).multiply(power);

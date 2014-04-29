@@ -1,5 +1,7 @@
 package com.williameze.minegicka3.main.spells;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Random;
 
 import net.minecraft.entity.Entity;
@@ -7,6 +9,7 @@ import net.minecraft.entity.Entity;
 import com.williameze.api.math.Vector;
 import com.williameze.minegicka3.main.Element;
 import com.williameze.minegicka3.main.entities.EntityBoulder;
+import com.williameze.minegicka3.main.entities.EntityEarthRumble;
 import com.williameze.minegicka3.main.entities.EntityIcicle;
 import com.williameze.minegicka3.main.spells.Spell.CastType;
 
@@ -17,6 +20,39 @@ public class SpellExecuteProjectile extends SpellExecute
     @Override
     public void startSpell(Spell s)
     {
+	if (s.castType == CastType.Area)
+	{
+	    Entity caster = s.getCaster();
+	    if (caster == null) return;
+	    double manaToConsume = s.countElements() * s.countElements() * 100 * s.getManaConsumeRate();
+	    if (consumeMana(s, manaToConsume, true, true, 3) > 0)
+	    {
+		if (s.hasElement(Element.Ice))
+		{
+		    
+		    if (s.hasElement(Element.Earth))
+		    {
+			List<Element> earths = new ArrayList();
+			for (Element e : s.elements)
+			{
+			    if (e == Element.Earth) earths.add(e);
+			}
+			Spell s1 = new Spell(earths, s.dimensionID, s.casterUUID, CastType.Area, s.additionalData);
+			EntityEarthRumble rumb = new EntityEarthRumble(caster.worldObj);
+			rumb.setPosition(caster.posX, caster.posY, caster.posZ);
+			rumb.setSpell(s1);
+			if (!caster.worldObj.isRemote) caster.worldObj.spawnEntityInWorld(rumb);
+		    }
+		}
+		else
+		{
+		    EntityEarthRumble rumb = new EntityEarthRumble(caster.worldObj);
+		    rumb.setPosition(caster.posX, caster.posY, caster.posZ);
+		    rumb.setSpell(s);
+		    if (!caster.worldObj.isRemote) caster.worldObj.spawnEntityInWorld(rumb);
+		}
+	    }
+	}
     }
 
     @Override
@@ -57,9 +93,9 @@ public class SpellExecuteProjectile extends SpellExecute
 		bld.setSpell(s);
 		bld.setPosition(caster.posX + look.x, caster.posY + caster.getEyeHeight() - 0.2 + look.y, caster.posZ + look.z);
 		double charged = s.additionalData.getDouble("Projectile charged") * s.getPower() * Math.pow(s.countElements(), 0.4) + 1;
-		bld.motionX = look.x * 2 * charged;
-		bld.motionY = look.y * 2 * charged;
-		bld.motionZ = look.z * 2 * charged;
+		bld.motionX = look.x * 1.5 * charged;
+		bld.motionY = look.y * 1.5 * charged;
+		bld.motionZ = look.z * 1.5 * charged;
 
 		if (!caster.worldObj.isRemote) caster.worldObj.spawnEntityInWorld(bld);
 	    }

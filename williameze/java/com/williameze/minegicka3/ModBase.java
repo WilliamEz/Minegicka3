@@ -8,6 +8,7 @@ import com.williameze.minegicka3.core.CoreBridge;
 import com.williameze.minegicka3.main.entities.EntityBeam;
 import com.williameze.minegicka3.main.entities.EntityBeamArea;
 import com.williameze.minegicka3.main.entities.EntityBoulder;
+import com.williameze.minegicka3.main.entities.EntityEarthRumble;
 import com.williameze.minegicka3.main.entities.EntityIcicle;
 import com.williameze.minegicka3.main.entities.EntityLightning;
 import com.williameze.minegicka3.main.entities.EntitySprayCold;
@@ -47,7 +48,7 @@ public class ModBase
     public static CommonProxy proxy;
     public static PacketPipeline packetPipeline = new PacketPipeline();
 
-    public static Item staff;
+    public static Item staff, hemmyStaff;
     public static CreativeTabCustom modCreativeTab;
 
     @EventHandler
@@ -88,10 +89,12 @@ public class ModBase
 
 	staff = new ItemStaff().setUnlocalizedName(themodid + "Staff");
 	GameRegistry.registerItem(staff, themodid + "Staff");
+	hemmyStaff = new ItemStaff().setBaseStats(1, 3, 1, 3).setUnlocalizedName(themodid + "HemmyStaff");
+	GameRegistry.registerItem(hemmyStaff, themodid + "HemmyStaff");
 
 	modCreativeTab = new CreativeTabCustom("Minegicka 3").setTabIconItem(staff);
-
 	staff.setCreativeTab(modCreativeTab);
+	hemmyStaff.setCreativeTab(modCreativeTab);
     }
 
     public void initRecipes()
@@ -109,6 +112,7 @@ public class ModBase
 	registerEntity(EntityBeamArea.class, "BeamArea", 64, Integer.MAX_VALUE);
 	registerEntity(EntityBoulder.class, "Boulder", 64, Integer.MAX_VALUE);
 	registerEntity(EntityIcicle.class, "Icicle", 64, Integer.MAX_VALUE);
+	registerEntity(EntityEarthRumble.class, "EarthRumble", 64, Integer.MAX_VALUE);
     }
 
     public void registerEntity(Class eClass, String eName, int updateRange, int updateFrequency)

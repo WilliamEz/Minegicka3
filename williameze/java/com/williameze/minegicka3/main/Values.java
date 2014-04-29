@@ -23,6 +23,7 @@ public abstract class Values
     public static Map<World, Map<UUID, Entity>> worldEntitiesUUIDMap = new HashMap();
     public static double renderDistance = 32;
     public static double spellUpdateRange = 64;
+    public static double minManaToCastSpell = 20;
 
     /** Enums **/
     public static enum GuiPosition

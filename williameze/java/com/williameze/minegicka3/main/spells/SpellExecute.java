@@ -79,11 +79,18 @@ public class SpellExecute
 		{
 		    if (showChatMessage == 1)
 		    {
-			p.addChatMessage(new ChatComponentText("Mana too low.").setChatStyle(new ChatStyle().setItalic(true).setColor(EnumChatFormatting.RED)));
+			p.addChatMessage(new ChatComponentText("Mana too low.").setChatStyle(new ChatStyle().setItalic(true).setColor(
+				EnumChatFormatting.RED)));
 		    }
 		    else if (showChatMessage == 2)
 		    {
-			p.addChatMessage(new ChatComponentText("Mana too low. Requires " + (int) (Math.round(m * 10) / 10) + " mana.").setChatStyle(new ChatStyle()
+			p.addChatMessage(new ChatComponentText("Mana too low. Requires " + (int) (Math.round(m * 10) / 10) + " mana.")
+				.setChatStyle(new ChatStyle().setItalic(true).setColor(EnumChatFormatting.RED)));
+		    }
+		    else if (showChatMessage == 3)
+		    {
+			p.addChatMessage(new ChatComponentText("Mana too low. Requires " + (int) (Math.round(m * 10) / 10)
+				+ " mana. You have " + (int) (Math.round(pd.mana * 10) / 10) + " mana.").setChatStyle(new ChatStyle()
 				.setItalic(true).setColor(EnumChatFormatting.RED)));
 		    }
 		}

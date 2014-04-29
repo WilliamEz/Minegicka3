@@ -50,12 +50,14 @@ public class RenderEntityIcicle extends Render
     public void doTheRender(EntityIcicle ice, float partialTick)
     {
 	GL11.glTranslated(-ice.headingX / 2, -ice.headingY / 2, -ice.headingZ / 2);
+	GL11.glPushMatrix();
 	if (ice.motionX != 0 && ice.motionY != 0 && ice.motionZ != 0) GL11.glRotated((ice.ticksExisted + partialTick) * 4D, ice.headingX, ice.headingY, ice.headingZ);
 	Vector v1 = new Vector(0, 0, 0);
 	Vector v2 = new Vector(ice.headingX, ice.headingY, ice.headingZ).multiply(((ice.hashCode() % 5) + 3) * 0.2);
 	Cylinder cyl = Cylinder.create(v1, v2, 0.1, 0.001, 4 + ice.hashCode() % 5, 0);
 	cyl.setColor(Element.Ice.getColor());
 	cyl.render();
+	GL11.glPopMatrix();
     }
 
     public void doTheRender_followLine(EntityIcicle ice, float partialTick)
@@ -78,6 +80,7 @@ public class RenderEntityIcicle extends Render
 	    GL11.glVertex3d(now.x - ((ice.posX - ice.prevPosX) * partialTick + ice.prevPosX), now.y - ((ice.posY - ice.prevPosY) * partialTick + ice.prevPosY), now.z
 		    - ((ice.posZ - ice.prevPosZ) * partialTick + ice.prevPosZ));
 	}
+	ice.prevPos.removeAll(toRemove);
 	GL11.glEnd();
 	GL11.glLineWidth(1);
     }

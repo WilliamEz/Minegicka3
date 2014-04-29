@@ -65,6 +65,8 @@ public class CoreClient
     public CastType currentClientSpellCastType = CastType.Single;
     public List<Spell> currentWorldSpells = new ArrayList();
 
+    public boolean recoveringMana = false;
+
     public boolean isWizard()
     {
 	return mc != null && mc.thePlayer != null;
@@ -72,7 +74,8 @@ public class CoreClient
 
     public boolean isWizardnessApplicable()
     {
-	return isWizard() && mc.thePlayer.getCurrentEquippedItem() != null && mc.thePlayer.getCurrentEquippedItem().getItem() instanceof ItemStaff;
+	return isWizard() && mc.thePlayer.getCurrentEquippedItem() != null
+		&& mc.thePlayer.getCurrentEquippedItem().getItem() instanceof ItemStaff;
     }
 
     public double getManaRate()
@@ -103,11 +106,12 @@ public class CoreClient
 
     public void clientStartUsingStaff(World w, EntityPlayer p, ItemStack is)
     {
-	if (p == mc.thePlayer && !queuedElements.isEmpty())
+	if (p == mc.thePlayer && PlayersData.getPlayerData_static(p).mana >= Values.minManaToCastSpell && !queuedElements.isEmpty())
 	{
 	    if (currentClientCastingSpell == null)
 	    {
-		Spell s = new Spell(queuedElements, w.provider.dimensionId, p.getUniqueID(), currentClientSpellCastType, Spell.createAdditionalInfo(is));
+		Spell s = new Spell(queuedElements, w.provider.dimensionId, p.getUniqueID(), currentClientSpellCastType,
+			Spell.createAdditionalInfo(is));
 		currentClientCastingSpell = s;
 		ModBase.packetPipeline.sendToServer(new PacketStartSpell(s));
 	    }
@@ -155,10 +159,17 @@ public class CoreClient
     {
 	if (event.phase == Phase.END && event.player == mc.thePlayer)
 	{
+	    if (event.player.getItemInUse() == null) currentClientCastingSpell = null;
 	    updateSpells();
-	    if (currentClientCastingSpell == null || !currentWorldSpells.contains(currentClientCastingSpell) || currentClientCastingSpell.toBeInvalidated) recoverMana();
+	    if (currentClientCastingSpell == null || !currentWorldSpells.contains(currentClientCastingSpell)
+		    || currentClientCastingSpell.toBeInvalidated)
+	    {
+		recoverMana();
+		recoveringMana = true;
+	    }
 	    else
 	    {
+		recoveringMana = false;
 	    }
 	}
     }
@@ -262,7 +273,8 @@ public class CoreClient
 	/** Render hud **/
 	if (isWizard() && event instanceof RenderGameOverlayEvent.Post && event.type == ElementType.ALL)
 	{
-	    alphaCounterTick += 20 * ((isWizardnessApplicable() && alphaCounterTick < maxACT) ? 1 : (!isWizardnessApplicable() && alphaCounterTick > 0) ? -1 : 0);
+	    alphaCounterTick += 20 * ((isWizardnessApplicable() && alphaCounterTick < maxACT) ? 1
+		    : (!isWizardnessApplicable() && alphaCounterTick > 0) ? -1 : 0);
 	    alphaCounterTick = Math.max(0, Math.min(alphaCounterTick, maxACT));
 	    double fullTranslucent = (double) alphaCounterTick / (double) maxACT;
 	    double partialTranslucent = 0.25F + 0.75F * fullTranslucent;
@@ -309,7 +321,7 @@ public class CoreClient
 	    Tessellator tess = Tessellator.instance;
 
 	    if (!positionTop) GL11.glTranslated(0, guiHeight, 0);
-	    {
+	    {// hotkey elements
 		if (!positionTop) GL11.glTranslated(0, -hotkeyHeight, 0);
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glTranslated((guiWidth - hotkeyWidth) / 2, 0, 0);
@@ -318,24 +330,33 @@ public class CoreClient
 		GL11.glTranslated(-(guiWidth - hotkeyWidth) / 2, 0, 0);
 		if (positionTop) GL11.glTranslated(0, hotkeyHeight, 0);
 	    }
-	    {
+	    {// mana bar
 		if (!positionTop) GL11.glTranslated(0, -manaBarHeight, 0);
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glTranslated((guiWidth - manaBarWidth) / 2, 0, 0);
 		DrawHelper.drawRect(0, 0, manaBarWidth, manaBarHeight, 0.2, 0.2, 0.2, partialTranslucent1);
 		DrawHelper.drawRect(0.5, 0.5, manaBarWidth - 0.5, manaBarHeight - 0.5, 0, 0, 0, partialTranslucent1);
-		DrawHelper.drawRect(manaBarWidth / 2 - (manaBarWidth - 2) / 2 * manaRate, 1, manaBarWidth / 2 + (manaBarWidth - 2) / 2 * manaRate, manaBarHeight - 1,
-			0.7, 0.7 * Math.max(0, 0.7F - manaRate), 0.8 * manaRate, partialTranslucent1);
+		if (PlayersData.clientPlayerData.mana < Values.minManaToCastSpell && recoveringMana)
+		{
+		    DrawHelper.drawRect(manaBarWidth / 2 - (manaBarWidth - 2) / 2 * manaRate, 1, manaBarWidth / 2 + (manaBarWidth - 2) / 2
+			    * manaRate, manaBarHeight - 1, 0.8, 0.8, 0.8, partialTranslucent1);
+		}
+		else
+		{
+		    DrawHelper.drawRect(manaBarWidth / 2 - (manaBarWidth - 2) / 2 * manaRate, 1, manaBarWidth / 2 + (manaBarWidth - 2) / 2
+			    * manaRate, manaBarHeight - 1, 0.7, 0.7 * Math.max(0, 0.7F - manaRate), 0.8 * manaRate, partialTranslucent1);
+		}
 		GL11.glTranslated(-(guiWidth - manaBarWidth) / 2, 0, 0);
 		if (positionTop) GL11.glTranslated(0, manaBarHeight, 0);
 	    }
-	    {
+	    {// queued elements and recently removed elements
 		if (!positionTop) GL11.glTranslated(0, -queuedHeight, 0);
 		GL11.glEnable(GL11.GL_BLEND);
 		GL11.glTranslated((guiWidth - queuedWidth) / 2, 0, 0);
 		GL11.glColor4d(1, 1, 1, fullTranslucent);
 		drawQueuedElement(queuedElementSize, queuedElementSize, queuedElementGapX, queuedElementGapY, queuedElementsPerRow);
-		drawRemovingElement(queuedElementSize, queuedElementSize, queuedElementGapX, queuedElementGapY, queuedElementsPerRow, positionTop);
+		drawRemovingElement(queuedElementSize, queuedElementSize, queuedElementGapX, queuedElementGapY, queuedElementsPerRow,
+			positionTop);
 		GL11.glTranslated(-(guiWidth - queuedWidth) / 2, 0, 0);
 	    }
 	    GL11.glDisable(GL11.GL_BLEND);
@@ -347,13 +368,15 @@ public class CoreClient
     public void drawHotkeyElements(double unitWidth, double unitHeight, double gapX, double gapY)
     {
 	mc.renderEngine.bindTexture(Values.elementsTexture);
-	List<Element> l = Arrays.asList(Element.Water, Element.Life, Element.Shield, Element.Cold, Element.Lightning, Element.Arcane, Element.Earth, Element.Fire);
+	List<Element> l = Arrays.asList(Element.Water, Element.Life, Element.Shield, Element.Cold, Element.Lightning, Element.Arcane,
+		Element.Earth, Element.Fire);
 	double x = 0;
 	double y = 0;
 	for (int a = 0; a < l.size(); a++)
 	{
 	    Element e = l.get(a);
-	    DrawHelper.drawElementIcon(null, e, false, x, y, unitWidth, unitHeight, 0.9);
+	    DrawHelper.drawElementIcon(null, e, !PlayersData.getPlayerData_static(mc.thePlayer).unlocked.contains(e), x, y, unitWidth,
+		    unitHeight, 0.9);
 	    x += unitWidth + gapX;
 	    if ((a + 1) % 4 == 0)
 	    {
@@ -370,7 +393,8 @@ public class CoreClient
 	    {
 		Element e = l.get(a);
 		String hotkey = Keyboard.getKeyName(ModKeybinding.elementToKeyMap.get(e).getKeyCode());
-		mc.fontRenderer.drawStringWithShadow(hotkey, (int) (x + unitWidth - mc.fontRenderer.getStringWidth(hotkey)), (int) (y + unitHeight - 7), 0xffffffff);
+		mc.fontRenderer.drawStringWithShadow(hotkey, (int) (x + unitWidth - mc.fontRenderer.getStringWidth(hotkey)), (int) (y
+			+ unitHeight - 7), 0xffffffff);
 		x += unitWidth + gapX;
 		if ((a + 1) % 4 == 0)
 		{

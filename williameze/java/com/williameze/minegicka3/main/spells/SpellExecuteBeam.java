@@ -28,7 +28,7 @@ public class SpellExecuteBeam extends SpellExecute
 	    Entity caster = s.getCaster();
 	    if (caster == null) return;
 	    double manaToConsume = s.countElements() * s.countElements() * 100 * s.getManaConsumeRate();
-	    if (consumeMana(s, manaToConsume, true, true, 2) > 0)
+	    if (consumeMana(s, manaToConsume, true, true, 3) > 0)
 	    {
 		EntityBeamArea beamA = new EntityBeamArea(caster.worldObj);
 		beamA.spell = s;

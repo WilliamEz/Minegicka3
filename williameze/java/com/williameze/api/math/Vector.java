@@ -25,7 +25,7 @@ public class Vector
      * Z coordinate of VectorD
      */
     public double z;
-    
+
     public static Vector median(Vector... vs)
     {
 	double x = 0;
@@ -79,7 +79,7 @@ public class Vector
     public Vector randomizeDirection(double d)
     {
 	Plane p = new Plane(this, this);
-	Vector vplane = p.getPointLackX(1, 1);
+	Vector vplane = p.getAssurancePoint();
 	Vector toward = vplane.subtract(this).normalize().rotateAround(this, rnd.nextDouble() * Math.PI * 2).multiply(d);
 	return this.add(toward);
     }

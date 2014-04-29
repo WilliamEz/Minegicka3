@@ -23,6 +23,19 @@ public class Plane
 	free = -(tang.x * point.x + tang.y * point.y + tang.z * point.z);
     }
 
+    public Vector getAssurancePoint()
+    {
+	double e = Math.E;
+	if (tang.x == 0 && tang.y == 0 && tang.z == 0) return new Vector(0, 0, 0);
+	if (tang.y == 0 && tang.z == 0) return new Vector(free / tang.x, e, e);
+	if (tang.x == 0 && tang.z == 0) return new Vector(e, free / tang.y, e);
+	if (tang.x == 0 && tang.y == 0) return new Vector(e, e, free / tang.z);
+	if (tang.y == 0) return getPointLackX(e, e);
+	if (tang.x == 0) return getPointLackY(e, e);
+	if (tang.z == 0) return getPointLackY(e, e);
+	return getPointLackY(e, e);
+    }
+
     public Vector getPointLackX(double y, double z)
     {
 	return new Vector((free - tang.y * y - tang.z * z) / tang.x, y, z);
@@ -71,10 +84,11 @@ public class Plane
 	}
 	return false;
     }
-    
+
     @Override
     public String toString()
     {
-        return (tang.x!=0?(tang.x>0?"+":"")+tang.x+"*x":"")+(tang.y!=0?(tang.y>0?"+":"")+tang.y+"*y":"")+(tang.z!=0?(tang.z>0?"+":"")+tang.z+"*z":"")+(free!=0?" + "+free:"")+" = 0";
+	return (tang.x != 0 ? (tang.x > 0 ? "+" : "") + tang.x + "*x" : "") + (tang.y != 0 ? (tang.y > 0 ? "+" : "") + tang.y + "*y" : "")
+		+ (tang.z != 0 ? (tang.z > 0 ? "+" : "") + tang.z + "*z" : "") + (free != 0 ? " + " + free : "") + " = 0";
     }
 }

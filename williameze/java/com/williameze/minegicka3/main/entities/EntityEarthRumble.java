@@ -34,19 +34,32 @@ import com.williameze.minegicka3.main.spells.Spell.CastType;
 
 import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 
-public class EntityBeamArea extends Entity implements IEntityAdditionalSpawnData
+public class EntityEarthRumble extends Entity implements IEntityAdditionalSpawnData
 {
-    public Spell spell = Spell.none;
+    private Spell spell = Spell.none;
     public boolean searched;
     public List<Entity> targets = new ArrayList();
-    public SpellDamageModifier damMod = SpellDamageModifier.defau;
 
-    public EntityBeamArea(World par1World)
+    public EntityEarthRumble(World par1World)
     {
 	super(par1World);
 	renderDistanceWeight = Values.renderDistance;
-	setSize(4F, 20F);
+	setSize(4, 4);
 	searched = false;
+    }
+
+    public Spell getSpell()
+    {
+	return spell;
+
+    }
+
+    public void setSpell(Spell s)
+    {
+	spell = s;
+	width = (s.countElements() * 4 + 4) * 2;
+	height = s.countElements()*2 + 1;
+	boundingBox.setBounds(posX - width / 2, posY - height / 2, posZ - width / 2, posX + width / 2, posY + height / 2, posZ + width / 2);
     }
 
     @Override
@@ -87,34 +100,45 @@ public class EntityBeamArea extends Entity implements IEntityAdditionalSpawnData
 	if (!searched)
 	{
 	    searched = true;
-	    targets.addAll(worldObj.selectEntitiesWithinAABB(EntityLivingBase.class,
-		    AxisAlignedBB.getBoundingBox(posX, posY, posZ, posX, posY, posZ).expand(maxRange(), 2, maxRange()),
-		    new DefaultSpellSelector(spell)));
+	    targets.addAll(worldObj.selectEntitiesWithinAABB(EntityLivingBase.class, boundingBox, new DefaultSpellSelector(spell)));
 	}
-	if (!targets.isEmpty())
+	if (ticksExisted % interval() == 0)
 	{
-	    List<Entity> toRemove = new ArrayList();
-	    double maxAtkDistSqr = Math.pow((ticksExisted + 1D) / maxTick() * maxRange(), 2);
-	    for (Entity ent : targets)
+	    if (!targets.isEmpty())
 	    {
-		if (ent.getDistanceSqToEntity(this) <= maxAtkDistSqr)
+		List<Entity> toRemove = new ArrayList();
+		for (Entity ent : targets)
 		{
-		    spell.damageEntity(ent, 0, damMod);
-		    toRemove.add(ent);
+		    if (ent.onGround == false)
+		    {
+			toRemove.add(ent);
+			continue;
+		    }
+		    if (ent.getDistanceSq(posX, ent.posY, posZ) <= Math.pow(ticksExisted / (double) maxTick() * maxRange(), 2))
+		    {
+			spell.damageEntity(ent, 0);
+			ent.motionY += spell.countElements() * spell.getPower() * 0.15;
+			toRemove.add(ent);
+		    }
 		}
+		targets.removeAll(toRemove);
 	    }
-	    targets.removeAll(toRemove);
 	}
     }
 
     public double maxRange()
     {
-	return (spell.elements.size() * 4D + 12D) * (spell.hasElement(Element.Arcane) ? damMod.arcaneMod : damMod.lifeMod);
+	return width / 2;
+    }
+
+    public int interval()
+    {
+	return 20;
     }
 
     public int maxTick()
     {
-	return (int) Math.max(Math.round(maxRange() / 16 * 20), 10);
+	return interval() * Math.max(6 - getSpell().countElements(), 4) + interval() - 1;
     }
 
     @Override
@@ -136,9 +160,6 @@ public class EntityBeamArea extends Entity implements IEntityAdditionalSpawnData
 	    byte[] b = CompressedStreamTools.compress(spell.writeToNBT());
 	    buffer.writeInt(b.length);
 	    buffer.writeBytes(b);
-	    byte[] b1 = damMod.toString().getBytes();
-	    buffer.writeInt(b1.length);
-	    buffer.writeBytes(b1);
 	}
 	catch (IOException e)
 	{
@@ -155,10 +176,7 @@ public class EntityBeamArea extends Entity implements IEntityAdditionalSpawnData
 	    additionalData.readBytes(b);
 	    NBTTagCompound tag = CompressedStreamTools.decompress(b);
 	    spell = Spell.createFromNBT(tag);
-
-	    byte[] b1 = new byte[additionalData.readInt()];
-	    additionalData.readBytes(b1);
-	    damMod = new SpellDamageModifier(new String(b1));
+	    setSpell(spell);
 	}
 	catch (IOException e)
 	{

@@ -12,6 +12,7 @@ import com.williameze.minegicka3.core.CoreClient;
 import com.williameze.minegicka3.main.entities.EntityBeam;
 import com.williameze.minegicka3.main.entities.EntityBeamArea;
 import com.williameze.minegicka3.main.entities.EntityBoulder;
+import com.williameze.minegicka3.main.entities.EntityEarthRumble;
 import com.williameze.minegicka3.main.entities.EntityIcicle;
 import com.williameze.minegicka3.main.entities.EntityLightning;
 import com.williameze.minegicka3.main.entities.EntitySprayCold;
@@ -23,6 +24,7 @@ import com.williameze.minegicka3.main.objects.ItemStaff;
 import com.williameze.minegicka3.main.renders.RenderEntityBeam;
 import com.williameze.minegicka3.main.renders.RenderEntityBeamArea;
 import com.williameze.minegicka3.main.renders.RenderEntityBoulder;
+import com.williameze.minegicka3.main.renders.RenderEntityEarthRumble;
 import com.williameze.minegicka3.main.renders.RenderEntityIcicle;
 import com.williameze.minegicka3.main.renders.RenderEntityLightning;
 import com.williameze.minegicka3.main.renders.RenderEntitySpray;
@@ -74,6 +76,7 @@ public class ClientProxy extends CommonProxy
 	RenderingRegistry.registerEntityRenderingHandler(EntityBeamArea.class, new RenderEntityBeamArea());
 	RenderingRegistry.registerEntityRenderingHandler(EntityBoulder.class, new RenderEntityBoulder());
 	RenderingRegistry.registerEntityRenderingHandler(EntityIcicle.class, new RenderEntityIcicle());
+	RenderingRegistry.registerEntityRenderingHandler(EntityEarthRumble.class, new RenderEntityEarthRumble());
     }
 
     @Override

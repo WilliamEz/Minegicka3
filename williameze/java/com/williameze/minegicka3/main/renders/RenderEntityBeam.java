@@ -39,7 +39,6 @@ public class RenderEntityBeam extends Render
 
     public void renderBeam(EntityBeam b, double x, double y, double z, float yaw, float partialTick)
     {
-
 	GL11.glPushMatrix();
 	GL11.glEnable(GL11.GL_DEPTH_TEST);
 	GL11.glEnable(GL11.GL_BLEND);
@@ -47,10 +46,9 @@ public class RenderEntityBeam extends Render
 	GL11.glDisable(GL11.GL_TEXTURE_2D);
 	GL11.glDisable(GL11.GL_CULL_FACE);
 	GL11.glTranslated(x, y, z);
-	
+
 	doTheRender(b, partialTick);
 
-	GL11.glLineWidth(1);
 	GL11.glEnable(GL11.GL_CULL_FACE);
 	GL11.glColor4d(1, 1, 1, 1);
 	GL11.glEnable(GL11.GL_TEXTURE_2D);
@@ -65,68 +63,55 @@ public class RenderEntityBeam extends Render
 	double radius = 0.13 * Math.pow(l.size(), 0.2);
 	double radius1 = radius / 2;
 
-	GL11.glRotated(Values.clientTicked * 5 + partialTick, towardNor.x, towardNor.y, towardNor.z);
+	GL11.glRotated((Values.clientTicked + partialTick) * 5 / Math.sqrt(beam.spell.countElements()), towardNor.x, towardNor.y, towardNor.z);
 
-	Cylinder cli = new Cylinder(Vector.root, towardTarget, towardTarget, towardTarget.reverse(), radius1, radius1, 8);
+	GL11.glPushMatrix();
+	Cylinder cli = new Cylinder(Vector.root, towardTarget, towardTarget, towardTarget.reverse(), radius1, radius1, Math.max(3,
+		beam.spell.countElements()));
 	if (l.contains(Element.Arcane)) cli.setColor(Color.red);
 	else cli.setColor(Color.green);
 	cli.render();
+	GL11.glPopMatrix();
 
 	Vector base;
 	{
 	    Plane p = new Plane(towardNor, 0);
-	    base = p.getPointLackY(2, 2);
+	    base = p.getAssurancePoint();
 	    base.setToLength(radius);
 	}
 	int loops = l.size();
-	int towardCuts = (int) Math.round(towardTarget.lengthVector() * 4);
+	int towardCuts = (int) Math.round(towardTarget.lengthVector());
 	for (int a = 0; a < loops; a++)
 	{
 	    base = base.rotateAround(towardNor, Math.PI * 2 / loops);
 	    Element e = l.get(a % l.size());
-	    switch (e)
+	    /**
+	     * switch (e) { case Arcane: GL11.glColor4d(1, 0, 0, 0.5); break;
+	     * case Cold: GL11.glColor4d(1, 1, 1, 0.5); break; case Steam:
+	     * GL11.glColor4d(0.5, 0.5, 0.5, 0.5); break; case Life:
+	     * GL11.glColor4d(0, 1, 0, 0.5); break; case Earth:
+	     * GL11.glColor4d(0.4, 0.3, 0, 0.5); break; case Fire:
+	     * GL11.glColor4d(1, 0.3, 0, 0.5); break; case Ice:
+	     * GL11.glColor4d(0, 1, 1, 0.5); break; case Lightning:
+	     * GL11.glColor4d(1, 0, 1, 0.5); break; case Shield:
+	     * GL11.glColor4d(1, 1, 0, 0.5); break; case Water:
+	     * GL11.glColor4d(0, 0, 1, 0.5); break; default: GL11.glColor4d(1,
+	     * 0, 0, 0.5); break; }
+	     **/
+	    // GL11.glLineWidth(2);
+	    // GL11.glBegin(GL11.GL_LINE_STRIP);
+	    for (int b = 0; b <= towardCuts - 1; b++)
 	    {
-		case Arcane:
-		    GL11.glColor4d(1, 0, 0, 0.5);
-		    break;
-		case Cold:
-		    GL11.glColor4d(1, 1, 1, 0.5);
-		    break;
-		case Steam:
-		    GL11.glColor4d(0.5, 0.5, 0.5, 0.5);
-		    break;
-		case Life:
-		    GL11.glColor4d(0, 1, 0, 0.5);
-		    break;
-		case Earth:
-		    GL11.glColor4d(0.4, 0.3, 0, 0.5);
-		    break;
-		case Fire:
-		    GL11.glColor4d(1, 0.3, 0, 0.5);
-		    break;
-		case Ice:
-		    GL11.glColor4d(0, 1, 1, 0.5);
-		    break;
-		case Lightning:
-		    GL11.glColor4d(1, 0, 1, 0.5);
-		    break;
-		case Shield:
-		    GL11.glColor4d(1, 1, 0, 0.5);
-		    break;
-		case Water:
-		    GL11.glColor4d(0, 0, 1, 0.5);
-		    break;
-		default:
-		    break;
+		Vector thisPoint = towardTarget.multiply((double) b / (double) towardCuts).add(
+			base.rotateAround(towardNor, Math.PI / 8D * b));
+
+		Vector thatPoint = towardTarget.multiply((double) (b + 1) / (double) towardCuts).add(
+			base.rotateAround(towardNor, Math.PI / 8D * (b + 1)));
+		// GL11.glVertex3d(thisPoint.x, thisPoint.y, thisPoint.z);
+		Cylinder.create(thisPoint, thatPoint, 0.005, 2).setColor(e.getColor()).render();
 	    }
-	    GL11.glLineWidth(2);
-	    GL11.glBegin(GL11.GL_LINE_STRIP);
-	    for (int b = 0; b <= towardCuts; b++)
-	    {
-		Vector thisPoint = towardTarget.multiply((double) b / (double) towardCuts).add(base.rotateAround(towardNor, Math.PI / 8D * b));
-		GL11.glVertex3d(thisPoint.x, thisPoint.y, thisPoint.z);
-	    }
-	    GL11.glEnd();
+	    // GL11.glEnd();
+	    // GL11.glLineWidth(1);
 	}
     }
 

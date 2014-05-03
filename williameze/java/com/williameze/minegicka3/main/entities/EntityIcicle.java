@@ -16,7 +16,7 @@ import net.minecraft.world.World;
 import com.williameze.api.lib.FuncHelper;
 import com.williameze.api.math.Vector;
 import com.williameze.minegicka3.main.Values;
-import com.williameze.minegicka3.main.spells.DefaultSpellSelector;
+import com.williameze.minegicka3.main.spells.ESelectorDefault;
 import com.williameze.minegicka3.main.spells.Spell;
 
 import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
@@ -95,8 +95,6 @@ public class EntityIcicle extends Entity implements IEntityAdditionalSpawnData
     public void onUpdate()
     {
 	super.onUpdate();
-	ticksExisted++;
-
 	prevPosX = posX;
 	prevPosY = posY;
 	prevPosZ = posZ;
@@ -108,7 +106,7 @@ public class EntityIcicle extends Entity implements IEntityAdditionalSpawnData
 	if (!isDead)
 	{
 	    List<Entity> entities = FuncHelper.getEntitiesWithinBoundingBoxMovement(worldObj, boundingBox, new Vector(motionX, motionY, motionZ), EntityLivingBase.class,
-		    new DefaultSpellSelector(getSpell()));
+		    new ESelectorDefault(getSpell()));
 	    entities.remove(spell.getCaster());
 	    Entity e = FuncHelper.getEntityClosestTo(posX, posY, posZ, entities);
 	    collideWithEntity(e);
@@ -138,7 +136,7 @@ public class EntityIcicle extends Entity implements IEntityAdditionalSpawnData
     public void collideWithEntity(Entity e)
     {
 	if (isDead || e == null || e.isDead) return;
-	getSpell().damageEntity(e, 1);
+	getSpell().damageEntity(e, 0);
 	setDead();
     }
 

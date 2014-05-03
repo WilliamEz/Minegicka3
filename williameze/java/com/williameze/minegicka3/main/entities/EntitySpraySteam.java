@@ -10,8 +10,8 @@ import net.minecraft.world.World;
 
 public class EntitySpraySteam extends EntitySpray
 {
-    public static Color color1 = new Color(171, 171, 171, 200);
-    public static Color color2 = new Color(130, 130, 130, 170);
+    public static Color color1 = new Color(151, 151, 151, 200);
+    public static Color color2 = new Color(120, 120, 120, 170);
 
     public EntitySpraySteam(World par1World)
     {

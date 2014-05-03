@@ -10,25 +10,22 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.init.Blocks;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.potion.Potion;
-import net.minecraft.potion.PotionEffect;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.DamageSource;
 import net.minecraft.util.MathHelper;
 import net.minecraft.world.World;
-import net.minecraftforge.common.ForgeHooks;
 
 import com.williameze.api.lib.FuncHelper;
 import com.williameze.api.math.IntVector;
 import com.williameze.api.math.Vector;
-import com.williameze.minegicka3.CommonProxy;
 import com.williameze.minegicka3.ModBase;
 import com.williameze.minegicka3.main.Element;
 import com.williameze.minegicka3.main.SpellDamageModifier;
 import com.williameze.minegicka3.main.Values;
-import com.williameze.minegicka3.main.spells.DefaultSpellSelector;
+import com.williameze.minegicka3.main.objects.TileEntityShield;
+import com.williameze.minegicka3.main.spells.ESelectorDefault;
 import com.williameze.minegicka3.main.spells.Spell;
 import com.williameze.minegicka3.main.spells.Spell.CastType;
 
@@ -101,11 +98,11 @@ public class EntityBoulder extends Entity implements IEntityAdditionalSpawnData
 	if (charged < 0.2) charged = 0.2;
 	if (charged > 1) charged = 1;
 	int eCount = spell.countElements(Element.Earth, Element.Ice);
-	float radius = (float) Math.sqrt(Math.sqrt((double) eCount) * charged * 0.3D);
+	float radius = (float) ((charged + 0.4) * 0.3D * Math.pow(eCount, 0.85));
 	setSize(radius * 2, radius * 2);
 	collideLeft = eCount + 2;
 	friction = 0.99 - eCount * 0.005;
-	gravity = 0.01 * eCount;
+	gravity = 0.03 * Math.pow(eCount, 1.1);
     }
 
     public boolean isIce()
@@ -114,10 +111,16 @@ public class EntityBoulder extends Entity implements IEntityAdditionalSpawnData
     }
 
     @Override
+    public void setPosition(double par1, double par3, double par5)
+    {
+	super.setPosition(par1, par3, par5);
+	boundingBox.setBounds(par1 - width / 2, par3 - height / 2, par5 - width / 2, par1 + width / 2, par3 + height / 2, par5 + width / 2);
+    }
+
+    @Override
     public void onUpdate()
     {
 	super.onUpdate();
-	ticksExisted++;
 
 	prevPosX = posX;
 	prevPosY = posY;
@@ -130,9 +133,9 @@ public class EntityBoulder extends Entity implements IEntityAdditionalSpawnData
 
 	if (isCollided)
 	{
-	    motionX *= 0.9 * friction;
-	    motionY *= 0.9 * friction;
-	    motionZ *= 0.9 * friction;
+	    motionX *= 0.7 * friction;
+	    motionY *= 0.7 * friction;
+	    motionZ *= 0.7 * friction;
 	    onGroundTick++;
 	}
 
@@ -147,7 +150,7 @@ public class EntityBoulder extends Entity implements IEntityAdditionalSpawnData
 	if (!isDead)
 	{
 	    List<Entity> entities = FuncHelper.getEntitiesWithinBoundingBoxMovement(worldObj, boundingBox, new Vector(motionX, motionY,
-		    motionZ), EntityLivingBase.class, new DefaultSpellSelector(getSpell()));
+		    motionZ), EntityLivingBase.class, new ESelectorDefault(getSpell()));
 	    entities.remove(spell.getCaster());
 	    Entity e = FuncHelper.getEntityClosestTo(posX, posY, posZ, entities);
 	    collideWithEntity(e);
@@ -283,10 +286,24 @@ public class EntityBoulder extends Entity implements IEntityAdditionalSpawnData
 
     public void collideWithBlock(int x, int y, int z)
     {
-	if (isDead) return;
+	if (isDead || worldObj.isRemote) return;
 	if (getSpell().countElements(Element.Earth, Element.Ice) == getSpell().countElements())
 	{
-
+	    double strength = getSpell().countElements() * getSpell().additionalData.getDouble("Projectile charged") / 2.5D;
+	    Block b = worldObj.getBlock(x, y, z);
+	    if (b == Blocks.ice || b == Blocks.glass || b == Blocks.glass_pane || b == Blocks.glowstone)
+	    {
+		if (strength > b.getBlockHardness(worldObj, x, y, z))
+		{
+		    b.dropBlockAsItemWithChance(worldObj, x, y, z, 1, 1, 1);
+		    worldObj.setBlockToAir(x, y, z);
+		}
+	    }
+	    if (b == ModBase.shieldBlock)
+	    {
+		TileEntityShield tile = (TileEntityShield) worldObj.getTileEntity(x, y, z);
+		tile.damageShield(strength * 15);
+	    }
 	}
 	else
 	{
@@ -328,12 +345,7 @@ public class EntityBoulder extends Entity implements IEntityAdditionalSpawnData
     {
 	if (!worldObj.isRemote && !isDead)
 	{
-	    List<Element> le = new ArrayList();
-	    for (Element e : getSpell().elements)
-	    {
-		if (e != Element.Earth && e != Element.Ice) le.add(e);
-	    }
-	    Spell s = new Spell(le, getSpell().dimensionID, getPersistentID(), CastType.Area, getSpell().additionalData);
+	    Spell s = new Spell(getSpell().elements, getSpell().dimensionID, getPersistentID(), CastType.Area, getSpell().additionalData);
 	    EntityBeamArea beamA = new EntityBeamArea(worldObj);
 	    beamA.spell = s;
 	    beamA.setPosition(posX, posY + 1, posZ);

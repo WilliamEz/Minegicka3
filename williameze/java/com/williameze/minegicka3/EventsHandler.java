@@ -33,6 +33,7 @@ public class EventsHandler implements IEventListener
 	    }
 	    PlayersData.worldsPlayersDataMap.put(event.world, psd);
 	}
+	Values.onWorldLoad();
     }
 
     @SubscribeEvent
@@ -60,7 +61,7 @@ public class EventsHandler implements IEventListener
 	{
 	    Values.worldEntitiesUUIDMap.put(w, new HashMap());
 	}
-	Values.worldEntitiesUUIDMap.get(w).put(e.getUniqueID(), e);
+	Values.worldEntitiesUUIDMap.get(w).put(e.getPersistentID(), e);
     }
 
     @SubscribeEvent

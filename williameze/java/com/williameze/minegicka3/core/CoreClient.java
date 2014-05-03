@@ -10,9 +10,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.Tessellator;
-import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
@@ -22,13 +20,11 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 import com.williameze.api.lib.DrawHelper;
-import com.williameze.minegicka3.ClientProxy;
 import com.williameze.minegicka3.ModBase;
 import com.williameze.minegicka3.ModKeybinding;
 import com.williameze.minegicka3.main.Element;
 import com.williameze.minegicka3.main.Values;
 import com.williameze.minegicka3.main.objects.ItemStaff;
-import com.williameze.minegicka3.main.packets.PacketPlayerMana;
 import com.williameze.minegicka3.main.packets.PacketStartSpell;
 import com.williameze.minegicka3.main.packets.PacketStopSpell;
 import com.williameze.minegicka3.main.spells.Spell;
@@ -38,7 +34,6 @@ import cpw.mods.fml.common.gameevent.TickEvent.ClientTickEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.Phase;
 import cpw.mods.fml.common.gameevent.TickEvent.PlayerTickEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.RenderTickEvent;
-import cpw.mods.fml.common.gameevent.TickEvent.WorldTickEvent;
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
 
@@ -346,6 +341,18 @@ public class CoreClient
 		    DrawHelper.drawRect(manaBarWidth / 2 - (manaBarWidth - 2) / 2 * manaRate, 1, manaBarWidth / 2 + (manaBarWidth - 2) / 2
 			    * manaRate, manaBarHeight - 1, 0.7, 0.7 * Math.max(0, 0.7F - manaRate), 0.8 * manaRate, partialTranslucent1);
 		}
+		if (isWizardnessApplicable())
+		{
+		    int manaInt = (int) Math.ceil(PlayersData.clientPlayerData.maxMana * manaRate);
+		    int maxManaInt = (int) Math.ceil(PlayersData.clientPlayerData.maxMana);
+		    String manaString = manaInt + "/" + maxManaInt;
+		    double transX = guiWidth / 2 - mc.fontRenderer.getStringWidth(manaString) / 2 * 0.6;
+		    GL11.glTranslated(transX, 0, 0);
+		    GL11.glScaled(0.6, 0.6, 0.6);
+		    mc.fontRenderer.drawStringWithShadow(manaString, 0, 0, 0xffffff);
+		    GL11.glScaled(1 / 0.6D, 1 / 0.6D, 1 / 0.6D);
+		    GL11.glTranslated(-transX, 0, 0);
+		}
 		GL11.glTranslated(-(guiWidth - manaBarWidth) / 2, 0, 0);
 		if (positionTop) GL11.glTranslated(0, manaBarHeight, 0);
 	    }
@@ -359,6 +366,7 @@ public class CoreClient
 			positionTop);
 		GL11.glTranslated(-(guiWidth - queuedWidth) / 2, 0, 0);
 	    }
+	    GL11.glColor4d(1, 1, 1, 1);
 	    GL11.glDisable(GL11.GL_BLEND);
 	    GL11.glPopMatrix();
 	}
@@ -455,7 +463,7 @@ public class CoreClient
 		int column = index % perRow;
 		int row = (index - column) / perRow;
 		double x = column * unitWidth + Math.max(0, column * gapX);
-		double y = (top ? 1 : -1) * ((row + 1) * unitHeight + Math.max(0, row * gapY));
+		double y = (top ? 1 : -1) * ((-row + 1) * unitHeight + Math.max(0, row * gapY));
 		if (top)
 		{
 		    y -= unitHeight;
@@ -474,5 +482,6 @@ public class CoreClient
 		toRemove.add(entry);
 	    }
 	}
+	removingElements.removeAll(toRemove);
     }
 }

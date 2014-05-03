@@ -10,6 +10,7 @@ import java.util.Map;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
@@ -30,15 +31,24 @@ import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 
 public class EntityLightning extends Entity implements IEntityAdditionalSpawnData
 {
-    public static double minCosConeSeek = Math.pow(3, -0.5D) / 2D;
+    public static double minCosConeSeek = Math.pow(1, 0.5D) / 2D;
     public Spell spell = Spell.none;
     public Map<Entity, List<Entity>> originAndChainedMap = new HashMap();
+    public int maxTick;
+    public boolean dieWithSpell;
 
     public EntityLightning(World par1World)
     {
 	super(par1World);
 	renderDistanceWeight = Values.renderDistance;
-	setSize(0.01F, 0.01F);
+	ignoreFrustumCheck = true;
+    }
+
+    @Override
+    public void setPosition(double par1, double par3, double par5)
+    {
+	super.setPosition(par1, par3, par5);
+	boundingBox.setBounds(par1 - width / 2, par3 - height / 2, par5 - width / 2, par1 + width / 2, par3 + height / 2, par5 + width / 2);
     }
 
     @Override
@@ -62,12 +72,12 @@ public class EntityLightning extends Entity implements IEntityAdditionalSpawnDat
     public void onUpdate()
     {
 	super.onUpdate();
-	if (spell == null || spell.toBeInvalidated)
+	if (spell == null || spell.toBeInvalidated || !dieWithSpell && ticksExisted > maxTick)
 	{
 	    setDead();
 	    return;
 	}
-	if (!spell.toBeInvalidated)
+	if (dieWithSpell)
 	{
 	    if (worldObj.isRemote)
 	    {
@@ -86,13 +96,13 @@ public class EntityLightning extends Entity implements IEntityAdditionalSpawnDat
 		}
 	    }
 	}
+
 	Entity e = spell.getCaster();
 	if (e == null)
 	{
-	    setDead();
 	    return;
 	}
-	setPosition(e.posX, e.posY + e.getEyeHeight() - 0.15, e.posZ);
+	setPosition(e.posX, e.posY + (e instanceof EntityPlayer ? e.getEyeHeight() - 0.15 : 0), e.posZ);
 	if (e.getLookVec() != null)
 	{
 	    posX += e.getLookVec().xCoord * 0.3;
@@ -168,13 +178,16 @@ public class EntityLightning extends Entity implements IEntityAdditionalSpawnDat
     protected void readEntityFromNBT(NBTTagCompound var1)
     {
 	spell = Spell.createFromNBT(var1.getCompoundTag("Spell"));
-	setDead();
+	maxTick = var1.getInteger("Max Tick");
+	dieWithSpell = var1.getBoolean("Die With Spell");
     }
 
     @Override
     protected void writeEntityToNBT(NBTTagCompound var1)
     {
 	var1.setTag("Spell", spell.writeToNBT());
+	var1.setInteger("Max Tick", maxTick);
+	var1.setBoolean("Die With Spell", dieWithSpell);
     }
 
     @Override
@@ -185,6 +198,8 @@ public class EntityLightning extends Entity implements IEntityAdditionalSpawnDat
 	    byte[] b = CompressedStreamTools.compress(spell.writeToNBT());
 	    buffer.writeInt(b.length);
 	    buffer.writeBytes(b);
+	    buffer.writeInt(maxTick);
+	    buffer.writeBoolean(dieWithSpell);
 	}
 	catch (IOException e)
 	{
@@ -201,6 +216,8 @@ public class EntityLightning extends Entity implements IEntityAdditionalSpawnDat
 	    additionalData.readBytes(b);
 	    NBTTagCompound tag = CompressedStreamTools.decompress(b);
 	    spell = Spell.createFromNBT(tag);
+	    maxTick = additionalData.readInt();
+	    dieWithSpell = additionalData.readBoolean();
 	}
 	catch (IOException e)
 	{

@@ -66,8 +66,7 @@ public class RenderEntityBeam extends Render
 	GL11.glRotated((Values.clientTicked + partialTick) * 5 / Math.sqrt(beam.spell.countElements()), towardNor.x, towardNor.y, towardNor.z);
 
 	GL11.glPushMatrix();
-	Cylinder cli = new Cylinder(Vector.root, towardTarget, towardTarget, towardTarget.reverse(), radius1, radius1, Math.max(3,
-		beam.spell.countElements()));
+	Cylinder cli = new Cylinder(Vector.root, towardTarget, towardTarget, towardTarget.reverse(), radius1, radius1, 8);
 	if (l.contains(Element.Arcane)) cli.setColor(Color.red);
 	else cli.setColor(Color.green);
 	cli.render();
@@ -108,7 +107,7 @@ public class RenderEntityBeam extends Render
 		Vector thatPoint = towardTarget.multiply((double) (b + 1) / (double) towardCuts).add(
 			base.rotateAround(towardNor, Math.PI / 8D * (b + 1)));
 		// GL11.glVertex3d(thisPoint.x, thisPoint.y, thisPoint.z);
-		Cylinder.create(thisPoint, thatPoint, 0.005, 2).setColor(e.getColor()).render();
+		Cylinder.create(thisPoint, thatPoint, 0.002, 2).setColor(e.getColor()).render();
 	    }
 	    // GL11.glEnd();
 	    // GL11.glLineWidth(1);

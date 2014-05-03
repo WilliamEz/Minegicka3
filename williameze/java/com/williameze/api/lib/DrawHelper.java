@@ -17,8 +17,8 @@ import com.williameze.minegicka3.main.Values;
 public class DrawHelper
 {
     public static FloatBuffer colorBuffer = GLAllocation.createDirectFloatBuffer(16);
-    public static Vector lighting1 = new Vector(1, 1, 1).normalize();
-    public static Vector lighting2 = lighting1.reverse();
+    public static final Vector lighting1 = new Vector(1, 1, 1).normalize();
+    public static final Vector lighting2 = lighting1.reverse();
 
     public static void drawRect(double x1, double y1, double x2, double y2, double r, double g, double b, double a)
     {
@@ -51,19 +51,18 @@ public class DrawHelper
 	GL11.glVertex3d(x2, y1, 0.0D);
 	GL11.glVertex3d(x1, y1, 0.0D);
 	GL11.glEnd();
-	//tessellator.startDrawingQuads();
-	//tessellator.addVertex((double) x1, (double) y2, 0.0D);
-	//tessellator.addVertex((double) x2, (double) y2, 0.0D);
-	//tessellator.addVertex((double) x2, (double) y1, 0.0D);
-	//tessellator.addVertex((double) x1, (double) y1, 0.0D);
-	//tessellator.draw();
+	// tessellator.startDrawingQuads();
+	// tessellator.addVertex((double) x1, (double) y2, 0.0D);
+	// tessellator.addVertex((double) x2, (double) y2, 0.0D);
+	// tessellator.addVertex((double) x2, (double) y1, 0.0D);
+	// tessellator.addVertex((double) x1, (double) y1, 0.0D);
+	// tessellator.draw();
 	GL11.glEnable(GL11.GL_TEXTURE_2D);
 	GL11.glDisable(GL11.GL_BLEND);
 	GL11.glPopMatrix();
     }
 
-    public static void tessAddQuad(Tessellator tess, double x1, double y1, double x2, double y2, double u1, double v1, double u2,
-	    double v2)
+    public static void tessAddQuad(Tessellator tess, double x1, double y1, double x2, double y2, double u1, double v1, double u2, double v2)
     {
 	if (x1 > x2)
 	{
@@ -110,8 +109,8 @@ public class DrawHelper
 
 	Tessellator tess = Tessellator.instance;
 	tess.startDrawingQuads();
-	tessAddQuad(tess, x + w / 2 - actualW / 2, y + h / 2 - actualH / 2, x + w / 2 + actualW / 2, y + h / 2 + actualH / 2,
-		tu1, tv1, tu2, tv2);
+	tessAddQuad(tess, x + w / 2 - actualW / 2, y + h / 2 - actualH / 2, x + w / 2 + actualW / 2, y + h / 2 + actualH / 2, tu1, tv1,
+		tu2, tv2);
 	tess.draw();
     }
 
@@ -120,14 +119,12 @@ public class DrawHelper
 	boolean a = false;
 	if (b)
 	{
-	    GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, a ? GL11.GL_LINEAR_MIPMAP_LINEAR
-		    : GL11.GL_LINEAR);
+	    GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, a ? GL11.GL_LINEAR_MIPMAP_LINEAR : GL11.GL_LINEAR);
 	    GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
 	}
 	else
 	{
-	    GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, a ? GL11.GL_NEAREST_MIPMAP_LINEAR
-		    : GL11.GL_NEAREST);
+	    GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, a ? GL11.GL_NEAREST_MIPMAP_LINEAR : GL11.GL_NEAREST);
 	    GL11.glTexParameteri(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_NEAREST);
 	}
     }

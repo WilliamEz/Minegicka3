@@ -72,7 +72,7 @@ public class TestOverlay
 	GL11.glBegin(GL11.GL_QUAD_STRIP);
 	for (int i = 0; i < noise1d.range; i++)
 	{
-	    double noiseAt = noise1d.noises[i];
+	    double noiseAt = noise1d.noiseAt(i);
 	    double[] color = getColor(noise1d, noiseAt);
 	    GL11.glColor3d(color[0], color[1], color[2]);
 	    GL11.glVertex3d(i, noiseAt, 0);
@@ -83,7 +83,7 @@ public class TestOverlay
 	}
 	for (int i = noise1d.range - 1; i >= 0; i--)
 	{
-	    double noiseAt = noise1d.noises[i];
+	    double noiseAt = noise1d.noiseAt(i);
 	    double[] color = getColor(noise1d, noiseAt);
 	    GL11.glColor3d(color[0], color[1], color[2]);
 	    GL11.glVertex3d(i, -noiseAt, 0);
@@ -97,13 +97,13 @@ public class TestOverlay
 	GL11.glBegin(GL11.GL_LINE_LOOP);
 	for (int i = 0; i < noise1d.range; i++)
 	{
-	    double noiseAt = noise1d.noises[i];
+	    double noiseAt = noise1d.noiseAt(i);
 	    GL11.glColor3d(0, 0, 0);
 	    GL11.glVertex3d(i, noiseAt, 0);
 	}
 	for (int i = noise1d.range - 1; i >= 0; i--)
 	{
-	    double noiseAt = noise1d.noises[i];
+	    double noiseAt = noise1d.noiseAt(i);
 	    GL11.glColor3d(0, 0, 0);
 	    GL11.glVertex3d(i, -noiseAt, 0);
 	}

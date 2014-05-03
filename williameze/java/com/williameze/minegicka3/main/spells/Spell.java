@@ -15,19 +15,26 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureAttribute;
+import net.minecraft.entity.boss.EntityDragon;
 import net.minecraft.entity.monster.EntityBlaze;
 import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.entity.monster.EntityMagmaCube;
 import net.minecraft.entity.monster.EntityPigZombie;
 import net.minecraft.entity.monster.EntitySnowman;
 import net.minecraft.entity.monster.EntityZombie;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
 import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.ChatComponentText;
+import net.minecraft.util.ChatStyle;
 import net.minecraft.util.DamageSource;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 
+import com.williameze.minegicka3.core.PlayerData;
+import com.williameze.minegicka3.core.PlayersData;
 import com.williameze.minegicka3.main.Element;
 import com.williameze.minegicka3.main.SpellDamageModifier;
 import com.williameze.minegicka3.main.Values;
@@ -67,11 +74,17 @@ public class Spell
     {
 	toBeInvalidated = false;
 	spellTicks = 0;
-	elements.clear();
-	elements.addAll(l);
+	setElements(l);
 	dimensionID = dimID;
 	casterUUID = entityID;
 	castType = type;
+	additionalData = addi;
+    }
+
+    public void setElements(List<Element> l)
+    {
+	elements.clear();
+	elements.addAll(l);
 	if (elements.contains(Element.Shield))
 	{
 	    spellType = SpellType.Grounded;
@@ -89,7 +102,6 @@ public class Spell
 	    spellType = SpellType.Lightning;
 	}
 	else spellType = SpellType.Spray;
-	additionalData = addi;
     }
 
     public SpellExecute getExecute()
@@ -214,6 +226,7 @@ public class Spell
 
     public void damageEntity(Entity e, int cooldownTime, SpellDamageModifier mod)
     {
+	if (e.worldObj.isRemote) return;
 	int countWater = countElement(Element.Water);
 	int countLife = countElement(Element.Life);
 	int countCold = countElement(Element.Cold);
@@ -232,8 +245,8 @@ public class Spell
 	{
 	    EntityLivingBase be = (EntityLivingBase) e;
 	    if (countCold > 0) be.addPotionEffect(new PotionEffect(Potion.moveSlowdown.getId(), 20 * countCold, countCold));
-	    if (countCold + countWater + countSteam > 0) be.addPotionEffect(new PotionEffect(Potion.fireResistance.getId(), (countCold + countWater + countSteam) * 20,
-		    countCold + countWater + countSteam));
+	    if (countCold + countWater + countSteam > 0) be.addPotionEffect(new PotionEffect(Potion.fireResistance.getId(), (countCold
+		    + countWater + countSteam) * 20, countCold + countWater + countSteam));
 	    if (countLife > 0) ((EntityLivingBase) e).removePotionEffect(Potion.poison.getId());
 	}
 
@@ -302,15 +315,73 @@ public class Spell
 	    float totalDamage = (float) (waterDamage + fireDamage + arcaneDamage + lightningDamage + earthDamage + iceDamage + coldDamage + steamDamage);
 	    if (totalDamage > 0)
 	    {
-		e.attackEntityFrom(getCaster() instanceof EntityLivingBase ? DamageSource.causeMobDamage((EntityLivingBase) getCaster()) : DamageSource.magic,
-			totalDamage);
+		DamageSource source = getCaster() instanceof EntityLivingBase ? DamageSource.causeMobDamage((EntityLivingBase) getCaster())
+			: DamageSource.magic;
+		if (e instanceof EntityDragon)
+		{
+		    EntityDragon dr = (EntityDragon) e;
+		    dr.attackEntityFromPart(dr.dragonPartBody, source, totalDamage);
+		}
+		else e.attackEntityFrom(source, totalDamage);
 	    }
 	    if (lifeHeal > 0 && e instanceof EntityLivingBase)
 	    {
 		((EntityLivingBase) e).heal((float) lifeHeal);
 	    }
-	    recentlyAffected.put(e, (int) (cooldownTime / getAtkSpeed()));
+	    if (cooldownTime > 0) recentlyAffected.put(e, (int) (cooldownTime / getAtkSpeed()));
 	}
+    }
+
+    public double consumeMana(double m, boolean reallyConsume, boolean mustHaveMoreMana, int showChatMessage)
+    {
+	Entity e = getCaster();
+	if (e instanceof EntityPlayer)
+	{
+	    EntityPlayer p = (EntityPlayer) e;
+	    if (p.capabilities.isCreativeMode) return 1;
+	    PlayersData psd = PlayersData.getWorldPlayersData(p.worldObj);
+	    PlayerData pd = psd.getPlayerData(p);
+
+	    double canConsume = Math.min(m, pd.mana);
+	    if (mustHaveMoreMana && pd.mana < m)
+	    {
+		canConsume = 0;
+	    }
+	    boolean nope = pd.mana < m;
+	    if (canConsume > 0)
+	    {
+		if (reallyConsume)
+		{
+		    pd.mana -= canConsume;
+		    if (!p.worldObj.isRemote) psd.sendPlayerManaToClient(p, p);
+		}
+	    }
+	    if (nope)
+	    {
+		if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
+		{
+		    if (showChatMessage == 1)
+		    {
+			p.addChatMessage(new ChatComponentText("Mana too low.").setChatStyle(new ChatStyle().setItalic(true).setColor(
+				EnumChatFormatting.RED)));
+		    }
+		    else if (showChatMessage == 2)
+		    {
+			p.addChatMessage(new ChatComponentText("Requires " + (int) (Math.round(m * 10) / 10) + " mana.")
+				.setChatStyle(new ChatStyle().setItalic(true).setColor(EnumChatFormatting.RED)));
+		    }
+		    else if (showChatMessage == 3)
+		    {
+			p.addChatMessage(new ChatComponentText("Requires " + (int) (Math.round(m * 10) / 10) + " mana. Poor you just have "
+				+ (int) (Math.round(pd.mana * 10) / 10) + " mana.").setChatStyle(new ChatStyle().setItalic(true).setColor(
+				EnumChatFormatting.RED)));
+		    }
+		}
+	    }
+
+	    return canConsume / m;
+	}
+	return 1;
     }
 
     public NBTTagCompound getStaffTag()

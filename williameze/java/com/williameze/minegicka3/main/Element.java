@@ -89,8 +89,8 @@ public enum Element
     {
 	if (this == Arcane) return new Color(255, 0, 0);
 	else if (this == Cold) return new Color(255, 255, 255);
-	else if (this == Earth) return new Color(80, 60, 27);
-	else if (this == Fire) return new Color(255, 100, 0);
+	else if (this == Earth) return new Color(56, 39, 19);
+	else if (this == Fire) return new Color(255, 75, 0);
 	else if (this == Ice) return new Color(144, 255, 255);
 	else if (this == Life) return new Color(0, 255, 0);
 	else if (this == Lightning) return new Color(255, 84, 253);

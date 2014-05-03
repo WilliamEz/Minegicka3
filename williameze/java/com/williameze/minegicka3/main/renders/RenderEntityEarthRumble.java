@@ -59,9 +59,9 @@ public class RenderEntityEarthRumble extends Render
 	int minX = (int) Math.floor(rum.posX - currentMaxRange);
 	int minY = (int) Math.floor(rum.posY - rum.height / 2);
 	int minZ = (int) Math.floor(rum.posZ - currentMaxRange);
-	int maxX = (int) Math.ceil(rum.posX + currentMaxRange);
-	int maxY = (int) Math.ceil(rum.posY + rum.height / 2);
-	int maxZ = (int) Math.ceil(rum.posZ + currentMaxRange);
+	int maxX = (int) Math.floor(rum.posX + currentMaxRange);
+	int maxY = (int) Math.floor(rum.posY + rum.height / 2);
+	int maxZ = (int) Math.floor(rum.posZ + currentMaxRange);
 	for (int x = minX; x <= maxX; x++)
 	{
 	    for (int y = minY; y <= maxY; y++)

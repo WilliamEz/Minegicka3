@@ -2,6 +2,7 @@ package com.williameze.minegicka3;
 
 import java.util.Arrays;
 
+import net.minecraft.block.Block;
 import net.minecraft.item.Item;
 
 import com.williameze.minegicka3.core.CoreBridge;
@@ -9,13 +10,22 @@ import com.williameze.minegicka3.main.entities.EntityBeam;
 import com.williameze.minegicka3.main.entities.EntityBeamArea;
 import com.williameze.minegicka3.main.entities.EntityBoulder;
 import com.williameze.minegicka3.main.entities.EntityEarthRumble;
+import com.williameze.minegicka3.main.entities.EntityIceShard;
 import com.williameze.minegicka3.main.entities.EntityIcicle;
 import com.williameze.minegicka3.main.entities.EntityLightning;
+import com.williameze.minegicka3.main.entities.EntityMine;
 import com.williameze.minegicka3.main.entities.EntitySprayCold;
 import com.williameze.minegicka3.main.entities.EntitySprayFire;
 import com.williameze.minegicka3.main.entities.EntitySpraySteam;
 import com.williameze.minegicka3.main.entities.EntitySprayWater;
+import com.williameze.minegicka3.main.entities.EntityStorm;
+import com.williameze.minegicka3.main.entities.FXEProjectileCharge;
+import com.williameze.minegicka3.main.entities.FXESimpleParticle;
+import com.williameze.minegicka3.main.objects.BlockShield;
+import com.williameze.minegicka3.main.objects.BlockWall;
 import com.williameze.minegicka3.main.objects.ItemStaff;
+import com.williameze.minegicka3.main.objects.TileEntityShield;
+import com.williameze.minegicka3.main.objects.TileEntityWall;
 import com.williameze.minegicka3.main.packets.PacketPipeline;
 import com.williameze.minegicka3.main.packets.PacketPlayerData;
 import com.williameze.minegicka3.main.packets.PacketPlayerMana;
@@ -49,6 +59,7 @@ public class ModBase
     public static PacketPipeline packetPipeline = new PacketPipeline();
 
     public static Item staff, hemmyStaff;
+    public static Block shieldBlock, wallBlock;
     public static CreativeTabCustom modCreativeTab;
 
     @EventHandler
@@ -63,8 +74,9 @@ public class ModBase
 	}
 	proxy.load();
 	CoreBridge.instance();
-	initBlocksAndItems();
-	initRecipes();
+	initObjects();
+	registerObjects();
+	registerRecipes();
 	registerEntities();
     }
 
@@ -83,26 +95,43 @@ public class ModBase
 	proxy.postLoad();
     }
 
-    public void initBlocksAndItems()
+    public void initObjects()
     {
 	String themodid = MODID + ":";
+	modCreativeTab = new CreativeTabCustom("Minegicka 3");
 
-	staff = new ItemStaff().setUnlocalizedName(themodid + "Staff");
-	GameRegistry.registerItem(staff, themodid + "Staff");
-	hemmyStaff = new ItemStaff().setBaseStats(1, 3, 1, 3).setUnlocalizedName(themodid + "HemmyStaff");
-	GameRegistry.registerItem(hemmyStaff, themodid + "HemmyStaff");
+	// //Items registering
+	staff = new ItemStaff().setUnlocalizedName(themodid + "Staff").setCreativeTab(modCreativeTab);
+	hemmyStaff = new ItemStaff().setBaseStats(1, 3, 1, 3).setUnlocalizedName(themodid + "HemmyStaff").setCreativeTab(modCreativeTab);
 
-	modCreativeTab = new CreativeTabCustom("Minegicka 3").setTabIconItem(staff);
-	staff.setCreativeTab(modCreativeTab);
-	hemmyStaff.setCreativeTab(modCreativeTab);
+	// //Blocks registering
+	shieldBlock = new BlockShield().setBlockName(themodid + "ShieldBlock").setBlockTextureName("glass");
+	wallBlock = new BlockWall().setBlockName(themodid + "wallBlock").setBlockTextureName("glass");
     }
 
-    public void initRecipes()
+    public void registerObjects()
+    {
+	String themodid = MODID + ":";
+	modCreativeTab.setTabIconItem(staff);
+
+	GameRegistry.registerItem(staff, themodid + "Staff");
+	GameRegistry.registerItem(hemmyStaff, themodid + "HemmyStaff");
+
+	GameRegistry.registerBlock(shieldBlock, themodid + "ShieldBlock");
+	GameRegistry.registerTileEntity(TileEntityShield.class, themodid + "ShieldBlockTile");
+	GameRegistry.registerBlock(wallBlock, themodid + "WallBlock");
+	GameRegistry.registerTileEntity(TileEntityWall.class, themodid + "WallBlockTile");
+    }
+
+    public void registerRecipes()
     {
     }
 
     public void registerEntities()
     {
+	registerEntity(FXEProjectileCharge.class, "FXEProjectileCharge", 64, Integer.MAX_VALUE);
+	registerEntity(FXESimpleParticle.class, "FXESimpleParticle", 64, Integer.MAX_VALUE);
+
 	registerEntity(EntitySprayCold.class, "SprayCold", 64, Integer.MAX_VALUE);
 	registerEntity(EntitySprayFire.class, "SprayFire", 64, Integer.MAX_VALUE);
 	registerEntity(EntitySpraySteam.class, "SpraySteam", 64, Integer.MAX_VALUE);
@@ -113,6 +142,9 @@ public class ModBase
 	registerEntity(EntityBoulder.class, "Boulder", 64, Integer.MAX_VALUE);
 	registerEntity(EntityIcicle.class, "Icicle", 64, Integer.MAX_VALUE);
 	registerEntity(EntityEarthRumble.class, "EarthRumble", 64, Integer.MAX_VALUE);
+	registerEntity(EntityIceShard.class, "IceShard", 64, Integer.MAX_VALUE);
+	registerEntity(EntityStorm.class, "Storm", 64, Integer.MAX_VALUE);
+	registerEntity(EntityMine.class, "Mine", 64, Integer.MAX_VALUE);
     }
 
     public void registerEntity(Class eClass, String eName, int updateRange, int updateFrequency)

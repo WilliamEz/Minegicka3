@@ -8,14 +8,14 @@ import com.williameze.minegicka3.main.entities.EntityIcicle;
 import com.williameze.minegicka3.main.entities.EntityLightning;
 import com.williameze.minegicka3.main.entities.EntitySpray;
 
-public class DefaultSpellSelector implements IEntitySelector
+public class ESelectorDefault implements IEntitySelector
 {
     public Spell spell;
     public boolean forceSelectPlayer = false;
     public boolean forceNonPVP = false;
     public boolean isFromNonPlayer;
 
-    public DefaultSpellSelector(Spell s)
+    public ESelectorDefault(Spell s)
     {
 	spell = s;
 	isFromNonPlayer = s.getCaster() == null || (s.getCaster() instanceof EntityPlayer == false);

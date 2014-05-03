@@ -8,7 +8,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.minecraft.block.material.Material;
+import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Blocks;
@@ -16,8 +16,6 @@ import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
-import net.minecraft.util.MovingObjectPosition;
-import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
 import com.google.common.collect.Sets;
@@ -26,41 +24,22 @@ import com.williameze.api.math.MathHelper;
 import com.williameze.api.math.Vector;
 import com.williameze.minegicka3.ModBase;
 import com.williameze.minegicka3.main.Element;
-import com.williameze.minegicka3.main.SpellDamageModifier;
 import com.williameze.minegicka3.main.Values;
-import com.williameze.minegicka3.main.spells.ESelectorDefault;
 import com.williameze.minegicka3.main.spells.Spell;
 import com.williameze.minegicka3.main.spells.Spell.CastType;
 
 import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 
-public class EntityEarthRumble extends Entity implements IEntityAdditionalSpawnData
+public class EntityIceShard extends Entity implements IEntityAdditionalSpawnData
 {
-    private Spell spell = Spell.none;
-    public boolean searched;
-    public List<Entity> targets = new ArrayList();
+    public Spell spell = Spell.none;
+    public int maxTick;
 
-    public EntityEarthRumble(World par1World)
+    public EntityIceShard(World par1World)
     {
 	super(par1World);
 	renderDistanceWeight = Values.renderDistance;
-	setSize(4, 4);
-	searched = false;
-	ignoreFrustumCheck = true;
-    }
-
-    public Spell getSpell()
-    {
-	return spell;
-
-    }
-
-    public void setSpell(Spell s)
-    {
-	spell = s;
-	width = (s.countElements() * 4 + 4) * 2;
-	height = s.countElements() * 2 + 1;
-	boundingBox.setBounds(posX - width / 2, posY - height / 2, posZ - width / 2, posX + width / 2, posY + height / 2, posZ + width / 2);
+	setSize(0.1f, 0.1f);
     }
 
     @Override
@@ -76,11 +55,6 @@ public class EntityEarthRumble extends Entity implements IEntityAdditionalSpawnD
     }
 
     @Override
-    public void moveEntity(double par1, double par3, double par5)
-    {
-    }
-
-    @Override
     protected void entityInit()
     {
     }
@@ -89,56 +63,16 @@ public class EntityEarthRumble extends Entity implements IEntityAdditionalSpawnD
     public void onUpdate()
     {
 	super.onUpdate();
-	motionX = motionY = motionZ = 0;
-	if (spell == null || ticksExisted > maxTick())
-	{
-	    setDead();
-	    return;
-	}
+	if (ticksExisted > maxTick) setDead();
 
-	Entity e = spell.getCaster();
-	if (!searched)
+	if (worldObj.isRemote)
 	{
-	    searched = true;
-	    targets.addAll(worldObj.selectEntitiesWithinAABB(EntityLivingBase.class, boundingBox, new ESelectorDefault(spell)));
-	}
-	if (ticksExisted % interval() == 0)
-	{
-	    if (!targets.isEmpty())
+	    for (int a = 0; a < 4; a++)
 	    {
-		List<Entity> toRemove = new ArrayList();
-		for (Entity ent : targets)
-		{
-		    if (ent.onGround == false)
-		    {
-			toRemove.add(ent);
-			continue;
-		    }
-		    if (ent.getDistanceSq(posX, ent.posY, posZ) <= Math.pow(ticksExisted / (double) maxTick() * maxRange(), 2))
-		    {
-			spell.damageEntity(ent, 0);
-			ent.motionY += spell.countElements() * spell.getPower() * 0.15;
-			toRemove.add(ent);
-		    }
-		}
-		targets.removeAll(toRemove);
+		worldObj.spawnParticle("blockcrack_" + Block.getIdFromBlock(Blocks.ice) + "_0", posX, posY + height / 2, posZ,
+			(rand.nextDouble() - 0.5) * 2, (rand.nextDouble() - 0.5) * 2, (rand.nextDouble() - 0.5) * 2);
 	    }
 	}
-    }
-
-    public double maxRange()
-    {
-	return width / 2;
-    }
-
-    public int interval()
-    {
-	return 20;
-    }
-
-    public int maxTick()
-    {
-	return interval() * Math.max(6 - getSpell().countElements(), 4) + interval() - 1;
     }
 
     @Override
@@ -160,6 +94,7 @@ public class EntityEarthRumble extends Entity implements IEntityAdditionalSpawnD
 	    byte[] b = CompressedStreamTools.compress(spell.writeToNBT());
 	    buffer.writeInt(b.length);
 	    buffer.writeBytes(b);
+	    buffer.writeInt(maxTick);
 	}
 	catch (IOException e)
 	{
@@ -176,7 +111,7 @@ public class EntityEarthRumble extends Entity implements IEntityAdditionalSpawnD
 	    additionalData.readBytes(b);
 	    NBTTagCompound tag = CompressedStreamTools.decompress(b);
 	    spell = Spell.createFromNBT(tag);
-	    setSpell(spell);
+	    maxTick = additionalData.readInt();
 	}
 	catch (IOException e)
 	{

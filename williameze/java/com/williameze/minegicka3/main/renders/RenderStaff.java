@@ -26,9 +26,8 @@ public class RenderStaff implements IItemRenderer
     {
 	if (item.getItem() instanceof ItemStaff && type != ItemRenderType.INVENTORY)
 	{
-	    DrawHelper.enableLighting(1.8f);
+	    //DrawHelper.enableLighting(1.8f);
 	}
-
 	return true;
     }
 
@@ -90,10 +89,11 @@ public class RenderStaff implements IItemRenderer
 
 	    if (type != ItemRenderType.INVENTORY)
 	    {
-		DrawHelper.disableLighting();
+		//DrawHelper.disableLighting();
 	    }
+
+	    GL11.glColor4d(1, 1, 1, 1);
 	    GL11.glEnable(GL11.GL_CULL_FACE);
-	    GL11.glDisable(GL11.GL_BLEND);
 	    GL11.glEnable(GL11.GL_TEXTURE_2D);
 	    GL11.glPopMatrix();
 	}

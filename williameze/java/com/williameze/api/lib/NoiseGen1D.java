@@ -9,13 +9,18 @@ public class NoiseGen1D
 {
     public long seed;
     public Random random;
-    public double[] noises;
+    private double[] noises;
     public int range;
     public int index;
     public double maxCap, minCap;
     public double maxDifChange, minDifChange;
 
     public double shifting;
+
+    public NoiseGen1D(long l, int i)
+    {
+	this((Long) l, i);
+    }
 
     public NoiseGen1D(Long l, int i)
     {
@@ -40,6 +45,14 @@ public class NoiseGen1D
 	maxDifChange = base;
 	minDifChange = minChange;
 	return this;
+    }
+
+    public double noiseAt(double d)
+    {
+	d = Math.max(0, Math.min(d, noises.length - 1));
+	int floorD = (int) Math.floor(d);
+	int ceilD = (int) Math.ceil(d);
+	return (noises[floorD] + noises[ceilD]) / 2D;
     }
 
     public void generate()

@@ -26,17 +26,18 @@ public class FuncHelper
     {
 	List<Entity> l = new ArrayList();
 
-	if (motion.lengthSqrVector() > 260)
+	double maxMotionLength = 16D;
+	if (motion.lengthSqrVector() > maxMotionLength * maxMotionLength + 8)
 	{
-	    double times = motion.lengthVector() / 16D;
-	    Vector motionPer16 = motion.multiply(1 / times);
+	    double times = motion.lengthVector() / maxMotionLength;
 	    int loopTimes = (int) Math.ceil(times);
+	    Vector motionPer16 = motion.multiply(1D / loopTimes);
 	    for (int a = 0; a < loopTimes; a++)
 	    {
 		AxisAlignedBB aabb = aabb0.getOffsetBoundingBox(motionPer16.x * a, motionPer16.y * a, motionPer16.z * a);
 		double motionRate = a == loopTimes - 1 ? times - loopTimes + 1 : 1;
 		Vector newMotion = motionPer16.copy();
-		if(a==loopTimes-1) newMotion.setToLength(16D*(times-(loopTimes-1)));
+		if (a == loopTimes - 1) newMotion.setToLength(maxMotionLength * (times - (loopTimes - 1)));
 		l.addAll(getEntitiesWithinBoundingBoxMovement(world, aabb, newMotion, clazz, ies));
 	    }
 	}
@@ -172,8 +173,8 @@ public class FuncHelper
     {
 	AxisAlignedBB aabb1 = e1.getBoundingBox();
 	if (aabb1 == null) aabb1 = e1.boundingBox;
-	if (aabb1 == null) aabb1 = AxisAlignedBB.getBoundingBox(e1.posX - e1.width / 2, e1.posY, e1.posZ + e1.width / 2, e1.posX
-		+ e1.width / 2, e1.posY + e1.height, e1.posZ + e1.width / 2);
+	if (aabb1 == null) aabb1 = AxisAlignedBB.getBoundingBox(e1.posX - e1.width / 2, e1.posY, e1.posZ + e1.width / 2, e1.posX + e1.width
+		/ 2, e1.posY + e1.height, e1.posZ + e1.width / 2);
 
 	return new Vector((aabb1.maxX + aabb1.minX) / 2, (aabb1.maxY + aabb1.minY) / 2, (aabb1.maxZ + aabb1.minZ) / 2);
     }

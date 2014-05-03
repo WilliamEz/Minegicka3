@@ -1,8 +1,6 @@
 package com.williameze.minegicka3.main.spells;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.nbt.NBTTagCompound;
-import scala.util.Random;
 
 import com.williameze.api.math.Plane;
 import com.williameze.api.math.Vector;
@@ -12,6 +10,7 @@ import com.williameze.minegicka3.main.entities.EntitySprayCold;
 import com.williameze.minegicka3.main.entities.EntitySprayFire;
 import com.williameze.minegicka3.main.entities.EntitySpraySteam;
 import com.williameze.minegicka3.main.entities.EntitySprayWater;
+import com.williameze.minegicka3.main.entities.EntityStorm;
 import com.williameze.minegicka3.main.spells.Spell.CastType;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -25,7 +24,7 @@ public class SpellExecuteSpray extends SpellExecute
     @Override
     public void updateSpell(Spell s)
     {
-	if (s.spellTicks > 75 + s.countElements() * 25 || s.getCaster().getLookVec() == null)
+	if (s.spellTicks > 75 + s.countElements() * 25 || s.getCaster() == null || s.getCaster().getLookVec() == null)
 	{
 	    s.toBeInvalidated = true;
 	    return;
@@ -33,6 +32,7 @@ public class SpellExecuteSpray extends SpellExecute
 	else
 	{
 	    Entity caster = s.getCaster();
+	    boolean isFromStorm = caster instanceof EntityStorm;
 	    boolean client = FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT;
 	    double power = Math.pow(s.countElements(), 0.3) * s.getPower() * 1.25D;
 	    double consume = Math.pow(s.countElements(), 1.2) * s.getManaConsumeRate() * 1.5D;
@@ -67,7 +67,7 @@ public class SpellExecuteSpray extends SpellExecute
 	    {
 		for (Element e : s.elements)
 		{
-		    if (client && rnd.nextInt(10) <= 6 || !client && rnd.nextInt(10) == 0)
+		    if (client && rnd.nextInt(10 * (isFromStorm ? 2 : 1)) <= 6 || !client && rnd.nextInt(10 * (isFromStorm ? 2 : 1)) == 0)
 		    {
 			shootSpray(s, e, pos, dir, power, 0.4, client);
 		    }

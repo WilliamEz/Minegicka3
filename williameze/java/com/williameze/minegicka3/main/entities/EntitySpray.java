@@ -22,7 +22,7 @@ import com.williameze.api.lib.FuncHelper;
 import com.williameze.api.math.IntVector;
 import com.williameze.api.math.Vector;
 import com.williameze.minegicka3.main.Values;
-import com.williameze.minegicka3.main.spells.DefaultSpellSelector;
+import com.williameze.minegicka3.main.spells.ESelectorDefault;
 import com.williameze.minegicka3.main.spells.Spell;
 
 import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
@@ -134,7 +134,6 @@ public class EntitySpray extends Entity implements IEntityAdditionalSpawnData
     public void onUpdate()
     {
 	super.onUpdate();
-	ticksExisted++;
 	this.prevPosX = this.posX;
 	this.prevPosY = this.posY;
 	this.prevPosZ = this.posZ;
@@ -151,7 +150,7 @@ public class EntitySpray extends Entity implements IEntityAdditionalSpawnData
 	    }
 
 	    List<Entity> entities = FuncHelper.getEntitiesWithinBoundingBoxMovement(worldObj, boundingBox, new Vector(motionX, motionY, motionZ), EntityLivingBase.class,
-		    new DefaultSpellSelector(getSpell()));
+		    new ESelectorDefault(getSpell()));
 	    entities.remove(spell.getCaster());
 	    for (Entity e : entities)
 	    {

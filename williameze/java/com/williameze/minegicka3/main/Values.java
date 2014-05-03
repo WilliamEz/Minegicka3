@@ -1,14 +1,17 @@
 package com.williameze.minegicka3.main;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
-import com.williameze.minegicka3.ModBase;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
+
+import com.williameze.api.math.IntVector;
+import com.williameze.minegicka3.ModBase;
 
 public abstract class Values
 {
@@ -20,10 +23,13 @@ public abstract class Values
 
     /** Values **/
     public static int clientTicked = 0;
-    public static Map<World, Map<UUID, Entity>> worldEntitiesUUIDMap = new HashMap();
     public static double renderDistance = 32;
     public static double spellUpdateRange = 64;
     public static double minManaToCastSpell = 20;
+
+    /** Lists and maps **/
+    public static Map<World, Map<UUID, Entity>> worldEntitiesUUIDMap = new HashMap();
+    public static List<IntVector> worldShields = new ArrayList();
 
     /** Enums **/
     public static enum GuiPosition
@@ -38,5 +44,11 @@ public abstract class Values
 	{
 	    super(ModBase.MODID, "textures/" + s);
 	}
+    }
+
+    public static void onWorldLoad()
+    {
+	//worldEntitiesUUIDMap.clear();
+	worldShields.clear();
     }
 }

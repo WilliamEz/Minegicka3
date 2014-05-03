@@ -36,12 +36,13 @@ public class RenderEntityBoulder extends Render
 	GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 	GL11.glDisable(GL11.GL_TEXTURE_2D);
 	GL11.glDisable(GL11.GL_CULL_FACE);
-	GL11.glTranslated(x, y + var1.height / 2, z);
+	GL11.glTranslated(x, y, z);
 	DrawHelper.enableLighting(1);
 
 	doTheRender_followLine((EntityBoulder) var1, partialTick);
 
 	GL11.glRotated(90, 1, 0, 0.3);
+	GL11.glScaled(1.4, 1.4, 1.4);
 	model.render(var1, partialTick);
 
 	DrawHelper.disableLighting();

@@ -42,7 +42,7 @@ public class RenderEntityLightning extends Render
 
     public void renderLightning(EntityLightning l, double x, double y, double z, float yaw, float partialTick)
     {
-
+	if (l.spell.getCaster() == null) return;
 	GL11.glPushMatrix();
 	GL11.glEnable(GL11.GL_DEPTH_TEST);
 	GL11.glEnable(GL11.GL_BLEND);
@@ -61,7 +61,7 @@ public class RenderEntityLightning extends Render
 
     public void doTheRender(EntityLightning l, int dif, float partialTick)
     {
-	int ticked = (l.ticksExisted + dif) % 6 - 3;
+	int ticked = (l.ticksExisted + dif) % 4;
 	List<PositionedVector> list = lightningsList.get(new SimpleEntry(l, dif));
 	if (ticked == 0) list = null;
 	if (list == null)

@@ -20,7 +20,7 @@ import com.williameze.api.math.Vector;
 import com.williameze.minegicka3.ModBase;
 import com.williameze.minegicka3.main.Element;
 import com.williameze.minegicka3.main.Values;
-import com.williameze.minegicka3.main.spells.DefaultSpellSelector;
+import com.williameze.minegicka3.main.spells.ESelectorDefault;
 import com.williameze.minegicka3.main.spells.Spell;
 
 import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
@@ -37,6 +37,7 @@ public class EntityBeam extends Entity implements IEntityAdditionalSpawnData
 	lastAffectedBlock = 0;
 	renderDistanceWeight = Values.renderDistance;
 	setSize(0.1F, 0.1F);
+	ignoreFrustumCheck = true;
     }
 
     @Override
@@ -124,7 +125,7 @@ public class EntityBeam extends Entity implements IEntityAdditionalSpawnData
 	if (mop != null) mopdsq = getDistanceSq(mop.blockX + 0.5, mop.blockY + 0.5, mop.blockZ + 0.5);
 
 	List<Entity> l = FuncHelper.getEntitiesWithinBoundingBoxMovement(worldObj, boundingBox, vec.multiply(mopdsq),
-		EntityLivingBase.class, new DefaultSpellSelector(spell));
+		EntityLivingBase.class, new ESelectorDefault(spell));
 	Entity pointingAt = FuncHelper.getEntityClosestTo(posX, posY, posZ, l);
 
 	if (pointingAt != null)

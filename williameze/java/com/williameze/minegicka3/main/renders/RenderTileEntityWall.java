@@ -13,8 +13,8 @@ import com.williameze.minegicka3.main.objects.TileEntityWall;
 
 public class RenderTileEntityWall extends TileEntitySpecialRenderer
 {
-    public Cylinder cyl = Cylinder.create(new Vector(0, 0, 0), new Vector(0, 1, 0), 0.2, 16);
-    public Ring ring = new Ring(new Vector(0, 0, 0), new Vector(0, 1, 0), 0.31, 0.37, 6);
+    public Cylinder cyl = Cylinder.create(new Vector(0, 0, 0), new Vector(0, 1, 0), 0.25, 6);
+    public Ring ring = new Ring(new Vector(0, 0, 0), new Vector(0, 1, 0), 0.3, 0.6, 6);
 
     @Override
     public void renderTileEntityAt(TileEntity var1, double x, double y, double z, float partialTick)
@@ -24,7 +24,7 @@ public class RenderTileEntityWall extends TileEntitySpecialRenderer
 
     public void render(TileEntityWall tile, double x, double y, double z, float partialTick)
     {
-	cyl = Cylinder.create(new Vector(0, 0, 0), new Vector(0, 1, 0), 0.35, 4);
+	cyl = Cylinder.create(new Vector(0, 0, 0), new Vector(0, 1, 0), 0.25, 6);
 	ring = new Ring(new Vector(0, 0, 0), new Vector(0, 1, 0), 0.4, 0.6, 6);
 	if (tile.getSpell() == null) return;
 	GL11.glPushMatrix();
@@ -35,8 +35,10 @@ public class RenderTileEntityWall extends TileEntitySpecialRenderer
 	GL11.glTranslated(x, y, z);
 	GL11.glTranslated(0.5, 0, 0.5);
 
+	GL11.glPushMatrix();
 	cyl.setColor(tile.getMainColor());
 	cyl.render();
+	GL11.glPopMatrix();
 
 	int count = tile.getSpell().countElements();
 	for (int a = 0; a < count; a++)

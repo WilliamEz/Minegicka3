@@ -198,18 +198,7 @@ public class Spell
 	    spellTicks++;
 	    getExecute().updateSpell(this);
 
-	    Iterator<Entry<Entity, Integer>> ite = recentlyAffected.entrySet().iterator();
-	    List<Entity> toRemove = new ArrayList();
-	    while (ite.hasNext())
-	    {
-		Entry<Entity, Integer> en = ite.next();
-		en.setValue(en.getValue() - 1);
-		if (en.getValue() == 0) toRemove.add(en.getKey());
-	    }
-	    for (Entity e : toRemove)
-	    {
-		recentlyAffected.remove(e);
-	    }
+	    updateRecentAffected();
 	}
     }
 
@@ -217,6 +206,22 @@ public class Spell
     {
 	toBeInvalidated = true;
 	getExecute().stopSpell(this);
+    }
+
+    public void updateRecentAffected()
+    {
+	Iterator<Entry<Entity, Integer>> ite = recentlyAffected.entrySet().iterator();
+	List<Entity> toRemove = new ArrayList();
+	while (ite.hasNext())
+	{
+	    Entry<Entity, Integer> en = ite.next();
+	    en.setValue(en.getValue() - 1);
+	    if (en.getValue() == 0) toRemove.add(en.getKey());
+	}
+	for (Entity e : toRemove)
+	{
+	    recentlyAffected.remove(e);
+	}
     }
 
     public void damageEntity(Entity e, int cooldownTime)

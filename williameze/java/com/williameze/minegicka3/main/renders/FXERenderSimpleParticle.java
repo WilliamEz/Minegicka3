@@ -11,7 +11,6 @@ import com.williameze.api.math.Vector;
 import com.williameze.api.models.Box;
 import com.williameze.api.models.ModelObject;
 import com.williameze.api.models.Sphere;
-import com.williameze.minegicka3.main.entities.FXEProjectileCharge;
 import com.williameze.minegicka3.main.entities.FXESimpleParticle;
 
 public class FXERenderSimpleParticle extends Render
@@ -38,16 +37,19 @@ public class FXERenderSimpleParticle extends Render
 	GL11.glDisable(GL11.GL_CULL_FACE);
 	GL11.glTranslated(x, y, z);
 
-	DrawHelper.enableLighting(0.3F);
+	DrawHelper.enableLighting(0.65F);
 	if (var1 instanceof FXESimpleParticle)
 	{
+	    FXESimpleParticle fx = (FXESimpleParticle) var1;
 	    ModelObject model;
 	    if (((FXESimpleParticle) var1).renderType == 2) model = sphere;
 	    else if (((FXESimpleParticle) var1).renderType == 1) model = octa;
 	    else model = box;
 
 	    GL11.glScaled(var1.width, var1.height, var1.width);
-	    model.setColor(((FXEProjectileCharge) var1).color.getRGB(), (int) (((FXEProjectileCharge) var1).alpha * 255));
+	    double alphaRate = (double) fx.life / (fx.maxLife + 1D);
+	    alphaRate = alphaRate * alphaRate;
+	    model.setColor(fx.color.getRGB(), (int) (fx.alpha * alphaRate * 255D));
 	    model.render();
 	}
 	DrawHelper.disableLighting();

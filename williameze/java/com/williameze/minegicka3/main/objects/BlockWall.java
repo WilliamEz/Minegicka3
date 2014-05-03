@@ -26,6 +26,12 @@ public class BlockWall extends Block implements ITileEntityProvider
     }
 
     @Override
+    public boolean onBlockEventReceived(World w, int x, int y, int z, int i, int j)
+    {
+	return ((TileEntityWall)w.getTileEntity(x, y, z)).receiveClientEvent(i, j);
+    }
+
+    @Override
     public AxisAlignedBB getCollisionBoundingBoxFromPool(World w, int x, int y, int z)
     {
 	return super.getCollisionBoundingBoxFromPool(w, x, y, z).expand(0.15, 0.15, 0.15);

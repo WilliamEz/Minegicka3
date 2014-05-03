@@ -7,6 +7,7 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
 import com.williameze.api.math.Vector;
+import com.williameze.minegicka3.main.Values;
 
 public class FXESimpleParticle extends Entity
 {
@@ -17,13 +18,15 @@ public class FXESimpleParticle extends Entity
     public double friction;
     public double gravity;
     public int life;
+    public int maxLife;
 
     public FXESimpleParticle(World par1World)
     {
 	super(par1World);
-	setSize(0.05F, 0.05F);
+	setSize(0.1F, 0.1F);
 	gravity = 0;
 	friction = 1;
+	renderDistanceWeight = Values.renderDistance;
     }
 
     @Override
@@ -38,7 +41,7 @@ public class FXESimpleParticle extends Entity
     {
 	super.onUpdate();
 	life--;
-	
+
 	this.prevPosX = this.posX;
 	this.prevPosY = this.posY;
 	this.prevPosZ = this.posZ;
@@ -48,7 +51,7 @@ public class FXESimpleParticle extends Entity
 	motionY *= friction;
 	motionZ *= friction;
 	moveEntity(motionX, motionY, motionZ);
-	
+
 	if (life <= 0) setDead();
     }
 

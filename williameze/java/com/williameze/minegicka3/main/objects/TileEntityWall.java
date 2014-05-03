@@ -65,25 +65,46 @@ public class TileEntityWall extends TileEntity
     {
 	super.updateEntity();
 	life--;
+	getSpell().updateRecentAffected();
 	if (life <= 0)
 	{
+	    worldObj.addBlockEvent(xCoord, yCoord, zCoord, getBlockType(), 0, 0);
 	    if (!worldObj.isRemote)
 	    {
 		worldObj.setBlockToAir(xCoord, yCoord, zCoord);
 	    }
-	    else
+	}
+    }
+
+    @Override
+    public boolean receiveClientEvent(int i, int j)
+    {
+	if (i == 0 && j == 0)
+	{
+	    onBlockDestroyed();
+	    return true;
+	}
+	return super.receiveClientEvent(i, j);
+    }
+
+    public void onBlockDestroyed()
+    {
+	if (worldObj.isRemote)
+	{
+	    for (int a = 0; a < 1 + rnd.nextInt(2); a++)
 	    {
-		Color c = getMainColor();
-		for (int a = 0; a < 3; a++)
-		{
-		    FXESimpleParticle pa = new FXESimpleParticle(worldObj);
-		    pa.setPosition(xCoord + rnd.nextDouble(), yCoord + rnd.nextDouble(), zCoord + rnd.nextDouble());
-		    pa.motionX = (rnd.nextDouble() - 0.5) * 0.1;
-		    pa.motionY = (rnd.nextDouble() - 0.5) * 0.1;
-		    pa.motionZ = (rnd.nextDouble() - 0.5) * 0.1;
-		    pa.friction = 0.97;
-		    worldObj.spawnEntityInWorld(pa);
-		}
+		FXESimpleParticle pa = new FXESimpleParticle(worldObj);
+		pa.setPosition(xCoord + rnd.nextDouble(), yCoord + rnd.nextDouble(), zCoord + rnd.nextDouble());
+		pa.renderType = 0;
+		pa.noClip = true;
+		pa.motionX = (rnd.nextDouble() - 0.5) * 0.3;
+		pa.motionY = (rnd.nextDouble() - 0.5) * 0.3;
+		pa.motionZ = (rnd.nextDouble() - 0.5) * 0.3;
+		pa.friction = 0.99;
+		pa.color = getSpell().elements.get((hashCode() + a) % getSpell().countElements()).getColor();
+		pa.alpha = 0.8;
+		pa.life = pa.maxLife = 60;
+		worldObj.spawnEntityInWorld(pa);
 	    }
 	}
     }
@@ -104,7 +125,10 @@ public class TileEntityWall extends TileEntity
 
     public void entityCollide(Entity e)
     {
-	getSpell().damageEntity(e, (int) (20 / getSpell().getAtkSpeed()));
+	if (getSpell().countElements() > getSpell().countElements(Element.Earth))
+	{
+	    getSpell().damageEntity(e, (int) ((double) 80 / getSpell().getAtkSpeed()));
+	}
     }
 
     @Override

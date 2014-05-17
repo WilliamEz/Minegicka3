@@ -1,10 +1,14 @@
 package com.williameze.minegicka3;
 
 import java.util.HashMap;
+import java.util.Random;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.world.WorldEvent;
 
 import com.williameze.minegicka3.core.PlayersData;
@@ -33,7 +37,6 @@ public class EventsHandler implements IEventListener
 	    }
 	    PlayersData.worldsPlayersDataMap.put(event.world, psd);
 	}
-	Values.onWorldLoad();
     }
 
     @SubscribeEvent
@@ -53,6 +56,12 @@ public class EventsHandler implements IEventListener
     }
 
     @SubscribeEvent
+    public void onWorldUnload(WorldEvent.Unload event)
+    {
+	Values.onWorldUnload();
+    }
+
+    @SubscribeEvent
     public void onEntityJoinWorld(EntityJoinWorldEvent event)
     {
 	Entity e = event.entity;
@@ -68,6 +77,18 @@ public class EventsHandler implements IEventListener
     public void onClientPlayerJoinServer(PlayerEvent.PlayerLoggedInEvent event)
     {
 	PlayersData.getWorldPlayersData(event.player.worldObj).sendPlayerDataToClient(event.player, event.player);
+    }
+
+    @SubscribeEvent
+    public void onEntityKilled(LivingDropsEvent event)
+    {
+	if (!event.entityLiving.worldObj.isRemote && new Random().nextInt(1000) == 0)
+	{
+	    EntityItem ei = new EntityItem(event.entityLiving.worldObj, event.entityLiving.posX, event.entityLiving.posY,
+		    event.entityLiving.posZ, new ItemStack(ModBase.thingy));
+	    ei.delayBeforeCanPickup = 100;
+	    event.drops.add(ei);
+	}
     }
 
     @Override

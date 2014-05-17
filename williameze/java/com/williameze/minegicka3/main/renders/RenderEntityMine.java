@@ -15,7 +15,7 @@ import com.williameze.minegicka3.main.entities.EntityMine;
 
 public class RenderEntityMine extends Render
 {
-    public static Sphere sphere = new Sphere(0, 0, 0, 0.75, 2, 4);
+    public static Sphere sphere = new Sphere(0, 0, 0, 0.65, 12, 24);
     public static Ring ring = new Ring(Vector.root.copy(), Vector.unitY.copy(), 0.85, 1, 6);
 
     protected void bindEntityTexture(Entity par1Entity)
@@ -29,7 +29,7 @@ public class RenderEntityMine extends Render
     @Override
     public void doRender(Entity var1, double x, double y, double z, float yaw, float partialTick)
     {
-	sphere = new Sphere(0, 0, 0, 0.75, 2, 4);
+
 	EntityMine mine = (EntityMine) var1;
 	GL11.glPushMatrix();
 	GL11.glEnable(GL11.GL_BLEND);
@@ -38,7 +38,7 @@ public class RenderEntityMine extends Render
 	GL11.glDisable(GL11.GL_CULL_FACE);
 	GL11.glEnable(GL11.GL_LIGHTING);
 	GL11.glPushMatrix();
-	GL11.glTranslated(x, y + var1.height / 2, z);
+	GL11.glTranslated(x, y, z);
 	GL11.glScaled(0.25, 0.25, 0.25);
 
 	if (mine.spell.hasElement(Element.Arcane))
@@ -49,15 +49,19 @@ public class RenderEntityMine extends Render
 	{
 	    sphere.setColor(Element.Life.getColor());
 	}
-
 	sphere.render();
-	for (int a = 1; a <= mine.spell.countElements(); a++)
+
+	for (int a = 0; a < mine.spell.countElements(); a++)
 	{
-	    double yRing = (-1D + (2D * (a / (double) mine.spell.countElements()) + 0.01 * (mine.ticksExisted + partialTick)) % 2) * 0.6;
-	    ring.setColor(mine.spell.elements.get(a - 1).getColor().getRGB(), (int) (255D * (1 - Math.abs(yRing / 0.6))));
+	    double maxY = 1.2;
+	    double yRing = (((a / (double) (mine.spell.countElements())) + 0.03 * (mine.ticksExisted + partialTick)) % 1) * maxY;
+	    double alphaRate = 1D - yRing / maxY;
+	    double alphaRateSqrt = Math.sqrt(alphaRate);
+	    ring.setColor(mine.spell.elements.get(a).getColor().getRGB(), (int) (255D * alphaRate));
 	    GL11.glPushMatrix();
 	    GL11.glTranslated(0, yRing, 0);
-	    GL11.glRotated((mine.ticksExisted + partialTick + a) * 8, 0, 1, 0);
+	    GL11.glRotated((mine.ticksExisted + partialTick + a * 8) * 8, 0, 1, 0);
+	    GL11.glScaled(alphaRateSqrt, 1, alphaRateSqrt);
 	    ring.render();
 	    GL11.glPopMatrix();
 	}

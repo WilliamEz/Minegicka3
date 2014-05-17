@@ -1,5 +1,6 @@
 package com.williameze.minegicka3.core;
 
+import java.awt.Color;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -7,6 +8,7 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.Tessellator;
@@ -24,6 +26,8 @@ import com.williameze.minegicka3.ModBase;
 import com.williameze.minegicka3.ModKeybinding;
 import com.williameze.minegicka3.main.Element;
 import com.williameze.minegicka3.main.Values;
+import com.williameze.minegicka3.main.magicks.Magick;
+import com.williameze.minegicka3.main.magicks.Magicks;
 import com.williameze.minegicka3.main.objects.ItemStaff;
 import com.williameze.minegicka3.main.packets.PacketStartSpell;
 import com.williameze.minegicka3.main.packets.PacketStopSpell;
@@ -59,6 +63,7 @@ public class CoreClient
     public Spell currentClientCastingSpell;
     public CastType currentClientSpellCastType = CastType.Single;
     public List<Spell> currentWorldSpells = new ArrayList();
+    public Magick currentQueuedMagick;
 
     public boolean recoveringMana = false;
 
@@ -105,7 +110,7 @@ public class CoreClient
 	{
 	    if (currentClientCastingSpell == null)
 	    {
-		Spell s = new Spell(queuedElements, w.provider.dimensionId, p.getUniqueID(), currentClientSpellCastType,
+		Spell s = new Spell(queuedElements, w.provider.dimensionId, p.getPersistentID(), currentClientSpellCastType,
 			Spell.createAdditionalInfo(is));
 		currentClientCastingSpell = s;
 		ModBase.packetPipeline.sendToServer(new PacketStartSpell(s));
@@ -123,6 +128,17 @@ public class CoreClient
 		ModBase.packetPipeline.sendToServer(new PacketStopSpell(currentWorldSpells.get(index)));
 		currentClientCastingSpell = null;
 	    }
+	    clearQueued();
+	}
+    }
+
+    public void clientCastMagick()
+    {
+	if (currentQueuedMagick != null && PlayersData.clientPlayerData.isUnlocked(currentQueuedMagick))
+	{
+	    World world = ModBase.proxy.getClientWorld();
+	    EntityPlayer player = ModBase.proxy.getClientPlayer();
+	    currentQueuedMagick.clientSendMagick(world, player.posX, player.posY, player.posZ, player, null);
 	    clearQueued();
 	}
     }
@@ -147,6 +163,10 @@ public class CoreClient
 	    }
 	    else currentClientSpellCastType = CastType.Single;
 
+	    if (ModKeybinding.keyMagick.isPressed())
+	    {
+		clientCastMagick();
+	    }
 	}
     }
 
@@ -205,6 +225,7 @@ public class CoreClient
 
     public void playerQueueElement(Element e)
     {
+	if (!PlayersData.clientPlayerData.isUnlocked(e)) return;
 	for (int a = 0; a < queuedElements.size(); a++)
 	{
 	    Element e1 = queuedElements.get(a);
@@ -236,6 +257,7 @@ public class CoreClient
 	}
 
 	queuedElements.add(e);
+	checkForMatchedMagick();
     }
 
     public void clearQueued()
@@ -245,6 +267,7 @@ public class CoreClient
 	    replaceElement(a, queuedElements.get(a));
 	}
 	queuedElements.clear();
+	checkForMatchedMagick();
     }
 
     public void replaceElement(int index, Element replacement)
@@ -255,6 +278,16 @@ public class CoreClient
 
 	if (replacement != null) queuedElements.set(index, replacement);
 	else queuedElements.remove(index);
+	checkForMatchedMagick();
+    }
+
+    public void checkForMatchedMagick()
+    {
+	if (queuedElements.isEmpty()) currentQueuedMagick = null;
+	else
+	{
+	    currentQueuedMagick = Magick.getMatchingMagick(queuedElements);
+	}
     }
 
     public int alphaCounterTick = 0;
@@ -264,6 +297,7 @@ public class CoreClient
     public void onRenderGameOverlayTick(RenderGameOverlayEvent event)
     {
 	ScaledResolution scaledResolution = event.resolution;
+	PlayerData pd = PlayersData.clientPlayerData;
 
 	/** Render hud **/
 	if (isWizard() && event instanceof RenderGameOverlayEvent.Post && event.type == ElementType.ALL)
@@ -331,7 +365,7 @@ public class CoreClient
 		GL11.glTranslated((guiWidth - manaBarWidth) / 2, 0, 0);
 		DrawHelper.drawRect(0, 0, manaBarWidth, manaBarHeight, 0.2, 0.2, 0.2, partialTranslucent1);
 		DrawHelper.drawRect(0.5, 0.5, manaBarWidth - 0.5, manaBarHeight - 0.5, 0, 0, 0, partialTranslucent1);
-		if (PlayersData.clientPlayerData.mana < Values.minManaToCastSpell && recoveringMana)
+		if (pd.mana < Values.minManaToCastSpell && recoveringMana)
 		{
 		    DrawHelper.drawRect(manaBarWidth / 2 - (manaBarWidth - 2) / 2 * manaRate, 1, manaBarWidth / 2 + (manaBarWidth - 2) / 2
 			    * manaRate, manaBarHeight - 1, 0.8, 0.8, 0.8, partialTranslucent1);
@@ -343,8 +377,8 @@ public class CoreClient
 		}
 		if (isWizardnessApplicable())
 		{
-		    int manaInt = (int) Math.ceil(PlayersData.clientPlayerData.maxMana * manaRate);
-		    int maxManaInt = (int) Math.ceil(PlayersData.clientPlayerData.maxMana);
+		    int manaInt = (int) Math.ceil(pd.maxMana * manaRate);
+		    int maxManaInt = (int) Math.ceil(pd.maxMana);
 		    String manaString = manaInt + "/" + maxManaInt;
 		    double transX = guiWidth / 2 - mc.fontRenderer.getStringWidth(manaString) / 2 * 0.6;
 		    GL11.glTranslated(transX, 0, 0);
@@ -365,6 +399,25 @@ public class CoreClient
 		drawRemovingElement(queuedElementSize, queuedElementSize, queuedElementGapX, queuedElementGapY, queuedElementsPerRow,
 			positionTop);
 		GL11.glTranslated(-(guiWidth - queuedWidth) / 2, 0, 0);
+		if (!positionTop) GL11.glTranslated(0, queuedHeight, 0);
+	    }
+	    {// queued magick name
+		if (currentQueuedMagick != null && isWizardnessApplicable() && pd.isUnlocked(currentQueuedMagick))
+		{
+		    String name = currentQueuedMagick.getDisplayName();
+		    int nameLength = mc.fontRenderer.getStringWidth(name);
+		    double scale = nameLength > guiWidth ? guiWidth / (double) nameLength : 1;
+		    if (positionTop) GL11.glTranslated(0, 2 + queuedHeight, 0);
+		    else GL11.glTranslated(0, -queuedHeight - 8 * scale, 0);
+		    GL11.glEnable(GL11.GL_BLEND);
+		    GL11.glTranslated((guiWidth - nameLength * scale) / 2, 0, 0);
+		    GL11.glScaled(scale, scale, scale);
+		    mc.fontRenderer.drawString(name, 0, 0, 0xffffff);
+		    GL11.glScaled(1D / scale, 1D / scale, 1D / scale);
+		    GL11.glTranslated((guiWidth - nameLength * scale) / 2, 0, 0);
+		    if (positionTop) GL11.glTranslated(0, -2 - queuedHeight, 0);
+		    else GL11.glTranslated(0, queuedHeight + 8 * scale, 0);
+		}
 	    }
 	    GL11.glColor4d(1, 1, 1, 1);
 	    GL11.glDisable(GL11.GL_BLEND);
@@ -383,8 +436,7 @@ public class CoreClient
 	for (int a = 0; a < l.size(); a++)
 	{
 	    Element e = l.get(a);
-	    DrawHelper.drawElementIcon(null, e, !PlayersData.getPlayerData_static(mc.thePlayer).unlocked.contains(e), x, y, unitWidth,
-		    unitHeight, 0.9);
+	    DrawHelper.drawElementIcon(null, e, !PlayersData.clientPlayerData.isUnlocked(e), x, y, unitWidth, unitHeight, 0.9);
 	    x += unitWidth + gapX;
 	    if ((a + 1) % 4 == 0)
 	    {

@@ -12,6 +12,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 
 import com.williameze.api.lib.FuncHelper;
@@ -139,6 +140,7 @@ public class EntityBeamArea extends Entity implements IEntityAdditionalSpawnData
 	    }
 	}
 	spell.damageEntity(e, 0, damMod);
+	if(!e.isDead && e instanceof EntityMine) e.attackEntityFrom(DamageSource.magic, 0.2F);
     }
 
     public boolean reachAntiBeamBlockOnTheWay(Vector pos, Vector toward)

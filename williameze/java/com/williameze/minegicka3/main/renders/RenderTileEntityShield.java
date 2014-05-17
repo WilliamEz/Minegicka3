@@ -1,14 +1,10 @@
 package com.williameze.minegicka3.main.renders;
 
-import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 
 import org.lwjgl.opengl.GL11;
 
-import sun.java2d.loops.ProcessPath.DrawHandler;
-
-import com.williameze.api.lib.DrawHelper;
 import com.williameze.api.math.Vector;
 import com.williameze.api.models.Box;
 import com.williameze.minegicka3.main.objects.TileEntityShield;

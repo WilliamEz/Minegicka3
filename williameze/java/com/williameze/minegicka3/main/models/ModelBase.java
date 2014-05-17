@@ -18,51 +18,65 @@ public class ModelBase
     {
 	addComponents();
     }
+    
+    public ModelBase(ModelObject obj)
+    {
+	this();
+	components.add(obj);
+    }
 
     public void addComponents()
     {
-
+	components.clear();
     }
 
-    public void render(Entity e, float f)
+    public void render(Object obj, float f)
     {
 	GL11.glPushMatrix();
-	doRenderParameters(e, f);
-	doRenderComponents(e, f);
+	GL11.glDisable(GL11.GL_TEXTURE_2D);
+	GL11.glDisable(GL11.GL_CULL_FACE);
+	GL11.glEnable(GL11.GL_BLEND);
+	GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+	doRenderParameters(obj, f);
+	doRenderComponents(obj, f);
+	GL11.glEnable(GL11.GL_CULL_FACE);
+	GL11.glEnable(GL11.GL_TEXTURE_2D);
 	GL11.glPopMatrix();
     }
 
-    public void doRenderParameters(Entity e, float f)
+    public void doRenderParameters(Object obj, float f)
     {
 	// GL11.glScaled(1 / 16D, 1 / 16D, 1 / 16D);
     }
 
-    public void doRenderComponents(Entity e, float f)
+    public void doRenderComponents(Object obj, float f)
     {
-	renderList(e, f, components);
+	renderList(obj, f, components);
     }
 
-    public void renderList(Entity e, float f, List<ModelObject> l)
+    public void renderList(Object obj, float f, List<ModelObject> l)
     {
 	for (ModelObject o : l)
 	{
-	    renderComponent(e, f, o);
+	    renderComponent(obj, f, o);
 	}
     }
 
-    public void renderComponent(Entity e, float f, ModelObject o)
+    public void renderComponent(Object obj, float f, ModelObject o)
     {
-	onComponentPreRender(e, f, o);
+	GL11.glPushMatrix();
+	onComponentPreRender(obj, f, o);
 	o.render();
-	onComponentPostRender(e, f, o);
+	onComponentPostRender(obj, f, o);
+	GL11.glPopMatrix();
     }
 
-    public void onComponentPreRender(Entity e, float f, ModelObject o)
+    public void onComponentPreRender(Object obj, float f, ModelObject o)
     {
 
     }
 
-    public void onComponentPostRender(Entity e, float f, ModelObject o)
+    public void onComponentPostRender(Object obj, float f, ModelObject o)
     {
 
     }

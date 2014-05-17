@@ -25,11 +25,12 @@ public abstract class Values
     public static int clientTicked = 0;
     public static double renderDistance = 32;
     public static double spellUpdateRange = 64;
+    public static double magickUpdateRange = 64;
     public static double minManaToCastSpell = 20;
+    public static int customRenderId = 10111996;
 
     /** Lists and maps **/
     public static Map<World, Map<UUID, Entity>> worldEntitiesUUIDMap = new HashMap();
-    public static List<IntVector> worldShields = new ArrayList();
 
     /** Enums **/
     public static enum GuiPosition
@@ -46,9 +47,8 @@ public abstract class Values
 	}
     }
 
-    public static void onWorldLoad()
+    public static void onWorldUnload()
     {
-	//worldEntitiesUUIDMap.clear();
-	worldShields.clear();
+	worldEntitiesUUIDMap.clear();
     }
 }

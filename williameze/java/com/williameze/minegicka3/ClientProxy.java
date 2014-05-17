@@ -1,5 +1,7 @@
 package com.williameze.minegicka3;
 
+import java.awt.Color;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -10,6 +12,7 @@ import net.minecraft.world.World;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.MinecraftForge;
 
+import com.williameze.api.models.Sphere;
 import com.williameze.minegicka3.core.CoreBridge;
 import com.williameze.minegicka3.core.CoreClient;
 import com.williameze.minegicka3.main.entities.EntityBeam;
@@ -27,12 +30,15 @@ import com.williameze.minegicka3.main.entities.EntitySprayWater;
 import com.williameze.minegicka3.main.entities.EntityStorm;
 import com.williameze.minegicka3.main.entities.FXEProjectileCharge;
 import com.williameze.minegicka3.main.entities.FXESimpleParticle;
+import com.williameze.minegicka3.main.guis.GuiCraftStation;
 import com.williameze.minegicka3.main.models.ModelEntityBoulder;
+import com.williameze.minegicka3.main.objects.ItemElementStick;
+import com.williameze.minegicka3.main.objects.ItemMagickTablet;
 import com.williameze.minegicka3.main.objects.ItemStaff;
+import com.williameze.minegicka3.main.objects.TileEntityCraftStation;
 import com.williameze.minegicka3.main.objects.TileEntityShield;
 import com.williameze.minegicka3.main.objects.TileEntityWall;
-import com.williameze.minegicka3.main.renders.FXERenderProjectileCharge;
-import com.williameze.minegicka3.main.renders.FXERenderSimpleParticle;
+import com.williameze.minegicka3.main.renders.BlockCustomRenderer;
 import com.williameze.minegicka3.main.renders.RenderEntityBeam;
 import com.williameze.minegicka3.main.renders.RenderEntityBeamArea;
 import com.williameze.minegicka3.main.renders.RenderEntityBoulder;
@@ -43,7 +49,13 @@ import com.williameze.minegicka3.main.renders.RenderEntityLightning;
 import com.williameze.minegicka3.main.renders.RenderEntityMine;
 import com.williameze.minegicka3.main.renders.RenderEntityNothingAtAll;
 import com.williameze.minegicka3.main.renders.RenderEntitySpray;
-import com.williameze.minegicka3.main.renders.RenderStaff;
+import com.williameze.minegicka3.main.renders.RenderFXEProjectileCharge;
+import com.williameze.minegicka3.main.renders.RenderFXESimpleParticle;
+import com.williameze.minegicka3.main.renders.RenderItemElementStick;
+import com.williameze.minegicka3.main.renders.RenderItemGeneral;
+import com.williameze.minegicka3.main.renders.RenderItemMagickTablet;
+import com.williameze.minegicka3.main.renders.RenderItemStaff;
+import com.williameze.minegicka3.main.renders.RenderTileEntityCraftStation;
 import com.williameze.minegicka3.main.renders.RenderTileEntityShield;
 import com.williameze.minegicka3.main.renders.RenderTileEntityWall;
 
@@ -68,6 +80,7 @@ public class ClientProxy extends CommonProxy
 	ModelEntityBoulder.load();
 	RenderEntityBeamArea.load();
 	RenderEntityIceShard.load();
+	RenderTileEntityWall.load();
     }
 
     @Override
@@ -85,8 +98,8 @@ public class ClientProxy extends CommonProxy
     @Override
     public void registerRenderHandler()
     {
-	RenderingRegistry.registerEntityRenderingHandler(FXEProjectileCharge.class, new FXERenderProjectileCharge());
-	RenderingRegistry.registerEntityRenderingHandler(FXESimpleParticle.class, new FXERenderSimpleParticle());
+	RenderingRegistry.registerEntityRenderingHandler(FXEProjectileCharge.class, new RenderFXEProjectileCharge());
+	RenderingRegistry.registerEntityRenderingHandler(FXESimpleParticle.class, new RenderFXESimpleParticle());
 
 	RenderingRegistry.registerEntityRenderingHandler(EntitySprayCold.class, new RenderEntitySpray());
 	RenderingRegistry.registerEntityRenderingHandler(EntitySprayFire.class, new RenderEntitySpray());
@@ -104,6 +117,11 @@ public class ClientProxy extends CommonProxy
 
 	registerTileRenderer(TileEntityShield.class, new RenderTileEntityShield());
 	registerTileRenderer(TileEntityWall.class, new RenderTileEntityWall());
+	registerTileRenderer(TileEntityCraftStation.class, new RenderTileEntityCraftStation());
+
+	RenderingRegistry.registerBlockHandler(new BlockCustomRenderer());
+
+	registerItemRenderer(ModBase.thingy);
     }
 
     public void registerTileRenderer(Class<? extends TileEntity> c, TileEntitySpecialRenderer re)
@@ -116,7 +134,20 @@ public class ClientProxy extends CommonProxy
     {
 	if (i instanceof ItemStaff)
 	{
-	    MinecraftForgeClient.registerItemRenderer(i, new RenderStaff());
+	    MinecraftForgeClient.registerItemRenderer(i, new RenderItemStaff());
+	}
+	if (i instanceof ItemElementStick)
+	{
+	    MinecraftForgeClient.registerItemRenderer(i, new RenderItemElementStick());
+	}
+	if (i instanceof ItemMagickTablet)
+	{
+	    MinecraftForgeClient.registerItemRenderer(i, new RenderItemMagickTablet());
+	}
+	if (i == ModBase.thingy)
+	{
+	    MinecraftForgeClient.registerItemRenderer(i,
+		    new RenderItemGeneral(new Sphere(0, 0, 0, 0.4, 2, 4).setColor(new Color(255, 255, 100, 255))));
 	}
     }
 
@@ -131,5 +162,16 @@ public class ClientProxy extends CommonProxy
     public CoreClient getCoreClient()
     {
 	return (CoreClient) CoreBridge.instance().client;
+    }
+
+    @Override
+    public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z)
+    {
+	if (ID == 0)
+	{
+	    return new GuiCraftStation(player);
+	}
+
+	return null;
     }
 }

@@ -18,7 +18,7 @@ import com.williameze.minegicka3.TickHandlerClient;
 import com.williameze.minegicka3.main.Values;
 import com.williameze.minegicka3.main.objects.ItemStaff;
 
-public class RenderStaff implements IItemRenderer
+public class RenderItemStaff implements IItemRenderer
 {
 
     @Override

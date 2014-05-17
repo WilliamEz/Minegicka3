@@ -34,8 +34,9 @@ public class SpellExecuteSpray extends SpellExecute
 	    Entity caster = s.getCaster();
 	    boolean isFromStorm = caster instanceof EntityStorm;
 	    boolean client = FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT;
-	    double power = Math.pow(s.countElements(), 0.3) * s.getPower() * 1.25D;
-	    double consume = Math.pow(s.countElements(), 1.2) * s.getManaConsumeRate() * 1.5D;
+	    int count = s.countElements();
+	    double power = Math.pow(count, 0.3) * s.getPower() * 1.25D;
+	    double consume = Math.pow(count, 1.2) * s.getManaConsumeRate() * 1.5D;
 	    int loop = client ? 2 : 1;
 
 	    Vector dir = new Vector(caster.getLookVec());
@@ -67,7 +68,8 @@ public class SpellExecuteSpray extends SpellExecute
 	    {
 		for (Element e : s.elements)
 		{
-		    if (client && rnd.nextInt(10 * (isFromStorm ? 2 : 1)) <= 6 || !client && rnd.nextInt(10 * (isFromStorm ? 2 : 1)) == 0)
+		    if (client && rnd.nextInt(8 * count * (isFromStorm ? 2 : 1)) <= 6 || !client
+			    && rnd.nextInt(10 * (isFromStorm ? 2 : 1)) == 0)
 		    {
 			shootSpray(s, e, pos, dir, power, 0.4, client);
 		    }

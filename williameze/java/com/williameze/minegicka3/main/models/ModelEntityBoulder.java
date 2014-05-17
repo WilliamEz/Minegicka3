@@ -66,25 +66,33 @@ public class ModelEntityBoulder extends ModelBase
     }
 
     @Override
-    public void doRenderParameters(Entity e, float f)
+    public void doRenderParameters(Object o, float f)
     {
-	//load();
-	super.doRenderParameters(e, f);
-	GL11.glScaled(e.width, e.height, e.width);
+	// load();
+	super.doRenderParameters(o, f);
+	if (o instanceof EntityBoulder)
+	{
+	    Entity e = (Entity) o;
+	    GL11.glScaled(e.width, e.height, e.width);
+	}
     }
 
     @Override
-    public void doRenderComponents(Entity e, float f)
+    public void doRenderComponents(Object o, float f)
     {
-	if (!pregeneratedModels.isEmpty())
+	if (o instanceof EntityBoulder)
 	{
-	    Sphere s = pregeneratedModels.get(e.hashCode() % pregeneratedModels.size());
-
-	    if (e instanceof EntityBoulder && ((EntityBoulder) e).isIce())
+	    Entity e = (Entity) o;
+	    if (!pregeneratedModels.isEmpty())
 	    {
-		s = pregeneratedIceModels.get(e.hashCode() % pregeneratedIceModels.size());
+		Sphere s = pregeneratedModels.get(e.hashCode() % pregeneratedModels.size());
+
+		if (e instanceof EntityBoulder && ((EntityBoulder) e).isIce())
+		{
+		    s = pregeneratedIceModels.get(e.hashCode() % pregeneratedIceModels.size());
+		}
+		renderComponent(e, f, s);
 	    }
-	    renderComponent(e, f, s);
 	}
     }
 }

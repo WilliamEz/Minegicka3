@@ -39,7 +39,7 @@ public class ItemStaff extends Item
 	ModBase.proxy.registerItemRenderer(this);
 	setMaxStackSize(1);
 	setCreativeTab(ModBase.modCreativeTab);
-	setBaseStats(1, 1, 1, 1);
+	setBaseStats(0.5, 0.5, 0.5, 0.5);
     }
 
     @SideOnly(Side.CLIENT)
@@ -97,7 +97,8 @@ public class ItemStaff extends Item
     }
 
     @Override
-    public boolean onItemUse(ItemStack is, EntityPlayer p, World w, int par4, int par5, int par6, int par7, float par8, float par9, float par10)
+    public boolean onItemUse(ItemStack is, EntityPlayer p, World w, int par4, int par5, int par6, int par7, float par8, float par9,
+	    float par10)
     {
 	p.setItemInUse(is, this.getMaxItemUseDuration(is));
 	clientStartUse(w, p, is);
@@ -195,7 +196,8 @@ public class ItemStaff extends Item
 	if (this == ModBase.staff)
 	{
 	    String s = (String) l.get(0);
-	    s += EnumChatFormatting.DARK_GRAY + "" + EnumChatFormatting.ITALIC + (GuiScreen.isShiftKeyDown() ? "" : " (press Shift for more details)");
+	    s += EnumChatFormatting.DARK_GRAY + "" + EnumChatFormatting.ITALIC
+		    + (GuiScreen.isShiftKeyDown() ? "" : " (press Shift for more details)");
 	    l.set(0, s);
 	}
 
@@ -205,16 +207,21 @@ public class ItemStaff extends Item
 	    String power = EnumChatFormatting.RED + "" + Math.round(tag.getDouble("Power") * 100) + "%" + EnumChatFormatting.GRAY;
 	    String atkSpeed = EnumChatFormatting.GREEN + "" + Math.round(tag.getDouble("ATKSpeed") * 100) + "%" + EnumChatFormatting.GRAY;
 	    String consume = EnumChatFormatting.BLUE + "" + Math.round(tag.getDouble("Consume") * 100) + "%" + EnumChatFormatting.GRAY;
-	    String recover = EnumChatFormatting.LIGHT_PURPLE + "" + Math.round(tag.getDouble("Recover") * 100) + "%" + EnumChatFormatting.GRAY;
+	    String recover = EnumChatFormatting.LIGHT_PURPLE + "" + Math.round(tag.getDouble("Recover") * 100) + "%"
+		    + EnumChatFormatting.GRAY;
 	    l.add("[ " + power + " ; " + atkSpeed + " ; " + consume + " ; " + recover + " ]");
 	}
 	else
 	{
 
-	    l.add("[ " + EnumChatFormatting.RED + "Power: " + Math.round(tag.getDouble("Power") * 100) + "%" + EnumChatFormatting.GRAY + " ]");
-	    l.add("[ " + EnumChatFormatting.GREEN + "ATK Rate: " + Math.round(tag.getDouble("ATKSpeed") * 100) + "%" + EnumChatFormatting.GRAY + " ]");
-	    l.add("[ " + EnumChatFormatting.BLUE + "Mana Consume Rate: " + Math.round(tag.getDouble("Consume") * 100) + "%" + EnumChatFormatting.GRAY + " ]");
-	    l.add("[ " + EnumChatFormatting.LIGHT_PURPLE + "Mana Recovery Rate: " + Math.round(tag.getDouble("Recover") * 100) + "%" + EnumChatFormatting.GRAY + " ]");
+	    l.add("[ " + EnumChatFormatting.RED + "Power: " + Math.round(tag.getDouble("Power") * 100) + "%" + EnumChatFormatting.GRAY
+		    + " ]");
+	    l.add("[ " + EnumChatFormatting.GREEN + "ATK Rate: " + Math.round(tag.getDouble("ATKSpeed") * 100) + "%"
+		    + EnumChatFormatting.GRAY + " ]");
+	    l.add("[ " + EnumChatFormatting.BLUE + "Mana Consume Rate: " + Math.round(tag.getDouble("Consume") * 100) + "%"
+		    + EnumChatFormatting.GRAY + " ]");
+	    l.add("[ " + EnumChatFormatting.LIGHT_PURPLE + "Mana Recovery Rate: " + Math.round(tag.getDouble("Recover") * 100) + "%"
+		    + EnumChatFormatting.GRAY + " ]");
 	}
     }
 

@@ -10,7 +10,6 @@ import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
-import net.minecraft.init.Blocks;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
@@ -156,7 +155,7 @@ public class EntityBoulder extends Entity implements IEntityAdditionalSpawnData
 	    collideWithEntity(e);
 	}
 
-	if (onGroundTick >= 200 || ticksExisted >= 2000) setDead();
+	if (onGroundTick >= 100 || ticksExisted >= 2000) setDead();
 
 	if (ticksExisted >= 400 && getSpell().countElements() > getSpell().countElements(Element.Earth, Element.Ice))
 	{
@@ -291,7 +290,7 @@ public class EntityBoulder extends Entity implements IEntityAdditionalSpawnData
 	{
 	    double strength = getSpell().countElements() * getSpell().additionalData.getDouble("Projectile charged") / 2.5D;
 	    Block b = worldObj.getBlock(x, y, z);
-	    if (b == Blocks.ice || b == Blocks.glass || b == Blocks.glass_pane || b == Blocks.glowstone)
+	    if (b.getMaterial() == Material.glass)
 	    {
 		if (strength > b.getBlockHardness(worldObj, x, y, z))
 		{

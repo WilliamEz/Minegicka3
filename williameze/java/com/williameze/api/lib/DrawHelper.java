@@ -1,14 +1,21 @@
 package com.williameze.api.lib;
 
 import java.nio.FloatBuffer;
+import java.util.List;
 
+import net.minecraft.client.Minecraft;
+import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GLAllocation;
 import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
 
 import org.lwjgl.opengl.GL11;
+import org.lwjgl.opengl.GL12;
 
 import com.williameze.api.math.Vector;
 import com.williameze.minegicka3.main.Element;
@@ -16,6 +23,9 @@ import com.williameze.minegicka3.main.Values;
 
 public class DrawHelper
 {
+    public static Minecraft mc = Minecraft.getMinecraft();
+    public static FontRenderer fontRenderer = mc.fontRenderer;
+    public static RenderItem itemRender = new RenderItem();
     public static FloatBuffer colorBuffer = GLAllocation.createDirectFloatBuffer(16);
     public static final Vector lighting1 = new Vector(1, 1, 1).normalize();
     public static final Vector lighting2 = lighting1.reverse();
@@ -112,6 +122,23 @@ public class DrawHelper
 	tessAddQuad(tess, x + w / 2 - actualW / 2, y + h / 2 - actualH / 2, x + w / 2 + actualW / 2, y + h / 2 + actualH / 2, tu1, tv1,
 		tu2, tv2);
 	tess.draw();
+    }
+
+    public static void drawItemStack(ItemStack is, int x, int y, String stackSize)
+    {
+	if (fontRenderer == null) fontRenderer = mc.fontRenderer;
+	GL11.glPushMatrix();
+        GL11.glEnable(GL11.GL_NORMALIZE);
+        RenderHelper.enableGUIStandardItemLighting();
+	GL11.glColor3f(1F, 1F, 1F);
+	itemRender.zLevel = 200.0F;
+	FontRenderer font = fontRenderer;
+	if (is != null && is.getItem().getFontRenderer(is) != null) font = is.getItem().getFontRenderer(is);
+	itemRender.renderItemAndEffectIntoGUI(fontRenderer, mc.getTextureManager(), is, x, y);
+	itemRender.renderItemOverlayIntoGUI(fontRenderer, mc.getTextureManager(), is, x, y, stackSize);
+	itemRender.zLevel = 0.0F;
+        RenderHelper.disableStandardItemLighting();
+	GL11.glPopMatrix();
     }
 
     public static void blurTexture(boolean b)

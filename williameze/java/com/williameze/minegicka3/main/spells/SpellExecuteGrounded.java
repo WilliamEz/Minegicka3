@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import net.minecraft.block.Block;
+import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 
 import com.williameze.api.lib.FuncHelper;
@@ -32,7 +34,7 @@ public class SpellExecuteGrounded extends SpellExecute
 	Spell s1 = new Spell(l, s.dimensionID, s.casterUUID, s.castType, s.additionalData);
 
 	int count = s.countElements();
-	double manaCost = (count == 1 ? 100 : (count - 1) * (count - 1) * 100) * (area ? 4 : 1) * s.getManaConsumeRate();
+	double manaCost = (count == 1 ? 250 : (count - 1) * (count - 1) * 100) * (area ? 4 : 1) * s.getManaConsumeRate();
 	if (consumeMana(s, manaCost, true, true, 3) >= 1)
 	{
 	    if (caster.worldObj.isRemote) return;
@@ -59,7 +61,9 @@ public class SpellExecuteGrounded extends SpellExecute
 			    int radiusInt = (int) Math.floor(radius);
 			    if (distInt == radiusInt)
 			    {
-				if (caster.worldObj.isAirBlock(x, y, z) || caster.worldObj.getBlock(x, y, z).getMaterial().isReplaceable())
+				Block b = caster.worldObj.getBlock(x, y, z);
+				if (caster.worldObj.isAirBlock(x, y, z) || b.getMaterial().isReplaceable()
+					&& b.getMaterial() != Material.lava)
 				{
 				    boolean inAngle = area;
 				    if (!area)

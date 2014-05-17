@@ -10,8 +10,10 @@ import com.williameze.minegicka3.core.CoreClient;
 import com.williameze.minegicka3.core.CoreServer;
 
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.network.IGuiHandler;
+import cpw.mods.fml.common.network.NetworkRegistry;
 
-public class CommonProxy
+public class CommonProxy implements IGuiHandler
 {
     public void load()
     {
@@ -59,5 +61,22 @@ public class CommonProxy
     public CoreServer getCoreServer()
     {
 	return (CoreServer) CoreBridge.instance().server;
+    }
+
+    public void displayGuiScreen(Object o)
+    {
+
+    }
+
+    @Override
+    public Object getServerGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z)
+    {
+	return null;
+    }
+
+    @Override
+    public Object getClientGuiElement(int ID, EntityPlayer player, World world, int x, int y, int z)
+    {
+	return null;
     }
 }

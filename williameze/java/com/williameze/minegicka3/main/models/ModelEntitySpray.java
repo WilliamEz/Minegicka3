@@ -20,10 +20,14 @@ public class ModelEntitySpray extends ModelBase
     }
 
     @Override
-    public void doRenderParameters(Entity e, float f)
+    public void doRenderParameters(Object o, float f)
     {
-	super.doRenderParameters(e, f);
-	GL11.glScaled(e.width, e.height, e.width);
-	box.setColor(((EntitySpray) e).color);
+	super.doRenderParameters(o, f);
+	if (o instanceof EntitySpray)
+	{
+	    Entity e = (Entity) o;
+	    GL11.glScaled(e.width, e.height, e.width);
+	    box.setColor(((EntitySpray) e).color);
+	}
     }
 }

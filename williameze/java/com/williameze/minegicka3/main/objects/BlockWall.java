@@ -8,9 +8,11 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
 import com.williameze.api.math.IntVector;
+import com.williameze.minegicka3.ModBase;
 import com.williameze.minegicka3.main.Values;
 
 public class BlockWall extends Block implements ITileEntityProvider
@@ -18,23 +20,24 @@ public class BlockWall extends Block implements ITileEntityProvider
 
     public BlockWall()
     {
-	super(Material.rock);
+	super(ModBase.magical);
 	lightOpacity = 0;
 	blockParticleGravity = 1.5F;
 	setLightLevel(0.2F);
 	setBlockUnbreakable();
+	setResistance(5);
+    }
+
+    @Override
+    public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z)
+    {
+	return null;
     }
 
     @Override
     public boolean onBlockEventReceived(World w, int x, int y, int z, int i, int j)
     {
-	return ((TileEntityWall)w.getTileEntity(x, y, z)).receiveClientEvent(i, j);
-    }
-
-    @Override
-    public AxisAlignedBB getCollisionBoundingBoxFromPool(World w, int x, int y, int z)
-    {
-	return super.getCollisionBoundingBoxFromPool(w, x, y, z).expand(0.15, 0.15, 0.15);
+	return ((TileEntityWall) w.getTileEntity(x, y, z)).receiveClientEvent(i, j);
     }
 
     @Override

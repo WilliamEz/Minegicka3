@@ -32,6 +32,7 @@ public class ModKeybinding extends KeyBinding
 
     public static KeyBinding keyArea = new KeyBinding("Area Cast", Keyboard.KEY_F, "key.categories.gameplay");
     public static KeyBinding keyClear = new KeyBinding("Clear Queued", Keyboard.KEY_V, "key.categories.gameplay");
+    public static KeyBinding keyMagick = new KeyBinding("Cast Magick", Keyboard.KEY_R, "key.categories.gameplay");
 
     public static void load()
     {
@@ -41,6 +42,7 @@ public class ModKeybinding extends KeyBinding
 	}
 	ClientRegistry.registerKeyBinding(keyArea);
 	ClientRegistry.registerKeyBinding(keyClear);
+	ClientRegistry.registerKeyBinding(keyMagick);
     }
 
     public ModKeybinding(String description, int id, Element e)

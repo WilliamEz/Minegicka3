@@ -1,4 +1,27 @@
 key.categories.minegicka3=Minegicka 3
 itemGroup.Minegicka 3=Minegicka 3
+
+tile.minegicka3:CraftStation.name=Magical Craft Station
+
+item.minegicka3:Thingy.name=Magical Thing of Nothingness
+item.minegicka3:TheStick.name=The Stick
+item.minegicka3:ArcaneStick.name=Arcane Stick
+item.minegicka3:ColdStick.name=Cold Stick
+item.minegicka3:EarthStick.name=Earth Stick
+item.minegicka3:FireStick.name=Fire Stick
+item.minegicka3:IceStick.name=Ice Stick
+item.minegicka3:LifeStick.name=Life Stick
+item.minegicka3:LightningStick.name=Lightning Stick
+item.minegicka3:ShieldStick.name=Shield Stick
+item.minegicka3:SteamStick.name=Steam Stick
+item.minegicka3:WaterStick.name=Water Stick
+item.minegicka3:MagickTablet.name=Tablet
 item.minegicka3:Staff.name=Staff
 item.minegicka3:HemmyStaff.name=Hemmy's Staff of Mighty
+
+mgk3.string.Categories=Categories
+mgk3.string.Craft=Craft
+mgk3.string.Craft Batch=Craft Batch
+mgk3.string.Craftable=Craftable
+mgk3.string.Crafting=Crafting
+mgk3.string.Recipe=Recipe

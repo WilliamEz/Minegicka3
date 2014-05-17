@@ -6,9 +6,11 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
 import com.williameze.api.math.IntVector;
+import com.williameze.minegicka3.ModBase;
 import com.williameze.minegicka3.main.Values;
 
 public class BlockShield extends Block implements ITileEntityProvider
@@ -16,13 +18,20 @@ public class BlockShield extends Block implements ITileEntityProvider
 
     public BlockShield()
     {
-	super(Material.glass);
+	super(ModBase.magical);
 	lightOpacity = 0;
 	useNeighborBrightness = false;
 	slipperiness = 1;
 	blockParticleGravity = 0;
-	setLightLevel(0.2F);
+	setLightLevel(0.35F);
 	setBlockUnbreakable();
+	setResistance(5);
+    }
+
+    @Override
+    public ItemStack getPickBlock(MovingObjectPosition target, World world, int x, int y, int z)
+    {
+	return null;
     }
 
     @Override
@@ -37,7 +46,6 @@ public class BlockShield extends Block implements ITileEntityProvider
     public int onBlockPlaced(World w, int x, int y, int z, int p_149660_5_, float p_149660_6_, float p_149660_7_, float p_149660_8_,
 	    int p_149660_9_)
     {
-	Values.worldShields.add(new IntVector(x, y, z));
 	return super.onBlockPlaced(w, x, y, z, p_149660_5_, p_149660_6_, p_149660_7_, p_149660_8_, p_149660_9_);
     }
 

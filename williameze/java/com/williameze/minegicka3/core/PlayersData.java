@@ -47,8 +47,8 @@ public class PlayersData
 	{
 	    try
 	    {
-		saveDir = new File(world.getSaveHandler().getWorldDirectory().getCanonicalPath() + File.separatorChar
-			+ "minegicka" + File.separatorChar + "Players.dat");
+		saveDir = new File(world.getSaveHandler().getWorldDirectory().getCanonicalPath() + File.separatorChar + "minegicka"
+			+ File.separatorChar + "Players.dat");
 		saveDir.mkdirs();
 	    }
 	    catch (IOException e)
@@ -154,7 +154,8 @@ public class PlayersData
 	}
 	else if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
 	{
-	    getWorldPlayersData(FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(dimension)).getPlayerData(gf);
+	    getWorldPlayersData(FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(dimension)).getPlayerData(
+		    gf);
 	}
 	return null;
     }
@@ -168,7 +169,7 @@ public class PlayersData
     {
 	ModBase.packetPipeline.sendToAll(new PacketPlayerMana(getPlayerData_static(pToSend)));
     }
-    
+
     public static void sendPlayerDataToWorldClients(EntityPlayer pToSend)
     {
 	PlayerData pd = getPlayerData_static(pToSend);
@@ -190,7 +191,7 @@ public class PlayersData
     {
 	ModBase.packetPipeline.sendToAllAround(new PacketPlayerMana(getPlayerData_static(pToSend)), point);
     }
-    
+
     public static void sendPlayerDataToClient(EntityPlayer pToSend, EntityPlayer pDest)
     {
 	ModBase.packetPipeline.sendTo(new PacketPlayerData(getPlayerData_static(pToSend)), (EntityPlayerMP) pDest);
@@ -200,7 +201,7 @@ public class PlayersData
     {
 	ModBase.packetPipeline.sendTo(new PacketPlayerMana(getPlayerData_static(pToSend)), (EntityPlayerMP) pDest);
     }
-    
+
     public static PlayersData getWorldPlayersData(World w)
     {
 	if (worldsPlayersDataMap.containsKey(w)) return worldsPlayersDataMap.get(w);
@@ -222,7 +223,7 @@ public class PlayersData
     @SideOnly(Side.CLIENT)
     public static void addPlayerDataToClient(PlayerData pd)
     {
-	if (Minecraft.getMinecraft().thePlayer.getGameProfile().equals(pd.playerProfile))
+	if (Minecraft.getMinecraft().thePlayer.getGameProfile().getName().equals(pd.playerProfile.getName()))
 	{
 	    clientPlayerData = pd;
 	}

@@ -3,17 +3,18 @@ package com.williameze.minegicka3.core;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
 
+import org.apache.commons.lang3.math.NumberUtils;
+
 import com.mojang.authlib.GameProfile;
 import com.williameze.minegicka3.ModBase;
 import com.williameze.minegicka3.main.Element;
+import com.williameze.minegicka3.main.magicks.Magick;
 import com.williameze.minegicka3.main.objects.ItemStaff;
-import com.williameze.minegicka3.main.packets.PacketPlayerData;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.relauncher.Side;
@@ -27,6 +28,7 @@ public class PlayerData
     public double maxMana;
     public double mana;
     public List<Element> unlocked = new ArrayList();
+    public List<Magick> unlockedMagicks = new ArrayList();
 
     public PlayerData()
     {
@@ -42,12 +44,12 @@ public class PlayerData
 	playerProfile = p.getGameProfile();
 	dimensionID = p.worldObj.provider.dimensionId;
     }
-    
+
     public void recoverMana()
     {
 	if (mana < maxMana)
 	{
-	    double recover = 1/6D;
+	    double recover = 1 / 6D;
 	    ItemStack is = ref.getCurrentEquippedItem();
 	    if (is != null && is.getItem() instanceof ItemStaff)
 	    {
@@ -62,13 +64,34 @@ public class PlayerData
 	mana += d;
 	mana = Math.max(Math.min(maxMana, mana), 0);
     }
-    
+
     public void unlock(Object o)
     {
-	if(o instanceof Element)
+	if (o instanceof Element)
 	{
 	    unlocked.add((Element) o);
 	}
+	if (o instanceof Magick)
+	{
+	    unlockedMagicks.add((Magick) o);
+	}
+    }
+
+    public boolean isUnlocked(Object o)
+    {
+	if (ref != null && ref.capabilities.isCreativeMode)
+	{
+	    return true;
+	}
+	if (o instanceof Element)
+	{
+	    return unlocked.contains((Element) o);
+	}
+	if (o instanceof Magick)
+	{
+	    return unlockedMagicks.contains((Magick) o);
+	}
+	return false;
     }
 
     public void loadPlayerRefFromServer(MinecraftServer server)
@@ -82,7 +105,7 @@ public class PlayerData
 	for (int a = 0; a < w.playerEntities.size(); a++)
 	{
 	    EntityPlayer e = (EntityPlayer) w.playerEntities.get(a);
-	    if (e.getGameProfile().equals(playerProfile))
+	    if (e.getGameProfile().getName().equals(playerProfile.getName()))
 	    {
 		ref = e;
 		return;
@@ -97,6 +120,11 @@ public class PlayerData
 	for (Element e : unlocked)
 	{
 	    s += String.valueOf(e.ordinal());
+	}
+	s += ";";
+	for (Magick m : unlockedMagicks)
+	{
+	    s += String.valueOf(m.getID()) + ".";
 	}
 	s += ";";
 	return s;
@@ -117,11 +145,20 @@ public class PlayerData
 		pd.unlocked.add(Element.values()[Integer.parseInt(String.valueOf(c))]);
 	    }
 	}
-	if(FMLCommonHandler.instance().getEffectiveSide()==Side.CLIENT)
+	String unlockedMagicksString = ss[5];
+	String[] unlockedMagicksID = unlockedMagicksString.split(".");
+	for (String sm : unlockedMagicksID)
+	{
+	    if (NumberUtils.isDigits(sm))
+	    {
+		pd.unlockedMagicks.add(Magick.getMagickFromID(Integer.parseInt(sm)));
+	    }
+	}
+	if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
 	{
 	    pd.loadPlayerRefFromID(ModBase.proxy.getClientWorld());
 	}
-	else if(FMLCommonHandler.instance().getEffectiveSide()==Side.SERVER)
+	else if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
 	{
 	    pd.loadPlayerRefFromServer(FMLCommonHandler.instance().getMinecraftServerInstance());
 	}
@@ -137,6 +174,6 @@ public class PlayerData
     @Override
     public boolean equals(Object obj)
     {
-	return obj instanceof PlayerData && ((PlayerData) obj).playerProfile.equals(playerProfile);
+	return obj instanceof PlayerData && ((PlayerData) obj).playerProfile.getName().equals(playerProfile.getName());
     }
 }

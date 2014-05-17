@@ -1,8 +1,15 @@
 package com.williameze.minegicka3.core;
 
-import com.williameze.minegicka3.ModBase;
+import java.util.UUID;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.entity.Entity;
+import net.minecraft.world.World;
+
+import com.williameze.minegicka3.ModBase;
+import com.williameze.minegicka3.main.Values;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.gameevent.TickEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.ClientTickEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.PlayerTickEvent;
@@ -10,7 +17,6 @@ import cpw.mods.fml.common.gameevent.TickEvent.RenderTickEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.ServerTickEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.WorldTickEvent;
 import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
 
 public class CoreBridge
 {
@@ -56,4 +62,25 @@ public class CoreBridge
 	    if (event.side == Side.SERVER) ((CoreServer) server).onServerRenderTick((RenderTickEvent) event);
 	}
     }
+
+    public Entity getEntityByUUID(int dimensionID, UUID uuid)
+    {
+	if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
+	{
+	    if (Minecraft.getMinecraft().theWorld.provider.dimensionId == dimensionID)
+	    {
+		return Values.worldEntitiesUUIDMap.get(Minecraft.getMinecraft().theWorld).get(uuid);
+	    }
+	}
+	else if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
+	{
+	    World w = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(dimensionID);
+	    if (w != null)
+	    {
+		return Values.worldEntitiesUUIDMap.get(w).get(uuid);
+	    }
+	}
+	return null;
+    }
+    
 }

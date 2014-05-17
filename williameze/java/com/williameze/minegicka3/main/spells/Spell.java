@@ -33,6 +33,7 @@ import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 
+import com.williameze.minegicka3.core.CoreBridge;
 import com.williameze.minegicka3.core.PlayerData;
 import com.williameze.minegicka3.core.PlayersData;
 import com.williameze.minegicka3.main.Element;
@@ -113,21 +114,7 @@ public class Spell
     {
 	if (caster == null)
 	{
-	    if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
-	    {
-		if (Minecraft.getMinecraft().theWorld.provider.dimensionId == dimensionID)
-		{
-		    caster = Values.worldEntitiesUUIDMap.get(Minecraft.getMinecraft().theWorld).get(casterUUID);
-		}
-	    }
-	    else if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
-	    {
-		World w = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(dimensionID);
-		if (w != null)
-		{
-		    caster = Values.worldEntitiesUUIDMap.get(w).get(casterUUID);
-		}
-	    }
+	    caster = CoreBridge.instance().getEntityByUUID(dimensionID, casterUUID);
 	}
 	return caster;
     }
@@ -325,7 +312,7 @@ public class Spell
 		if (e instanceof EntityDragon)
 		{
 		    EntityDragon dr = (EntityDragon) e;
-		    dr.attackEntityFromPart(dr.dragonPartBody, source, totalDamage);
+		    dr.attackEntityFromPart(dr.dragonPartHead, source, totalDamage);
 		}
 		else e.attackEntityFrom(source, totalDamage);
 	    }
@@ -363,7 +350,7 @@ public class Spell
 	    }
 	    if (nope)
 	    {
-		if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
+		if (p.worldObj.isRemote)
 		{
 		    if (showChatMessage == 1)
 		    {

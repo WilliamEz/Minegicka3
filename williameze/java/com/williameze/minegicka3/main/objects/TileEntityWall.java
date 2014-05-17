@@ -1,17 +1,23 @@
 package com.williameze.minegicka3.main.objects;
 
 import java.awt.Color;
+import java.util.List;
 import java.util.Random;
 
+import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.init.Blocks;
 import net.minecraft.item.ItemSword;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.NetworkManager;
 import net.minecraft.network.Packet;
 import net.minecraft.network.play.server.S35PacketUpdateTileEntity;
 import net.minecraft.tileentity.TileEntity;
+import net.minecraft.util.AxisAlignedBB;
 
+import com.williameze.minegicka3.ModBase;
 import com.williameze.minegicka3.main.Element;
 import com.williameze.minegicka3.main.entities.FXESimpleParticle;
 import com.williameze.minegicka3.main.spells.Spell;
@@ -25,6 +31,13 @@ public class TileEntityWall extends TileEntity
     public TileEntityWall()
     {
 	life = 40;
+    }
+
+    @Override
+    public AxisAlignedBB getRenderBoundingBox()
+    {
+	if (!isRootWall()) AxisAlignedBB.getBoundingBox(0, 0, 0, 0, 0, 0);
+	return AxisAlignedBB.getBoundingBox(xCoord, yCoord, zCoord, xCoord + 1, yCoord + instanceWallHeight(), zCoord + 1);
     }
 
     public Spell getSpell()
@@ -60,18 +73,55 @@ public class TileEntityWall extends TileEntity
 	return true;
     }
 
+    public boolean isRootWall()
+    {
+	Block b = worldObj.getBlock(xCoord, yCoord - 1, zCoord);
+	if (b != ModBase.wallBlock) return true;
+
+	TileEntityWall wall = (TileEntityWall) worldObj.getTileEntity(xCoord, yCoord - 1, zCoord);
+	return !wall.getSpell().equals(getSpell());
+    }
+
+    public int instanceWallHeight()
+    {
+	int height = 1;
+	for (int y = yCoord + 1; y <= 1024; y++)
+	{
+	    if (worldObj.getBlock(xCoord, y, zCoord) != ModBase.wallBlock)
+	    {
+		break;
+	    }
+	    else
+	    {
+		TileEntityWall wall = (TileEntityWall) worldObj.getTileEntity(xCoord, y, zCoord);
+		if (wall.getSpell().equals(getSpell())) height++;
+		else break;
+	    }
+	}
+	return height;
+    }
+
     @Override
     public void updateEntity()
     {
 	super.updateEntity();
 	life--;
-	getSpell().updateRecentAffected();
+	if (getSpell() != null) getSpell().updateRecentAffected();
 	if (life <= 0)
 	{
 	    worldObj.addBlockEvent(xCoord, yCoord, zCoord, getBlockType(), 0, 0);
 	    if (!worldObj.isRemote)
 	    {
 		worldObj.setBlockToAir(xCoord, yCoord, zCoord);
+	    }
+	}
+	else
+	{
+	    List<EntityLivingBase> l = worldObj.getEntitiesWithinAABB(EntityLivingBase.class, getBlockType()
+		    .getCollisionBoundingBoxFromPool(worldObj, xCoord, yCoord, zCoord).expand(0.15, 0.15, 0.15));
+	    for (EntityLivingBase e : l)
+	    {
+		entityCollide(e);
 	    }
 	}
     }

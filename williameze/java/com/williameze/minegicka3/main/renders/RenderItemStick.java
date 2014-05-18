@@ -12,9 +12,9 @@ import com.williameze.api.math.Vector;
 import com.williameze.api.models.Cylinder;
 import com.williameze.api.models.ModelObject;
 import com.williameze.minegicka3.main.Element;
-import com.williameze.minegicka3.main.objects.ItemElementStick;
+import com.williameze.minegicka3.main.objects.ItemEssence;
 
-public class RenderItemElementStick implements IItemRenderer
+public class RenderItemStick implements IItemRenderer
 {
     ModelObject cyl = Cylinder.create(Vector.root.copy(), new Vector(0, 7, 0), 0.4685, 16);
 
@@ -78,11 +78,6 @@ public class RenderItemElementStick implements IItemRenderer
 
 	GL11.glScaled(1 / 16D, 1 / 16D, 1 / 16D);
 	cyl.setColor(new Color(255, 255, 100, 255));
-	if (item.getItem() instanceof ItemElementStick)
-	{
-	    Element unlocking = ((ItemElementStick) item.getItem()).unlocking;
-	    if (unlocking != null) cyl.setColor(unlocking.getColor());
-	}
 	cyl.render();
 
 	GL11.glColor4d(1, 1, 1, 1);

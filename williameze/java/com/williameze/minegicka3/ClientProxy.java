@@ -32,7 +32,7 @@ import com.williameze.minegicka3.main.entities.FXEProjectileCharge;
 import com.williameze.minegicka3.main.entities.FXESimpleParticle;
 import com.williameze.minegicka3.main.guis.GuiCraftStation;
 import com.williameze.minegicka3.main.models.ModelEntityBoulder;
-import com.williameze.minegicka3.main.objects.ItemElementStick;
+import com.williameze.minegicka3.main.objects.ItemEssence;
 import com.williameze.minegicka3.main.objects.ItemMagickTablet;
 import com.williameze.minegicka3.main.objects.ItemStaff;
 import com.williameze.minegicka3.main.objects.TileEntityCraftStation;
@@ -51,7 +51,7 @@ import com.williameze.minegicka3.main.renders.RenderEntityNothingAtAll;
 import com.williameze.minegicka3.main.renders.RenderEntitySpray;
 import com.williameze.minegicka3.main.renders.RenderFXEProjectileCharge;
 import com.williameze.minegicka3.main.renders.RenderFXESimpleParticle;
-import com.williameze.minegicka3.main.renders.RenderItemElementStick;
+import com.williameze.minegicka3.main.renders.RenderItemStick;
 import com.williameze.minegicka3.main.renders.RenderItemGeneral;
 import com.williameze.minegicka3.main.renders.RenderItemMagickTablet;
 import com.williameze.minegicka3.main.renders.RenderItemStaff;
@@ -122,6 +122,7 @@ public class ClientProxy extends CommonProxy
 	RenderingRegistry.registerBlockHandler(new BlockCustomRenderer());
 
 	registerItemRenderer(ModBase.thingy);
+	registerItemRenderer(ModBase.stick);
     }
 
     public void registerTileRenderer(Class<? extends TileEntity> c, TileEntitySpecialRenderer re)
@@ -136,18 +137,23 @@ public class ClientProxy extends CommonProxy
 	{
 	    MinecraftForgeClient.registerItemRenderer(i, new RenderItemStaff());
 	}
-	if (i instanceof ItemElementStick)
-	{
-	    MinecraftForgeClient.registerItemRenderer(i, new RenderItemElementStick());
-	}
 	if (i instanceof ItemMagickTablet)
 	{
 	    MinecraftForgeClient.registerItemRenderer(i, new RenderItemMagickTablet());
+	}
+	if (i == ModBase.stick)
+	{
+	    MinecraftForgeClient.registerItemRenderer(i, new RenderItemStick());
 	}
 	if (i == ModBase.thingy)
 	{
 	    MinecraftForgeClient.registerItemRenderer(i,
 		    new RenderItemGeneral(new Sphere(0, 0, 0, 0.4, 2, 4).setColor(new Color(255, 255, 100, 255))));
+	}
+	if (i instanceof ItemEssence)
+	{
+	    MinecraftForgeClient.registerItemRenderer(i,
+		    new RenderItemGeneral(new Sphere(0, 0, 0, 0.4, 2, 4).setColor(((ItemEssence) i).unlocking.getColor())));
 	}
     }
 

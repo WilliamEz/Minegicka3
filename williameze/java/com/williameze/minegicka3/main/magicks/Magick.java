@@ -51,7 +51,7 @@ public abstract class Magick
 	String s1 = "";
 	for (char c : s.toCharArray())
 	{
-	    if (Character.isAlphabetic(c)) s1 += Character.toString(Character.toLowerCase(c));
+	    if (Character.isLetter(c)) s1 += Character.toString(Character.toLowerCase(c));
 	}
 	Element[] es = new Element[s1.length()];
 	for (int a = 0; a < s1.length(); a++)
@@ -241,34 +241,34 @@ public abstract class Magick
 	    switch (e)
 	    {
 		case Arcane:
-		    i = ModBase.stickArcane;
+		    i = ModBase.essenceArcane;
 		    break;
 		case Cold:
-		    i = ModBase.stickCold;
+		    i = ModBase.essenceCold;
 		    break;
 		case Earth:
-		    i = ModBase.stickEarth;
+		    i = ModBase.essenceEarth;
 		    break;
 		case Fire:
-		    i = ModBase.stickFire;
+		    i = ModBase.essenceFire;
 		    break;
 		case Ice:
-		    i = ModBase.stickIce;
+		    i = ModBase.essenceIce;
 		    break;
 		case Life:
-		    i = ModBase.stickLife;
+		    i = ModBase.essenceLife;
 		    break;
 		case Lightning:
-		    i = ModBase.stickLightning;
+		    i = ModBase.essenceLightning;
 		    break;
 		case Shield:
-		    i = ModBase.stickShield;
+		    i = ModBase.essenceShield;
 		    break;
 		case Steam:
-		    i = ModBase.stickSteam;
+		    i = ModBase.essenceSteam;
 		    break;
 		case Water:
-		    i = ModBase.stickWater;
+		    i = ModBase.essenceWater;
 		    break;
 	    }
 	    if (i != null) l.add(i);

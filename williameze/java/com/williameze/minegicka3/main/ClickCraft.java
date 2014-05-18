@@ -43,23 +43,23 @@ public class ClickCraft
     {
 	registerClickCraftObject(new ItemStack(ModBase.thingy), new Object[] { Items.emerald, Items.gold_ingot });
 	registerClickCraftObject(new ItemStack(ModBase.stick), new Object[] { ModBase.thingy, 2, Items.stick });
-	registerClickCraftObject(new ItemStack(ModBase.stickArcane), new Object[] { ModBase.stick, Items.blaze_rod, 4,
+	registerClickCraftObject(new ItemStack(ModBase.essenceArcane), new Object[] { ModBase.thingy, Items.blaze_rod, 4,
 		Items.fermented_spider_eye, 16, Items.nether_wart, 4 });
-	registerClickCraftObject(new ItemStack(ModBase.stickCold), new Object[] { ModBase.stick, Items.snowball, 64 });
-	registerClickCraftObject(new ItemStack(ModBase.stickEarth), new Object[] { ModBase.stick, Blocks.dirt, 64, Blocks.cobblestone, 16,
+	registerClickCraftObject(new ItemStack(ModBase.essenceCold), new Object[] { ModBase.thingy, Items.snowball, 64 });
+	registerClickCraftObject(new ItemStack(ModBase.essenceEarth), new Object[] { ModBase.thingy, Blocks.dirt, 64, Blocks.cobblestone, 16,
 		Blocks.obsidian, 4 });
-	registerClickCraftObject(new ItemStack(ModBase.stickFire), new Object[] { ModBase.stick, Items.flint_and_steel, Items.blaze_rod, 4,
+	registerClickCraftObject(new ItemStack(ModBase.essenceFire), new Object[] { ModBase.thingy, Items.flint_and_steel, Items.blaze_rod, 4,
 		Items.magma_cream, 4 });
-	registerClickCraftObject(new ItemStack(ModBase.stickIce), new Object[] { ModBase.stick, Blocks.ice, 8, Items.arrow, 8 });
-	registerClickCraftObject(new ItemStack(ModBase.stickLife), new Object[] { ModBase.stick, Items.bone, 8, Items.wheat_seeds, 8,
+	registerClickCraftObject(new ItemStack(ModBase.essenceIce), new Object[] { ModBase.thingy, Blocks.ice, 8, Items.arrow, 8 });
+	registerClickCraftObject(new ItemStack(ModBase.essenceLife), new Object[] { ModBase.thingy, Items.bone, 8, Items.wheat_seeds, 8,
 		Items.cake, new ItemStack(Items.dye, 4, 10) });
-	registerClickCraftObject(new ItemStack(ModBase.stickLightning), new Object[] { ModBase.stick, Items.iron_ingot, 8,
+	registerClickCraftObject(new ItemStack(ModBase.essenceLightning), new Object[] { ModBase.thingy, Items.iron_ingot, 8,
 		new ItemStack(Items.dye, 4, 13) });
-	registerClickCraftObject(new ItemStack(ModBase.stickShield), new Object[] { ModBase.stick, Items.glowstone_dust, 16,
+	registerClickCraftObject(new ItemStack(ModBase.essenceShield), new Object[] { ModBase.thingy, Items.glowstone_dust, 16,
 		Items.golden_apple, 4, Items.iron_door, new ItemStack(Items.dye, 8, 11) });
-	registerClickCraftObject(new ItemStack(ModBase.stickSteam), new Object[] { ModBase.stick, Items.flint_and_steel, 2, Items.snowball,
+	registerClickCraftObject(new ItemStack(ModBase.essenceSteam), new Object[] { ModBase.thingy, Items.flint_and_steel, 2, Items.snowball,
 		16 });
-	registerClickCraftObject(new ItemStack(ModBase.stickWater), new Object[] { ModBase.stick, Items.glass_bottle, 3,
+	registerClickCraftObject(new ItemStack(ModBase.essenceWater), new Object[] { ModBase.thingy, Items.glass_bottle, 3,
 		new ItemStack(Items.dye, 4, 4) });
     }
 

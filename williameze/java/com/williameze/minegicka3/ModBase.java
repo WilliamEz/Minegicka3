@@ -32,7 +32,7 @@ import com.williameze.minegicka3.main.magicks.Magicks;
 import com.williameze.minegicka3.main.objects.BlockCraftStation;
 import com.williameze.minegicka3.main.objects.BlockShield;
 import com.williameze.minegicka3.main.objects.BlockWall;
-import com.williameze.minegicka3.main.objects.ItemElementStick;
+import com.williameze.minegicka3.main.objects.ItemEssence;
 import com.williameze.minegicka3.main.objects.ItemMagickTablet;
 import com.williameze.minegicka3.main.objects.ItemStaff;
 import com.williameze.minegicka3.main.objects.TileEntityCraftStation;
@@ -113,9 +113,9 @@ public class ModBase
     public static CreativeTabCustom modCreativeTab;
     public static Block shieldBlock, wallBlock;
     public static Block craftStation;
-    public static Item thingy;
-    public static Item stick, stickArcane, stickCold, stickEarth, stickFire, stickIce, stickLife, stickLightning, stickShield, stickSteam,
-	    stickWater;
+    public static Item thingy, stick;
+    public static Item essenceArcane, essenceCold, essenceEarth, essenceFire, essenceIce, essenceLife, essenceLightning, essenceShield,
+	    essenceSteam, essenceWater;
     public static Item magickTablet;
     public static Item staff, hemmyStaff;
 
@@ -131,18 +131,18 @@ public class ModBase
 		.setCreativeTab(modCreativeTab);
 
 	thingy = new Item().setUnlocalizedName(themodid + "Thingy").setCreativeTab(modCreativeTab);
-	stick = new ItemElementStick(null).setUnlocalizedName(themodid + "TheStick").setCreativeTab(modCreativeTab);
-	stickArcane = new ItemElementStick(Element.Arcane).setUnlocalizedName(themodid + "ArcaneStick").setCreativeTab(modCreativeTab);
-	stickCold = new ItemElementStick(Element.Cold).setUnlocalizedName(themodid + "ColdStick").setCreativeTab(modCreativeTab);
-	stickEarth = new ItemElementStick(Element.Earth).setUnlocalizedName(themodid + "EarthStick").setCreativeTab(modCreativeTab);
-	stickFire = new ItemElementStick(Element.Fire).setUnlocalizedName(themodid + "FireStick").setCreativeTab(modCreativeTab);
-	stickIce = new ItemElementStick(Element.Ice).setUnlocalizedName(themodid + "IceStick").setCreativeTab(modCreativeTab);
-	stickLife = new ItemElementStick(Element.Life).setUnlocalizedName(themodid + "LifeStick").setCreativeTab(modCreativeTab);
-	stickLightning = new ItemElementStick(Element.Lightning).setUnlocalizedName(themodid + "LightningStick").setCreativeTab(
+	stick = new Item().setUnlocalizedName(themodid + "TheStick").setCreativeTab(modCreativeTab);
+	essenceArcane = new ItemEssence(Element.Arcane).setUnlocalizedName(themodid + "ArcaneEssence").setCreativeTab(modCreativeTab);
+	essenceCold = new ItemEssence(Element.Cold).setUnlocalizedName(themodid + "ColdEssence").setCreativeTab(modCreativeTab);
+	essenceEarth = new ItemEssence(Element.Earth).setUnlocalizedName(themodid + "EarthEssence").setCreativeTab(modCreativeTab);
+	essenceFire = new ItemEssence(Element.Fire).setUnlocalizedName(themodid + "FireEssence").setCreativeTab(modCreativeTab);
+	essenceIce = new ItemEssence(Element.Ice).setUnlocalizedName(themodid + "IceEssence").setCreativeTab(modCreativeTab);
+	essenceLife = new ItemEssence(Element.Life).setUnlocalizedName(themodid + "LifeEssence").setCreativeTab(modCreativeTab);
+	essenceLightning = new ItemEssence(Element.Lightning).setUnlocalizedName(themodid + "LightningEssence").setCreativeTab(
 		modCreativeTab);
-	stickShield = new ItemElementStick(Element.Shield).setUnlocalizedName(themodid + "ShieldStick").setCreativeTab(modCreativeTab);
-	stickSteam = new ItemElementStick(Element.Steam).setUnlocalizedName(themodid + "SteamStick").setCreativeTab(modCreativeTab);
-	stickWater = new ItemElementStick(Element.Water).setUnlocalizedName(themodid + "WaterStick").setCreativeTab(modCreativeTab);
+	essenceShield = new ItemEssence(Element.Shield).setUnlocalizedName(themodid + "ShieldEssence").setCreativeTab(modCreativeTab);
+	essenceSteam = new ItemEssence(Element.Steam).setUnlocalizedName(themodid + "SteamEssence").setCreativeTab(modCreativeTab);
+	essenceWater = new ItemEssence(Element.Water).setUnlocalizedName(themodid + "WaterEssence").setCreativeTab(modCreativeTab);
 
 	staff = new ItemStaff().setUnlocalizedName(themodid + "Staff").setCreativeTab(modCreativeTab);
 	hemmyStaff = new ItemStaff().setBaseStats(1, 3, 1, 3).setUnlocalizedName(themodid + "HemmyStaff").setCreativeTab(modCreativeTab);
@@ -163,17 +163,17 @@ public class ModBase
 	GameRegistry.registerTileEntity(TileEntityCraftStation.class, themodid + "CraftStationTile");
 
 	GameRegistry.registerItem(thingy, themodid + "Thingy");
-	GameRegistry.registerItem(stick, themodid + "TheStick");
-	GameRegistry.registerItem(stickArcane, themodid + "ArcaneStick");
-	GameRegistry.registerItem(stickCold, themodid + "ColdStick");
-	GameRegistry.registerItem(stickEarth, themodid + "EarthStick");
-	GameRegistry.registerItem(stickFire, themodid + "FireStick");
-	GameRegistry.registerItem(stickIce, themodid + "IceStick");
-	GameRegistry.registerItem(stickLife, themodid + "LifeStick");
-	GameRegistry.registerItem(stickLightning, themodid + "LightningStick");
-	GameRegistry.registerItem(stickShield, themodid + "ShieldStick");
-	GameRegistry.registerItem(stickSteam, themodid + "SteamStick");
-	GameRegistry.registerItem(stickWater, themodid + "WaterStick");
+	GameRegistry.registerItem(stick, themodid + "TheEssence");
+	GameRegistry.registerItem(essenceArcane, themodid + "ArcaneEssence");
+	GameRegistry.registerItem(essenceCold, themodid + "ColdEssence");
+	GameRegistry.registerItem(essenceEarth, themodid + "EarthEssence");
+	GameRegistry.registerItem(essenceFire, themodid + "FireEssence");
+	GameRegistry.registerItem(essenceIce, themodid + "IceEssence");
+	GameRegistry.registerItem(essenceLife, themodid + "LifeEssence");
+	GameRegistry.registerItem(essenceLightning, themodid + "LightningEssence");
+	GameRegistry.registerItem(essenceShield, themodid + "ShieldEssence");
+	GameRegistry.registerItem(essenceSteam, themodid + "SteamEssence");
+	GameRegistry.registerItem(essenceWater, themodid + "WaterEssence");
 	GameRegistry.registerItem(magickTablet, themodid + "MagickTablet");
 
 	GameRegistry.registerItem(staff, themodid + "Staff");

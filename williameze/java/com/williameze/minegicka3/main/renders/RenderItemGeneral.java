@@ -3,6 +3,8 @@ package com.williameze.minegicka3.main.renders;
 import java.awt.Color;
 
 import net.minecraft.client.Minecraft;
+import net.minecraft.client.renderer.ItemRenderer;
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.item.ItemStack;
 import net.minecraftforge.client.IItemRenderer;
 import net.minecraftforge.client.IItemRenderer.ItemRenderType;
@@ -10,10 +12,11 @@ import net.minecraftforge.client.IItemRenderer.ItemRendererHelper;
 
 import org.lwjgl.opengl.GL11;
 
+import com.williameze.api.lib.DrawHelper;
 import com.williameze.api.models.ModelObject;
 import com.williameze.minegicka3.main.Element;
 import com.williameze.minegicka3.main.models.ModelBase;
-import com.williameze.minegicka3.main.objects.ItemElementStick;
+import com.williameze.minegicka3.main.objects.ItemEssence;
 import com.williameze.minegicka3.main.objects.ItemStaff;
 
 public class RenderItemGeneral implements IItemRenderer
@@ -69,7 +72,12 @@ public class RenderItemGeneral implements IItemRenderer
 	    GL11.glTranslated(0.5, 0.5, 0.5);
 	}
 
+	GL11.glPushMatrix();
+	GL11.glRotated(90, 1, 1, 0);
+	RenderHelper.enableStandardItemLighting();
+	GL11.glPopMatrix();
 	model.render(item, 0);
+	RenderHelper.enableStandardItemLighting();
 
 	GL11.glColor4d(1, 1, 1, 1);
 	GL11.glEnable(GL11.GL_CULL_FACE);

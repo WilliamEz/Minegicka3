@@ -26,7 +26,6 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class ItemStaff extends Item
 {
     private ItemStack currentUsing;
-    private Object model;
     public static int useCount;
     public double basePower;
     public double baseATKSpeed;
@@ -39,20 +38,8 @@ public class ItemStaff extends Item
 	ModBase.proxy.registerItemRenderer(this);
 	setMaxStackSize(1);
 	setCreativeTab(ModBase.modCreativeTab);
-	setBaseStats(0.5, 0.5, 0.5, 0.5);
-    }
-
-    @SideOnly(Side.CLIENT)
-    public ItemStaff setModel(ModelStaff m)
-    {
-	model = m;
-	return this;
-    }
-
-    @SideOnly(Side.CLIENT)
-    public ModelStaff getModel()
-    {
-	return (ModelStaff) (model == null ? (model = ModelStaff.defaultStaffModel) : model);
+	setBaseStats(1, 1, 1, 1);
+	setTextureName("apple");
     }
 
     public ItemStaff setBaseStats(double power, double atkspd, double consume, double recover)
@@ -160,12 +147,6 @@ public class ItemStaff extends Item
     {
 	super.onUsingTick(stack, player, count);
 	if (player.worldObj.isRemote) useCount++;
-    }
-
-    @SideOnly(Side.CLIENT)
-    public ModelStaff getModel(ItemStack is)
-    {
-	return getModel();
     }
 
     public double getPower(ItemStack is)

@@ -94,7 +94,7 @@ public class TileEntityWall extends TileEntity
 	    else
 	    {
 		TileEntityWall wall = (TileEntityWall) worldObj.getTileEntity(xCoord, y, zCoord);
-		if (wall.getSpell().equals(getSpell())) height++;
+		if (getSpell() != null && wall != null && wall.getSpell() != null && wall.getSpell().equals(getSpell())) height++;
 		else break;
 	    }
 	}

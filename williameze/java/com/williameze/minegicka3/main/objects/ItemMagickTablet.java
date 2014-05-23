@@ -23,6 +23,7 @@ public class ItemMagickTablet extends Item
     {
 	super();
 	setMaxStackSize(1);
+	setTextureName("apple");
 	ModBase.proxy.registerItemRenderer(this);
     }
 

@@ -19,6 +19,7 @@ public class FXESimpleParticle extends Entity
     public double gravity;
     public int life;
     public int maxLife;
+    public int alphaDrops;
 
     public FXESimpleParticle(World par1World)
     {
@@ -27,6 +28,24 @@ public class FXESimpleParticle extends Entity
 	gravity = 0;
 	friction = 1;
 	renderDistanceWeight = Values.renderDistance;
+	alphaDrops = 2;
+	alpha = 1;
+    }
+    
+    public void setSize(double d1, double d2)
+    {
+	setSize((float)d1, (float)d2);
+    }
+
+    @Override
+    public boolean isBurning()
+    {
+	return false;
+    }
+
+    @Override
+    public void setInPortal()
+    {
     }
 
     @Override

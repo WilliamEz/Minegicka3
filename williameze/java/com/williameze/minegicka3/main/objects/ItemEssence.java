@@ -7,6 +7,7 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
 import com.williameze.minegicka3.ModBase;
@@ -21,6 +22,7 @@ public class ItemEssence extends Item
     {
 	super();
 	unlocking = e;
+	setTextureName("apple");
 	ModBase.proxy.registerItemRenderer(this);
     }
 

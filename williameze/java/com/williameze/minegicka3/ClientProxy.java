@@ -28,6 +28,7 @@ import com.williameze.minegicka3.main.entities.EntitySprayFire;
 import com.williameze.minegicka3.main.entities.EntitySpraySteam;
 import com.williameze.minegicka3.main.entities.EntitySprayWater;
 import com.williameze.minegicka3.main.entities.EntityStorm;
+import com.williameze.minegicka3.main.entities.EntityVortex;
 import com.williameze.minegicka3.main.entities.FXEProjectileCharge;
 import com.williameze.minegicka3.main.entities.FXESimpleParticle;
 import com.williameze.minegicka3.main.guis.GuiCraftStation;
@@ -51,10 +52,10 @@ import com.williameze.minegicka3.main.renders.RenderEntityNothingAtAll;
 import com.williameze.minegicka3.main.renders.RenderEntitySpray;
 import com.williameze.minegicka3.main.renders.RenderFXEProjectileCharge;
 import com.williameze.minegicka3.main.renders.RenderFXESimpleParticle;
-import com.williameze.minegicka3.main.renders.RenderItemStick;
 import com.williameze.minegicka3.main.renders.RenderItemGeneral;
 import com.williameze.minegicka3.main.renders.RenderItemMagickTablet;
 import com.williameze.minegicka3.main.renders.RenderItemStaff;
+import com.williameze.minegicka3.main.renders.RenderItemStick;
 import com.williameze.minegicka3.main.renders.RenderTileEntityCraftStation;
 import com.williameze.minegicka3.main.renders.RenderTileEntityShield;
 import com.williameze.minegicka3.main.renders.RenderTileEntityWall;
@@ -76,11 +77,11 @@ public class ClientProxy extends CommonProxy
     public void postLoad()
     {
 	super.postLoad();
-	ModKeybinding.load();
 	ModelEntityBoulder.load();
 	RenderEntityBeamArea.load();
 	RenderEntityIceShard.load();
 	RenderTileEntityWall.load();
+	ModKeybinding.load();
     }
 
     @Override
@@ -114,6 +115,7 @@ public class ClientProxy extends CommonProxy
 	RenderingRegistry.registerEntityRenderingHandler(EntityIceShard.class, new RenderEntityIceShard());
 	RenderingRegistry.registerEntityRenderingHandler(EntityStorm.class, new RenderEntityNothingAtAll());
 	RenderingRegistry.registerEntityRenderingHandler(EntityMine.class, new RenderEntityMine());
+	RenderingRegistry.registerEntityRenderingHandler(EntityVortex.class, new RenderEntityNothingAtAll());
 
 	registerTileRenderer(TileEntityShield.class, new RenderTileEntityShield());
 	registerTileRenderer(TileEntityWall.class, new RenderTileEntityWall());

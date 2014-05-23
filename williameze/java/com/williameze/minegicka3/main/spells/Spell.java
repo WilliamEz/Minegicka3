@@ -7,21 +7,21 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Random;
 import java.util.UUID;
 
-import javax.swing.text.html.HTMLDocument.HTMLReader.IsindexAction;
-
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.EnumCreatureAttribute;
 import net.minecraft.entity.boss.EntityDragon;
+import net.minecraft.entity.effect.EntityLightningBolt;
 import net.minecraft.entity.monster.EntityBlaze;
+import net.minecraft.entity.monster.EntityCreeper;
 import net.minecraft.entity.monster.EntityEnderman;
 import net.minecraft.entity.monster.EntityMagmaCube;
 import net.minecraft.entity.monster.EntityPigZombie;
 import net.minecraft.entity.monster.EntitySnowman;
-import net.minecraft.entity.monster.EntityZombie;
+import net.minecraft.entity.passive.EntityPig;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
@@ -31,21 +31,17 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatStyle;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumChatFormatting;
-import net.minecraft.world.World;
 
 import com.williameze.minegicka3.core.CoreBridge;
 import com.williameze.minegicka3.core.PlayerData;
 import com.williameze.minegicka3.core.PlayersData;
 import com.williameze.minegicka3.main.Element;
 import com.williameze.minegicka3.main.SpellDamageModifier;
-import com.williameze.minegicka3.main.Values;
 import com.williameze.minegicka3.main.objects.ItemStaff;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.relauncher.Side;
 
 public class Spell
 {
+    public static Random rnd = new Random();
     public static Spell none = new Spell(new ArrayList(), 0, null, CastType.Single, null);
 
     public static enum CastType
@@ -269,7 +265,7 @@ public class Spell
 	}
 	if (e instanceof EntityEnderman)
 	{
-	    waterDamage *= 2;
+	    waterDamage = 2 * countWater;
 	    fireDamage /= 2;
 	    arcaneDamage /= 2;
 	    earthDamage /= 2;
@@ -305,6 +301,7 @@ public class Spell
 	if (!recentlyAffected.containsKey(e))
 	{
 	    float totalDamage = (float) (waterDamage + fireDamage + arcaneDamage + lightningDamage + earthDamage + iceDamage + coldDamage + steamDamage);
+	    totalDamage*=getPower();
 	    if (totalDamage > 0)
 	    {
 		DamageSource source = getCaster() instanceof EntityLivingBase ? DamageSource.causeMobDamage((EntityLivingBase) getCaster())
@@ -319,6 +316,14 @@ public class Spell
 	    if (lifeHeal > 0 && e instanceof EntityLivingBase)
 	    {
 		((EntityLivingBase) e).heal((float) lifeHeal);
+	    }
+	    if (e instanceof EntityCreeper && lightningDamage >= 3.2 && rnd.nextInt(4) == 0)
+	    {
+		e.getDataWatcher().updateObject(17, Byte.valueOf((byte) 1));
+	    }
+	    if (e instanceof EntityPig && lightningDamage >= 3.8 && rnd.nextInt(4) == 0)
+	    {
+		e.onStruckByLightning(new EntityLightningBolt(e.worldObj, e.posX, e.posY, e.posZ));
 	    }
 	    if (cooldownTime > 0) recentlyAffected.put(e, (int) (cooldownTime / getAtkSpeed()));
 	}
@@ -350,7 +355,7 @@ public class Spell
 	    }
 	    if (nope)
 	    {
-		if (p.worldObj.isRemote)
+		if (!p.worldObj.isRemote)
 		{
 		    if (showChatMessage == 1)
 		    {
@@ -364,9 +369,9 @@ public class Spell
 		    }
 		    else if (showChatMessage == 3)
 		    {
-			p.addChatMessage(new ChatComponentText("Requires " + (int) (Math.round(m * 10) / 10) + " mana. Poor you just have "
-				+ (int) (Math.round(pd.mana * 10) / 10) + " mana.").setChatStyle(new ChatStyle().setItalic(true).setColor(
-				EnumChatFormatting.RED)));
+			p.addChatMessage(new ChatComponentText("Requires " + (int) (Math.round(m * 10) / 10)
+				+ " mana. Shame you only have " + (int) (Math.round(pd.mana * 10) / 10) + " mana.")
+				.setChatStyle(new ChatStyle().setItalic(true).setColor(EnumChatFormatting.RED)));
 		    }
 		}
 	    }
@@ -437,10 +442,11 @@ public class Spell
 	return new Spell(l, dID, eUUID, cast, addi);
     }
 
-    public static NBTTagCompound createAdditionalInfo(ItemStack staffIS)
+    public static NBTTagCompound createAdditionalInfo(EntityPlayer p)
     {
 	NBTTagCompound tag = new NBTTagCompound();
 	NBTTagCompound staff = new NBTTagCompound();
+	ItemStack staffIS = p.getCurrentEquippedItem();
 	if (staffIS != null && staffIS.getItem() instanceof ItemStaff)
 	{
 	    staff = ((ItemStaff) staffIS.getItem()).getStaffTag(staffIS);

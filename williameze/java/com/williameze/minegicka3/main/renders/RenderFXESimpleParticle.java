@@ -1,5 +1,6 @@
 package com.williameze.minegicka3.main.renders;
 
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.entity.Render;
 import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
@@ -31,13 +32,14 @@ public class RenderFXESimpleParticle extends Render
     public void doRender(Entity var1, double x, double y, double z, float yaw, float partialTick)
     {
 	GL11.glPushMatrix();
-	GL11.glEnable(GL11.GL_BLEND);
-	GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
 	GL11.glDisable(GL11.GL_TEXTURE_2D);
 	GL11.glDisable(GL11.GL_CULL_FACE);
 	GL11.glTranslated(x, y, z);
 
-	DrawHelper.enableLighting(0.65F);
+	RenderHelper.enableStandardItemLighting();
+	GL11.glEnable(GL11.GL_BLEND);
+	GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
+	// DrawHelper.enableLighting(0.65F);
 	if (var1 instanceof FXESimpleParticle)
 	{
 	    FXESimpleParticle fx = (FXESimpleParticle) var1;
@@ -47,12 +49,17 @@ public class RenderFXESimpleParticle extends Render
 	    else model = box;
 
 	    GL11.glScaled(var1.width, var1.height, var1.width);
-	    double alphaRate = (double) fx.life / (fx.maxLife + 1D);
-	    alphaRate = alphaRate * alphaRate;
+	    double alphaRate = 1;
+	    if (fx.alphaDrops > 0)
+	    {
+		alphaRate = (double) fx.life / (fx.maxLife + 1D);
+		alphaRate = Math.pow(alphaRate, fx.alphaDrops);
+	    }
 	    model.setColor(fx.color.getRGB(), (int) (fx.alpha * alphaRate * 255D));
 	    model.render();
 	}
-	DrawHelper.disableLighting();
+	// DrawHelper.disableLighting();
+	RenderHelper.disableStandardItemLighting();
 
 	GL11.glEnable(GL11.GL_CULL_FACE);
 	GL11.glEnable(GL11.GL_TEXTURE_2D);

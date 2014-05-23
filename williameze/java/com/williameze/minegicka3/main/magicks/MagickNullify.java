@@ -6,14 +6,17 @@ import java.util.List;
 import net.minecraft.block.Block;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.init.Items;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 
+import com.williameze.minegicka3.ModBase;
 import com.williameze.minegicka3.main.entities.EntityEarthRumble;
 import com.williameze.minegicka3.main.entities.EntityLightning;
 import com.williameze.minegicka3.main.entities.EntityMine;
 import com.williameze.minegicka3.main.entities.EntityStorm;
+import com.williameze.minegicka3.main.entities.EntityVortex;
 import com.williameze.minegicka3.main.objects.BlockShield;
 import com.williameze.minegicka3.main.objects.BlockWall;
 
@@ -28,7 +31,7 @@ public class MagickNullify extends Magick
     @Override
     public Object[] getAdditionalCraftClickTabletMaterials()
     {
-	return new Object[] {};
+	return new Object[] { ModBase.thingy, 4 };
     }
 
     @Override
@@ -41,7 +44,7 @@ public class MagickNullify extends Magick
     public void doTheMagick(World world, double x, double y, double z, Entity caster, NBTTagCompound additionalData)
     {
 	double[] props = getStaffMainProperties(additionalData);
-	double radius = 12 * props[0];
+	double radius = 12 * Math.min(props[0], 8);
 	List<Entity> l = world.getEntitiesWithinAABB(Entity.class,
 		AxisAlignedBB.getBoundingBox(x, y, z, x, y, z).expand(radius, radius, radius));
 	if (!l.isEmpty())
@@ -62,6 +65,10 @@ public class MagickNullify extends Magick
 		    e.ticksExisted = ((EntityEarthRumble) e).maxTick() + 1;
 		}
 		if (e instanceof EntityLightning)
+		{
+		    e.setDead();
+		}
+		if (e instanceof EntityVortex)
 		{
 		    e.setDead();
 		}

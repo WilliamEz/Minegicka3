@@ -45,6 +45,23 @@ public class EntitySprayCold extends EntitySpray
 	    worldObj.setBlock(x, y, z, Blocks.stone);
 	    setDead();
 	}
+	if (worldObj.getBlock(x, y, z) == Blocks.fire)
+	{
+	    worldObj.setBlockToAir(x, y, z);
+	    if (rand.nextInt(2) == 0)
+	    {
+		EntitySpraySteam steam = new EntitySpraySteam(worldObj);
+		steam.setSpell(getSpell());
+		steam.setPosition(posX, posY, posZ);
+		steam.motionX = motionX;
+		steam.motionY = motionY;
+		steam.motionZ = motionZ;
+		steam.spiralCore = spiralCore;
+		steam.server = server;
+		worldObj.spawnEntityInWorld(steam);
+	    }
+	    setDead();
+	}
     }
 
     @Override

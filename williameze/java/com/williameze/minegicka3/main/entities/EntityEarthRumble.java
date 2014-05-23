@@ -64,6 +64,17 @@ public class EntityEarthRumble extends Entity implements IEntityAdditionalSpawnD
     }
 
     @Override
+    public void setInPortal()
+    {
+    }
+
+    @Override
+    public boolean isBurning()
+    {
+	return false;
+    }
+    
+    @Override
     public boolean isInRangeToRenderDist(double par1)
     {
 	return par1 < renderDistanceWeight * renderDistanceWeight;

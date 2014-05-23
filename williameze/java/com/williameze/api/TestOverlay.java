@@ -20,14 +20,14 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class TestOverlay
 {
-    public static KeyBinding keyToggleTestOverlay = new KeyBinding("Test Overlay", Keyboard.KEY_COMMA, ModBase.MODNAME);
+    public static boolean testMode = true;
+    public static KeyBinding keyToggleTestOverlay = new KeyBinding("Test", Keyboard.KEY_COMMA, "key.categories." +ModBase.MODID);
     public static boolean enabled = false;
     public static NoiseGen1D noise1d;
     public static NoiseGen2D noise2d;
 
     public static void render()
     {
-
 	Minecraft mc = Minecraft.getMinecraft();
 	ScaledResolution scaledResolution = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
 	int width = scaledResolution.getScaledWidth();

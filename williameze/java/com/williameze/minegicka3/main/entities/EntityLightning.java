@@ -45,6 +45,17 @@ public class EntityLightning extends Entity implements IEntityAdditionalSpawnDat
     }
 
     @Override
+    public void setInPortal()
+    {
+    }
+
+    @Override
+    public boolean isBurning()
+    {
+	return false;
+    }
+
+    @Override
     public void setPosition(double par1, double par3, double par5)
     {
 	super.setPosition(par1, par3, par5);
@@ -121,7 +132,7 @@ public class EntityLightning extends Entity implements IEntityAdditionalSpawnDat
 	}
 	int lig = spell.countElement(Element.Lightning);
 	if (level >= 2 + lig) return 0;
-	double radius = 6D * Math.pow(lig, 0.5) * spell.getPower() / Math.pow(level + 1, 0.5);
+	double radius = 6D * Math.pow(lig, 0.5) / Math.pow(level + 1, 0.5);
 	return radius * (spell.castType == CastType.Area ? 1.3 : 1);
     }
 

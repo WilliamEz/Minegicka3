@@ -41,13 +41,13 @@ public class SpellExecuteGrounded extends SpellExecute
 	    Vector look = new Vector(caster.getLookVec());
 	    if (s.countElements() == 1)
 	    {
-		double radius = 6 * s.getPower();
+		double radius = 5 * Math.min(Math.sqrt(s.getPower()), 5);
 		Vector center = FuncHelper.getCenter(caster);
 		int minX = (int) Math.round(center.x - radius);
-		int minY = (int) Math.round(center.y - radius);
+		int minY = (int) Math.max(0, Math.round(center.y - radius));
 		int minZ = (int) Math.round(center.z - radius);
 		int maxX = (int) Math.round(center.x + radius);
-		int maxY = (int) Math.round(center.y + radius);
+		int maxY = (int) Math.min(512, Math.round(center.y + radius));
 		int maxZ = (int) Math.round(center.z + radius);
 		for (int x = minX; x <= maxX; x++)
 		{
@@ -88,7 +88,7 @@ public class SpellExecuteGrounded extends SpellExecute
 	    }
 	    else if (s1.spellType == SpellType.Projectile)
 	    {
-		double radius = 6 + count * s.getPower();
+		double radius = 3 + count * Math.min(Math.sqrt(s.getPower()), 5);
 		Vector center = FuncHelper.getCenter(caster);
 		int minX = (int) Math.round(center.x - radius);
 		int minY = (int) Math.round(center.y - Math.sqrt(count) - 2);

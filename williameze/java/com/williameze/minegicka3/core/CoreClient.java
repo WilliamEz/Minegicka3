@@ -1,6 +1,5 @@
 package com.williameze.minegicka3.core;
 
-import java.awt.Color;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -8,10 +7,10 @@ import java.util.List;
 import java.util.Map.Entry;
 
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.gui.GuiChat;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.Tessellator;
+import net.minecraft.client.settings.KeyBinding;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
@@ -27,7 +26,6 @@ import com.williameze.minegicka3.ModKeybinding;
 import com.williameze.minegicka3.main.Element;
 import com.williameze.minegicka3.main.Values;
 import com.williameze.minegicka3.main.magicks.Magick;
-import com.williameze.minegicka3.main.magicks.Magicks;
 import com.williameze.minegicka3.main.objects.ItemStaff;
 import com.williameze.minegicka3.main.packets.PacketStartSpell;
 import com.williameze.minegicka3.main.packets.PacketStopSpell;
@@ -69,13 +67,24 @@ public class CoreClient
 
     public boolean isWizard()
     {
-	return mc != null && mc.thePlayer != null;
+	return mc != null && mc.thePlayer != null && hasStaff(mc.thePlayer);
     }
 
     public boolean isWizardnessApplicable()
     {
 	return isWizard() && mc.thePlayer.getCurrentEquippedItem() != null
 		&& mc.thePlayer.getCurrentEquippedItem().getItem() instanceof ItemStaff;
+    }
+
+    public boolean hasStaff(EntityPlayer p)
+    {
+	if (p == null) return false;
+	for (int a = 0; a < p.inventory.getSizeInventory(); a++)
+	{
+	    ItemStack is = p.inventory.getStackInSlot(a);
+	    if (is != null && is.getItem() instanceof ItemStaff) return true;
+	}
+	return false;
     }
 
     public double getManaRate()
@@ -111,7 +120,7 @@ public class CoreClient
 	    if (currentClientCastingSpell == null)
 	    {
 		Spell s = new Spell(queuedElements, w.provider.dimensionId, p.getPersistentID(), currentClientSpellCastType,
-			Spell.createAdditionalInfo(is));
+			Spell.createAdditionalInfo(p));
 		currentClientCastingSpell = s;
 		ModBase.packetPipeline.sendToServer(new PacketStartSpell(s));
 	    }
@@ -145,29 +154,28 @@ public class CoreClient
 
     public void onClientTick(ClientTickEvent event)
     {
-	if (isWizardnessApplicable())
+	
+	for (KeyBinding mkb : ModKeybinding.elementKeys)
 	{
-	    for (ModKeybinding mkb : ModKeybinding.elementKeys)
-	    {
-		if (mkb.isPressed()) playerQueueElement(mkb.element);
-	    }
-
-	    if (ModKeybinding.keyClear.isPressed())
-	    {
-		ModBase.proxy.getCoreClient().clearQueued();
-	    }
-
-	    if (ModKeybinding.keyArea.getIsKeyPressed())
-	    {
-		currentClientSpellCastType = CastType.Area;
-	    }
-	    else currentClientSpellCastType = CastType.Single;
-
-	    if (ModKeybinding.keyMagick.isPressed())
-	    {
-		clientCastMagick();
-	    }
+	    if (mkb.isPressed() && isWizardnessApplicable()) playerQueueElement(ModKeybinding.keyToElementMap.get(mkb));
 	}
+	
+	if (ModKeybinding.keyClear.isPressed())
+	{
+	    if (isWizardnessApplicable()) ModBase.proxy.getCoreClient().clearQueued();
+	}
+
+	if (ModKeybinding.keyArea.getIsKeyPressed())
+	{
+	    if (isWizardnessApplicable()) currentClientSpellCastType = CastType.Area;
+	}
+	else currentClientSpellCastType = CastType.Single;
+
+	if (ModKeybinding.keyMagick.isPressed())
+	{
+	    if (isWizardnessApplicable()) clientCastMagick();
+	}
+	
     }
 
     public void onClientPlayerTick(PlayerTickEvent event)

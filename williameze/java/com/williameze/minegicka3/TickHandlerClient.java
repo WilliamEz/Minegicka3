@@ -25,7 +25,7 @@ public class TickHandlerClient implements IEventListener
     public void clientTick(ClientTickEvent event)
     {
 	CoreBridge.instance().onTick(event);
-	if (TestOverlay.keyToggleTestOverlay.isPressed()) TestOverlay.enabled = !TestOverlay.enabled;
+	if (TestOverlay.testMode && TestOverlay.keyToggleTestOverlay.isPressed()) TestOverlay.enabled = !TestOverlay.enabled;
 	if (Values.clientTicked % 200 == 0) Values.renderDistance = Math.max(
 		Math.min(Minecraft.getMinecraft().gameSettings.renderDistanceChunks * 16D, 128), 16);
     }

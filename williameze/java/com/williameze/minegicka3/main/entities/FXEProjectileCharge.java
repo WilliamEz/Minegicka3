@@ -22,6 +22,17 @@ public class FXEProjectileCharge extends Entity
     }
 
     @Override
+    public boolean isBurning()
+    {
+	return false;
+    }
+    
+    @Override
+    public void setInPortal()
+    {
+    }
+    
+    @Override
     public void setPosition(double par1, double par3, double par5)
     {
 	super.setPosition(par1, par3, par5);

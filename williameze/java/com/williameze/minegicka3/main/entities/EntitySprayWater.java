@@ -4,6 +4,8 @@ import java.awt.Color;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.boss.EntityDragon;
+import net.minecraft.entity.boss.EntityDragonPart;
 import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 
@@ -38,8 +40,9 @@ public class EntitySprayWater extends EntitySpray
     public void affectEntity(Entity e)
     {
 	super.affectEntity(e);
-	e.motionX += motionX / 6;
-	e.motionY += motionY / 6;
-	e.motionZ += motionZ / 6;
+	double power = getSpell().getPower() / e.width / e.width / e.height;
+	e.motionX += motionX * power;
+	e.motionY += motionY * power;
+	e.motionZ += motionZ * power;
     }
 }

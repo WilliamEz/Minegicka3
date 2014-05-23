@@ -26,9 +26,12 @@ import com.williameze.minegicka3.main.entities.EntitySprayFire;
 import com.williameze.minegicka3.main.entities.EntitySpraySteam;
 import com.williameze.minegicka3.main.entities.EntitySprayWater;
 import com.williameze.minegicka3.main.entities.EntityStorm;
+import com.williameze.minegicka3.main.entities.EntityVortex;
 import com.williameze.minegicka3.main.entities.FXEProjectileCharge;
 import com.williameze.minegicka3.main.entities.FXESimpleParticle;
 import com.williameze.minegicka3.main.magicks.Magicks;
+import com.williameze.minegicka3.main.models.ModelHat;
+import com.williameze.minegicka3.main.models.ModelStaff;
 import com.williameze.minegicka3.main.objects.BlockCraftStation;
 import com.williameze.minegicka3.main.objects.BlockShield;
 import com.williameze.minegicka3.main.objects.BlockWall;
@@ -92,6 +95,8 @@ public class ModBase
 	registerRecipes();
 	registerEntities();
 	ClickCraft.load();
+	ModelStaff.load();
+	ModelHat.load();
     }
 
     @EventHandler
@@ -130,8 +135,8 @@ public class ModBase
 	craftStation = new BlockCraftStation().setBlockName(themodid + "CraftStation").setBlockTextureName("obsidian")
 		.setCreativeTab(modCreativeTab);
 
-	thingy = new Item().setUnlocalizedName(themodid + "Thingy").setCreativeTab(modCreativeTab);
-	stick = new Item().setUnlocalizedName(themodid + "TheStick").setCreativeTab(modCreativeTab);
+	thingy = new Item().setUnlocalizedName(themodid + "Thingy").setTextureName("apple").setCreativeTab(modCreativeTab);
+	stick = new Item().setUnlocalizedName(themodid + "TheStick").setTextureName("apple").setCreativeTab(modCreativeTab);
 	essenceArcane = new ItemEssence(Element.Arcane).setUnlocalizedName(themodid + "ArcaneEssence").setCreativeTab(modCreativeTab);
 	essenceCold = new ItemEssence(Element.Cold).setUnlocalizedName(themodid + "ColdEssence").setCreativeTab(modCreativeTab);
 	essenceEarth = new ItemEssence(Element.Earth).setUnlocalizedName(themodid + "EarthEssence").setCreativeTab(modCreativeTab);
@@ -145,7 +150,8 @@ public class ModBase
 	essenceWater = new ItemEssence(Element.Water).setUnlocalizedName(themodid + "WaterEssence").setCreativeTab(modCreativeTab);
 
 	staff = new ItemStaff().setUnlocalizedName(themodid + "Staff").setCreativeTab(modCreativeTab);
-	hemmyStaff = new ItemStaff().setBaseStats(1, 3, 1, 3).setUnlocalizedName(themodid + "HemmyStaff").setCreativeTab(modCreativeTab);
+	hemmyStaff = new ItemStaff().setBaseStats(14, 14, 14, 14).setUnlocalizedName(themodid + "HemmyStaff")
+		.setCreativeTab(modCreativeTab);
 
 	magickTablet = new ItemMagickTablet().setUnlocalizedName(themodid + "MagickTablet").setCreativeTab(modCreativeTab);
     }
@@ -192,19 +198,20 @@ public class ModBase
 	registerEntity(FXEProjectileCharge.class, "FXEProjectileCharge", 64, Integer.MAX_VALUE);
 	registerEntity(FXESimpleParticle.class, "FXESimpleParticle", 64, Integer.MAX_VALUE);
 
-	registerEntity(EntitySprayCold.class, "SprayCold", 64, Integer.MAX_VALUE);
-	registerEntity(EntitySprayFire.class, "SprayFire", 64, Integer.MAX_VALUE);
-	registerEntity(EntitySpraySteam.class, "SpraySteam", 64, Integer.MAX_VALUE);
-	registerEntity(EntitySprayWater.class, "SprayWater", 64, Integer.MAX_VALUE);
+	registerEntity(EntitySprayCold.class, "SprayCold", 64, 1);
+	registerEntity(EntitySprayFire.class, "SprayFire", 64, 1);
+	registerEntity(EntitySpraySteam.class, "SpraySteam", 64, 1);
+	registerEntity(EntitySprayWater.class, "SprayWater", 64, 1);
 	registerEntity(EntityLightning.class, "Lightning", 64, Integer.MAX_VALUE);
 	registerEntity(EntityBeam.class, "Beam", 64, Integer.MAX_VALUE);
 	registerEntity(EntityBeamArea.class, "BeamArea", 64, Integer.MAX_VALUE);
-	registerEntity(EntityBoulder.class, "Boulder", 64, Integer.MAX_VALUE);
-	registerEntity(EntityIcicle.class, "Icicle", 64, Integer.MAX_VALUE);
+	registerEntity(EntityBoulder.class, "Boulder", 64, 1);
+	registerEntity(EntityIcicle.class, "Icicle", 64, 1);
 	registerEntity(EntityEarthRumble.class, "EarthRumble", 64, Integer.MAX_VALUE);
 	registerEntity(EntityIceShard.class, "IceShard", 64, Integer.MAX_VALUE);
 	registerEntity(EntityStorm.class, "Storm", 64, Integer.MAX_VALUE);
 	registerEntity(EntityMine.class, "Mine", 64, Integer.MAX_VALUE);
+	registerEntity(EntityVortex.class, "Vortex", 64, Integer.MAX_VALUE);
     }
 
     public void registerEntity(Class eClass, String eName, int updateRange, int updateFrequency)

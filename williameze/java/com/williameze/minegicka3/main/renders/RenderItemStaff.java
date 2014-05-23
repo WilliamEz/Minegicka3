@@ -16,6 +16,7 @@ import net.minecraftforge.client.IItemRenderer;
 import com.williameze.api.lib.DrawHelper;
 import com.williameze.minegicka3.TickHandlerClient;
 import com.williameze.minegicka3.main.Values;
+import com.williameze.minegicka3.main.models.ModelStaff;
 import com.williameze.minegicka3.main.objects.ItemStaff;
 
 public class RenderItemStaff implements IItemRenderer
@@ -85,7 +86,7 @@ public class RenderItemStaff implements IItemRenderer
 		GL11.glRotated(45, 0, 1, 0);
 	    }
 
-	    ((ItemStaff) item.getItem()).getModel(item).render(item);
+	    ModelStaff.getModel(item).render(item);
 
 	    if (type != ItemRenderType.INVENTORY)
 	    {

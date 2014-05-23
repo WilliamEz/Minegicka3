@@ -28,14 +28,12 @@ public class RenderTileEntityCraftStation extends TileEntitySpecialRenderer
     public void render(TileEntityCraftStation tile, double x, double y, double z, float partialTick)
     {
 	GL11.glPushMatrix();
-	GL11.glDisable(GL11.GL_CULL_FACE);
 	GL11.glTranslated(x, y, z);
 	GL11.glRotated(135, 1, 0, 0);
 	DrawHelper.enableLighting(1.5F);
 	GL11.glRotated(-135, 1, 0, 0);
 	model.render(tile, partialTick);
 	DrawHelper.disableLighting();
-	GL11.glEnable(GL11.GL_CULL_FACE);
 	GL11.glPopMatrix();
     }
 }

@@ -1,27 +1,48 @@
 package com.williameze.minegicka3.main.models;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import net.minecraft.item.ItemStack;
 
 import org.lwjgl.opengl.GL11;
 
-import com.williameze.api.math.Vector;
-import com.williameze.api.models.Cylinder;
 import com.williameze.api.models.ModelObject;
-import com.williameze.api.models.Sphere;
-
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
+import com.williameze.minegicka3.main.objects.ItemStaff;
 
 public class ModelStaff
 {
     public static ModelStaffDefault defaultStaffModel = new ModelStaffDefault();
+    public static Map<ItemStaff, ModelStaff> staffModels = new HashMap();
+    
+    public static ModelStaff getModel(ItemStack is)
+    {
+	ModelStaff md = staffModels.get(is.getItem());
+	if(md!=null)
+	{
+	    ModelStaff detailed = md.getDetailedModel(is);
+	    if(detailed!=null) return detailed;
+	    return md;
+	}
+	return defaultStaffModel;
+    }
+    
+    public static void load()
+    {
+	
+    }
+    
     public List<ModelObject> components = new ArrayList();
 
     public ModelStaff()
     {
+    }
+    
+    public ModelStaff getDetailedModel(ItemStack is)
+    {
+	return this;
     }
 
     public void addComponents()

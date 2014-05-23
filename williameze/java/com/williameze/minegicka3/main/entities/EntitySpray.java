@@ -259,6 +259,17 @@ public class EntitySpray extends Entity implements IEntityAdditionalSpawnData
     }
 
     @Override
+    public void setInPortal()
+    {
+    }
+
+    @Override
+    public boolean isBurning()
+    {
+	return false;
+    }
+    
+    @Override
     protected void readEntityFromNBT(NBTTagCompound var1)
     {
 	setDead();

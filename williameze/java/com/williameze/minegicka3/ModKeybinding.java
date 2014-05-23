@@ -1,54 +1,73 @@
 package com.williameze.minegicka3;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.client.settings.KeyBinding;
 
 import org.lwjgl.input.Keyboard;
 
+import com.williameze.api.TestOverlay;
 import com.williameze.minegicka3.main.Element;
 
 import cpw.mods.fml.client.registry.ClientRegistry;
 
-public class ModKeybinding extends KeyBinding
+public class ModKeybinding
 {
-    public Element element;
-
-    public static Map<Element, ModKeybinding> elementToKeyMap = new HashMap();
-    public static ModKeybinding keyWater = new ModKeybinding("Water", Keyboard.KEY_Y, Element.Water);
-    public static ModKeybinding keyLife = new ModKeybinding("Life", Keyboard.KEY_U, Element.Life);
-    public static ModKeybinding keyShield = new ModKeybinding("Shield", Keyboard.KEY_I, Element.Shield);
-    public static ModKeybinding keyCold = new ModKeybinding("Cold", Keyboard.KEY_O, Element.Cold);
-    public static ModKeybinding keyLightning = new ModKeybinding("Lightning", Keyboard.KEY_H, Element.Lightning);
-    public static ModKeybinding keyArcane = new ModKeybinding("Arcane", Keyboard.KEY_J, Element.Arcane);
-    public static ModKeybinding keyEarth = new ModKeybinding("Earth", Keyboard.KEY_K, Element.Earth);
-    public static ModKeybinding keyFire = new ModKeybinding("Fire", Keyboard.KEY_L, Element.Fire);
-    public static List<ModKeybinding> elementKeys = Arrays.asList(keyWater, keyLife, keyShield, keyCold, keyLightning, keyArcane, keyEarth, keyFire);
-
-    public static KeyBinding keyArea = new KeyBinding("Area Cast", Keyboard.KEY_F, "key.categories.gameplay");
-    public static KeyBinding keyClear = new KeyBinding("Clear Queued", Keyboard.KEY_V, "key.categories.gameplay");
-    public static KeyBinding keyMagick = new KeyBinding("Cast Magick", Keyboard.KEY_R, "key.categories.gameplay");
-
+    public static Map<Element, KeyBinding> elementToKeyMap = new HashMap();
+    public static Map<KeyBinding, Element> keyToElementMap = new HashMap();
+    public static List<KeyBinding> elementKeys = new ArrayList();
+    
+    public static KeyBinding keyWater = new KeyBinding("Spell Water", Keyboard.KEY_Y, "key.categories." + ModBase.MODID);
+    public static KeyBinding keyLife = new KeyBinding("Spell Life", Keyboard.KEY_U, "key.categories." + ModBase.MODID);
+    public static KeyBinding keyShield = new KeyBinding("Spell Shield", Keyboard.KEY_I, "key.categories." + ModBase.MODID);
+    public static KeyBinding keyCold = new KeyBinding("Spell Cold", Keyboard.KEY_O, "key.categories." + ModBase.MODID);
+    public static KeyBinding keyLightning = new KeyBinding("Spell Lightning", Keyboard.KEY_H, "key.categories." + ModBase.MODID);
+    public static KeyBinding keyArcane = new KeyBinding("Spell Arcane", Keyboard.KEY_J, "key.categories." + ModBase.MODID);
+    public static KeyBinding keyEarth = new KeyBinding("Spell Earth", Keyboard.KEY_K, "key.categories." + ModBase.MODID);
+    public static KeyBinding keyFire = new KeyBinding("Spell Fire", Keyboard.KEY_L, "key.categories." + ModBase.MODID);
+    public static KeyBinding keyArea = new KeyBinding("Toggle Area spell", Keyboard.KEY_F, "key.categories." + ModBase.MODID);
+    public static KeyBinding keyClear = new KeyBinding("Clear Queued", Keyboard.KEY_V, "key.categories." + ModBase.MODID);
+    public static KeyBinding keyMagick = new KeyBinding("Cast Magick", Keyboard.KEY_R, "key.categories." + ModBase.MODID);
+     
     public static void load()
     {
-	for (ModKeybinding k : elementKeys)
-	{
-	    ClientRegistry.registerKeyBinding(k);
-	}
+	elementKeys.add(keyArcane);
+	elementKeys.add(keyCold);
+	elementKeys.add(keyEarth);
+	elementKeys.add(keyFire);
+	elementKeys.add(keyLife);
+	elementKeys.add(keyLightning);
+	elementKeys.add(keyShield);
+	elementKeys.add(keyWater);
+	addKeyElement(keyArcane, Element.Arcane);
+	addKeyElement(keyCold, Element.Cold);
+	addKeyElement(keyEarth, Element.Earth);
+	addKeyElement(keyFire, Element.Fire);
+	addKeyElement(keyLife, Element.Life);
+	addKeyElement(keyLightning, Element.Lightning);
+	addKeyElement(keyShield, Element.Shield);
+	addKeyElement(keyWater, Element.Water);
+	
+	ClientRegistry.registerKeyBinding(keyWater);
+	ClientRegistry.registerKeyBinding(keyLife);
+	ClientRegistry.registerKeyBinding(keyShield);
+	ClientRegistry.registerKeyBinding(keyCold);
+	ClientRegistry.registerKeyBinding(keyLightning);
+	ClientRegistry.registerKeyBinding(keyArcane);
+	ClientRegistry.registerKeyBinding(keyEarth);
+	ClientRegistry.registerKeyBinding(keyFire);
 	ClientRegistry.registerKeyBinding(keyArea);
 	ClientRegistry.registerKeyBinding(keyClear);
 	ClientRegistry.registerKeyBinding(keyMagick);
+	ClientRegistry.registerKeyBinding(TestOverlay.keyToggleTestOverlay);
     }
-
-    public ModKeybinding(String description, int id, Element e)
+    
+    public static void addKeyElement(KeyBinding k, Element e)
     {
-	super(description, id, "key.categories." + ModBase.MODID);
-	element = e;
-	elementToKeyMap.put(e, this);
+	elementToKeyMap.put(e, k);
+	keyToElementMap.put(k, e);
     }
 }

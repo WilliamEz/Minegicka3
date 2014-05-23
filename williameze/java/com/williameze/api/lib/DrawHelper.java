@@ -158,6 +158,9 @@ public class DrawHelper
 
     public static void enableLighting(float intensity)
     {
+	RenderHelper.disableStandardItemLighting();
+	
+	GL11.glPushMatrix();
 	GL11.glEnable(GL11.GL_LIGHTING);
 	GL11.glEnable(GL11.GL_LIGHT0);
 	GL11.glEnable(GL11.GL_LIGHT1);
@@ -176,15 +179,18 @@ public class DrawHelper
 	GL11.glLight(GL11.GL_LIGHT1, GL11.GL_SPECULAR, setColorBuffer(f2, f2, f2, 1.0F));
 	GL11.glShadeModel(GL11.GL_SMOOTH);
 	GL11.glLightModel(GL11.GL_LIGHT_MODEL_AMBIENT, setColorBuffer(f, f, f, 1.0F));
+	GL11.glPopMatrix();
     }
 
     public static void disableLighting()
     {
+	
 	GL11.glDisable(GL11.GL_LIGHTING);
 	GL11.glDisable(GL11.GL_LIGHT0);
 	GL11.glDisable(GL11.GL_LIGHT1);
 	GL11.glDisable(GL11.GL_COLOR_MATERIAL);
 	RenderHelper.enableStandardItemLighting();
+	
 	RenderHelper.disableStandardItemLighting();
     }
 

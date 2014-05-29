@@ -20,7 +20,7 @@ import com.williameze.minegicka3.main.spells.Spell.SpellType;
 
 import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 
-public class EntityStorm extends Entity implements IEntityAdditionalSpawnData
+public class EntityStorm extends Entity implements IEntityAdditionalSpawnData, IEntityNullifiable
 {
     public Spell spell = Spell.none;
     public int maxTick;

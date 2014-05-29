@@ -17,6 +17,7 @@ import com.williameze.minegicka3.main.entities.EntityLightning;
 import com.williameze.minegicka3.main.entities.EntityMine;
 import com.williameze.minegicka3.main.entities.EntityStorm;
 import com.williameze.minegicka3.main.entities.EntityVortex;
+import com.williameze.minegicka3.main.entities.IEntityNullifiable;
 import com.williameze.minegicka3.main.objects.BlockShield;
 import com.williameze.minegicka3.main.objects.BlockWall;
 
@@ -52,23 +53,7 @@ public class MagickNullify extends Magick
 	    for (int a = 0; a < l.size(); a++)
 	    {
 		Entity e = l.get(a);
-		if (e instanceof EntityStorm)
-		{
-		    e.ticksExisted = ((EntityStorm) e).maxTick + 1;
-		}
-		if (e instanceof EntityMine)
-		{
-		    e.setDead();
-		}
-		if (e instanceof EntityEarthRumble)
-		{
-		    e.ticksExisted = ((EntityEarthRumble) e).maxTick() + 1;
-		}
-		if (e instanceof EntityLightning)
-		{
-		    e.setDead();
-		}
-		if (e instanceof EntityVortex)
+		if (e instanceof IEntityNullifiable)
 		{
 		    e.setDead();
 		}

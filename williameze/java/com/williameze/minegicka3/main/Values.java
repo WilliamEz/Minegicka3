@@ -10,6 +10,7 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
+import com.mojang.authlib.GameProfile;
 import com.williameze.api.math.IntVector;
 import com.williameze.minegicka3.ModBase;
 

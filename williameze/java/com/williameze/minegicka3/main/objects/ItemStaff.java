@@ -204,6 +204,10 @@ public class ItemStaff extends Item
 	    l.add("[ " + EnumChatFormatting.LIGHT_PURPLE + "Mana Recovery Rate: " + Math.round(tag.getDouble("Recover") * 100) + "%"
 		    + EnumChatFormatting.GRAY + " ]");
 	}
+
+	if (is.getItem() == ModBase.hemmyStaff) l.add("Dedicated to Hemmy the almighty.");
+
+	if (tag.getInteger("Add queueable") > 0) l.add((5 + tag.getInteger("Add queueable")) + "-element combo!");
     }
 
     public NBTTagCompound getStaffTag(ItemStack is)
@@ -234,7 +238,13 @@ public class ItemStaff extends Item
 	staffTag.setDouble("ATKSpeed", baseATKSpeed);
 	staffTag.setDouble("Consume", baseConsume);
 	staffTag.setDouble("Recover", baseRecover);
+	writeToDefaultNBT(staffTag);
 	return staffTag;
+    }
+
+    public void writeToDefaultNBT(NBTTagCompound tag)
+    {
+	if(this==ModBase.hemmyStaff) tag.setInteger("Add queueable", 9);
     }
 
     public void checkStaffTag(NBTTagCompound tag)
@@ -243,5 +253,11 @@ public class ItemStaff extends Item
 	if (!tag.hasKey("ATKSpeed")) tag.setDouble("ATKSpeed", baseATKSpeed);
 	if (!tag.hasKey("Consume")) tag.setDouble("Consume", baseConsume);
 	if (!tag.hasKey("Recover")) tag.setDouble("Recover", baseRecover);
+    }
+
+    public static ItemStaff getStaffItem(ItemStack is)
+    {
+	if (is != null && is.getItem() instanceof ItemStaff) return (ItemStaff) is.getItem();
+	return null;
     }
 }

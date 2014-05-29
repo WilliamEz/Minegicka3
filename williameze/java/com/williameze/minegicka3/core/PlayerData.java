@@ -23,7 +23,7 @@ public class PlayerData
 {
     public EntityPlayer ref;
 
-    public GameProfile playerProfile;
+    public String playerName;
     public int dimensionID;
     public double maxMana;
     public double mana;
@@ -41,7 +41,7 @@ public class PlayerData
     {
 	this();
 	ref = p;
-	playerProfile = p.getGameProfile();
+	playerName = p.getGameProfile().getName();
 	dimensionID = p.worldObj.provider.dimensionId;
     }
 
@@ -94,6 +94,18 @@ public class PlayerData
 	return false;
     }
 
+    public void loadPlayerRef()
+    {
+	if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
+	{
+	    loadPlayerRefFromID(ModBase.proxy.getClientWorld());
+	}
+	else if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
+	{
+	    loadPlayerRefFromServer(FMLCommonHandler.instance().getMinecraftServerInstance());
+	}
+    }
+
     public void loadPlayerRefFromServer(MinecraftServer server)
     {
 	World w = server.worldServerForDimension(dimensionID);
@@ -105,7 +117,7 @@ public class PlayerData
 	for (int a = 0; a < w.playerEntities.size(); a++)
 	{
 	    EntityPlayer e = (EntityPlayer) w.playerEntities.get(a);
-	    if (e.getGameProfile().getName().equals(playerProfile.getName()))
+	    if (e.getGameProfile().getName().equals(playerName))
 	    {
 		ref = e;
 		return;
@@ -116,7 +128,7 @@ public class PlayerData
     public String dataToString()
     {
 	String s = "";
-	s += playerProfile.getId() + ";" + playerProfile.getName() + ";" + dimensionID + ";" + maxMana + ";" + mana + ";";
+	s += dimensionID + ";" + playerName + ";" + maxMana + ";" + mana + ";";
 	for (Element e : unlocked)
 	{
 	    s += String.valueOf(e.ordinal());
@@ -126,7 +138,7 @@ public class PlayerData
 	{
 	    s += String.valueOf(m.getID()) + ".";
 	}
-	s += ";";
+	s += ".;";
 	return s;
     }
 
@@ -134,11 +146,11 @@ public class PlayerData
     {
 	PlayerData pd = new PlayerData();
 	String[] ss = s.split(";");
-	pd.playerProfile = new GameProfile(ss[0], ss[1]);
-	pd.dimensionID = Integer.parseInt(ss[2]);
-	pd.maxMana = Double.parseDouble(ss[3]);
-	pd.mana = Double.parseDouble(ss[4]);
-	for (char c : ss[5].toCharArray())
+	pd.dimensionID = Integer.parseInt(ss[0]);
+	pd.playerName = ss[1];
+	pd.maxMana = Double.parseDouble(ss[2]);
+	pd.mana = Double.parseDouble(ss[3]);
+	for (char c : ss[4].toCharArray())
 	{
 	    if (Character.isDigit(c))
 	    {
@@ -154,26 +166,19 @@ public class PlayerData
 		pd.unlockedMagicks.add(Magick.getMagickFromID(Integer.parseInt(sm)));
 	    }
 	}
-	if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
-	{
-	    pd.loadPlayerRefFromID(ModBase.proxy.getClientWorld());
-	}
-	else if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
-	{
-	    pd.loadPlayerRefFromServer(FMLCommonHandler.instance().getMinecraftServerInstance());
-	}
+	pd.loadPlayerRef();
 	return pd;
     }
 
     @Override
     public int hashCode()
     {
-	return playerProfile.hashCode();
+	return playerName.hashCode();
     }
 
     @Override
     public boolean equals(Object obj)
     {
-	return obj instanceof PlayerData && ((PlayerData) obj).playerProfile.getName().equals(playerProfile.getName());
+	return obj instanceof PlayerData && ((PlayerData) obj).playerName.equals(playerName);
     }
 }

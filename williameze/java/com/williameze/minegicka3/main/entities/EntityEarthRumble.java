@@ -34,7 +34,7 @@ import com.williameze.minegicka3.main.spells.Spell.CastType;
 
 import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 
-public class EntityEarthRumble extends Entity implements IEntityAdditionalSpawnData
+public class EntityEarthRumble extends Entity implements IEntityAdditionalSpawnData, IEntityNullifiable
 {
     private Spell spell = Spell.none;
     public boolean searched;
@@ -73,7 +73,7 @@ public class EntityEarthRumble extends Entity implements IEntityAdditionalSpawnD
     {
 	return false;
     }
-    
+
     @Override
     public boolean isInRangeToRenderDist(double par1)
     {

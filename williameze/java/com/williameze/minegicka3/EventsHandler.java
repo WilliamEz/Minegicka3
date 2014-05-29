@@ -1,11 +1,11 @@
 package com.williameze.minegicka3;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Random;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
@@ -27,6 +27,8 @@ public class EventsHandler implements IEventListener
     {
 	if (!event.world.isRemote)
 	{
+	    ModBase.proxy.getCoreServer().worldsSpellsList.put(event.world, new ArrayList());
+	    
 	    PlayersData psd = new PlayersData(event.world);
 	    try
 	    {
@@ -60,6 +62,17 @@ public class EventsHandler implements IEventListener
     public void onWorldUnload(WorldEvent.Unload event)
     {
 	Values.onWorldUnload();
+	if (!event.world.isRemote)
+	{
+	    try
+	    {
+		PlayersData.worldsPlayersDataMap.remove(event.world);
+	    }
+	    catch (Exception e)
+	    {
+		e.printStackTrace();
+	    }
+	}
     }
 
     @SubscribeEvent

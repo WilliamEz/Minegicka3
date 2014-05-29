@@ -32,8 +32,11 @@ public class PacketPlayerData extends Packet
     {
 	try
 	{
-	    buffer.writeInt(p.dataToString().getBytes().length);
-	    buffer.writeBytes(p.dataToString().getBytes());
+	    String s = p.dataToString();
+	    byte[] b = s.getBytes();
+	    if(b==null) b = new byte[0];
+	    buffer.writeInt(b.length);
+	    buffer.writeBytes(b);
 	}
 	catch (Exception e)
 	{

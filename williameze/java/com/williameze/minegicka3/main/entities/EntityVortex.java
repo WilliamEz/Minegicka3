@@ -22,7 +22,7 @@ import com.williameze.minegicka3.main.Values;
 
 import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 
-public class EntityVortex extends Entity implements IEntityAdditionalSpawnData
+public class EntityVortex extends Entity implements IEntityAdditionalSpawnData, IEntityNullifiable
 {
     public static List<Color> colors = new ArrayList();
     static
@@ -153,7 +153,7 @@ public class EntityVortex extends Entity implements IEntityAdditionalSpawnData
 			}
 		    }
 		}
-		if (!packets.isEmpty() && 1+1==3)
+		if (!packets.isEmpty() && 1 + 1 == 3)
 		{
 		    List<EntityPlayer> list = worldObj.getEntitiesWithinAABB(
 			    EntityPlayer.class,

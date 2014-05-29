@@ -19,7 +19,7 @@ import com.williameze.minegicka3.main.spells.Spell.CastType;
 
 import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 
-public class EntityMine extends Entity implements IEntityAdditionalSpawnData
+public class EntityMine extends Entity implements IEntityAdditionalSpawnData, IEntityNullifiable
 {
     public Spell spell = Spell.none;
     public boolean startedSpell = false;
@@ -41,7 +41,7 @@ public class EntityMine extends Entity implements IEntityAdditionalSpawnData
     {
 	return false;
     }
-    
+
     @Override
     public boolean isInRangeToRenderDist(double par1)
     {

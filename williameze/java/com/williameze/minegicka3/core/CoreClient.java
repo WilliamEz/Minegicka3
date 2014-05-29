@@ -54,6 +54,7 @@ public class CoreClient
     }
 
     public int elementsPerRow = 5;
+    public int maxQueueElements = 5;
     public Minecraft mc = Minecraft.getMinecraft();
     public List<Element> queuedElements = new ArrayList();
     public List<Entry<Element, long[]>> removingElements = new ArrayList();
@@ -154,12 +155,12 @@ public class CoreClient
 
     public void onClientTick(ClientTickEvent event)
     {
-	
+
 	for (KeyBinding mkb : ModKeybinding.elementKeys)
 	{
 	    if (mkb.isPressed() && isWizardnessApplicable()) playerQueueElement(ModKeybinding.keyToElementMap.get(mkb));
 	}
-	
+
 	if (ModKeybinding.keyClear.isPressed())
 	{
 	    if (isWizardnessApplicable()) ModBase.proxy.getCoreClient().clearQueued();
@@ -175,15 +176,26 @@ public class CoreClient
 	{
 	    if (isWizardnessApplicable()) clientCastMagick();
 	}
-	
+
     }
 
     public void onClientPlayerTick(PlayerTickEvent event)
     {
 	if (event.phase == Phase.END && event.player == mc.thePlayer)
 	{
-	    if (event.player.getItemInUse() == null) currentClientCastingSpell = null;
-	    updateSpells();
+	    ItemStack is = event.player.getHeldItem();
+	    ItemStaff item = ItemStaff.getStaffItem(is);
+	    if (item != null)
+	    {
+		maxQueueElements = 5 + item.getStaffTag(is).getInteger("Add queueable");
+	    }
+	    else maxQueueElements = 5;
+
+	    if (event.player.getItemInUse() == null)
+	    {
+		currentClientCastingSpell = null;
+	    }
+
 	    if (currentClientCastingSpell == null || !currentWorldSpells.contains(currentClientCastingSpell)
 		    || currentClientCastingSpell.toBeInvalidated)
 	    {
@@ -194,6 +206,16 @@ public class CoreClient
 	    {
 		recoveringMana = false;
 	    }
+
+	    if (queuedElements.size() > maxQueueElements)
+	    {
+		for (int a = queuedElements.size() - 1; a >= maxQueueElements; a--)
+		{
+		    replaceElement(a, null);
+		}
+	    }
+
+	    updateSpells();
 	}
     }
 
@@ -264,7 +286,10 @@ public class CoreClient
 	    }
 	}
 
-	queuedElements.add(e);
+	if (queuedElements.size() < maxQueueElements)
+	{
+	    queuedElements.add(e);
+	}
 	checkForMatchedMagick();
     }
 

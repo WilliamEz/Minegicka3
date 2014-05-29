@@ -36,6 +36,7 @@ import com.williameze.minegicka3.main.objects.BlockCraftStation;
 import com.williameze.minegicka3.main.objects.BlockShield;
 import com.williameze.minegicka3.main.objects.BlockWall;
 import com.williameze.minegicka3.main.objects.ItemEssence;
+import com.williameze.minegicka3.main.objects.ItemMagicApple;
 import com.williameze.minegicka3.main.objects.ItemMagickTablet;
 import com.williameze.minegicka3.main.objects.ItemStaff;
 import com.williameze.minegicka3.main.objects.TileEntityCraftStation;
@@ -118,7 +119,7 @@ public class ModBase
     public static CreativeTabCustom modCreativeTab;
     public static Block shieldBlock, wallBlock;
     public static Block craftStation;
-    public static Item thingy, stick;
+    public static Item thingy, stick, magicApple, magicGoldenApple;
     public static Item essenceArcane, essenceCold, essenceEarth, essenceFire, essenceIce, essenceLife, essenceLightning, essenceShield,
 	    essenceSteam, essenceWater;
     public static Item magickTablet;
@@ -137,6 +138,10 @@ public class ModBase
 
 	thingy = new Item().setUnlocalizedName(themodid + "Thingy").setTextureName("apple").setCreativeTab(modCreativeTab);
 	stick = new Item().setUnlocalizedName(themodid + "TheStick").setTextureName("apple").setCreativeTab(modCreativeTab);
+	magicApple = new ItemMagicApple(11.24).setUnlocalizedName(themodid + "MagicApple").setTextureName("apple")
+		.setCreativeTab(modCreativeTab);
+	magicGoldenApple = new ItemMagicApple(1124).setUnlocalizedName(themodid + "MagicGoldenApple").setTextureName("apple_golden")
+		.setCreativeTab(modCreativeTab);
 	essenceArcane = new ItemEssence(Element.Arcane).setUnlocalizedName(themodid + "ArcaneEssence").setCreativeTab(modCreativeTab);
 	essenceCold = new ItemEssence(Element.Cold).setUnlocalizedName(themodid + "ColdEssence").setCreativeTab(modCreativeTab);
 	essenceEarth = new ItemEssence(Element.Earth).setUnlocalizedName(themodid + "EarthEssence").setCreativeTab(modCreativeTab);
@@ -170,6 +175,8 @@ public class ModBase
 
 	GameRegistry.registerItem(thingy, themodid + "Thingy");
 	GameRegistry.registerItem(stick, themodid + "TheEssence");
+	GameRegistry.registerItem(magicApple, themodid + "MagicApple");
+	GameRegistry.registerItem(magicGoldenApple, themodid + "MagicGoldenApple");
 	GameRegistry.registerItem(essenceArcane, themodid + "ArcaneEssence");
 	GameRegistry.registerItem(essenceCold, themodid + "ColdEssence");
 	GameRegistry.registerItem(essenceEarth, themodid + "EarthEssence");

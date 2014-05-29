@@ -34,7 +34,7 @@ public class PacketPlayerMana extends Packet
     {
 	try
 	{
-	    String s = p.dimensionID+";"+p.playerProfile.getId()+";"+p.playerProfile.getName()+";"+p.mana;
+	    String s = p.dimensionID + ";" + p.playerName + ";" + p.mana;
 	    buffer.writeInt(s.getBytes().length);
 	    buffer.writeBytes(s.getBytes());
 	}
@@ -53,9 +53,9 @@ public class PacketPlayerMana extends Packet
 	    buffer.readBytes(b);
 	    String[] strings = (new String(b)).split(";");
 	    int dimension = Integer.parseInt(strings[0]);
-	    GameProfile gf = new GameProfile(strings[1], strings[2]);
-	    p = PlayersData.getPlayerData_static(gf, dimension);
-	    mana = Double.parseDouble(strings[3]);
+	    String name = strings[1];
+	    p = PlayersData.getPlayerData_static(name, dimension);
+	    mana = Double.parseDouble(strings[2]);
 	}
 	catch (Exception e)
 	{

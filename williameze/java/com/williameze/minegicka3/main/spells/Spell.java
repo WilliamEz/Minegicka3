@@ -180,8 +180,8 @@ public class Spell
 	{
 	    spellTicks++;
 	    getExecute().updateSpell(this);
-
 	    updateRecentAffected();
+	    if (spellTicks >= 2000) stopSpell();
 	}
     }
 
@@ -301,7 +301,7 @@ public class Spell
 	if (!recentlyAffected.containsKey(e))
 	{
 	    float totalDamage = (float) (waterDamage + fireDamage + arcaneDamage + lightningDamage + earthDamage + iceDamage + coldDamage + steamDamage);
-	    totalDamage*=getPower();
+	    totalDamage *= getPower();
 	    if (totalDamage > 0)
 	    {
 		DamageSource source = getCaster() instanceof EntityLivingBase ? DamageSource.causeMobDamage((EntityLivingBase) getCaster())

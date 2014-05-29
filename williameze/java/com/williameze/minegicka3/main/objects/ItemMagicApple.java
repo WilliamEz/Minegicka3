@@ -34,14 +34,17 @@ public class ItemMagicApple extends Item
     @Override
     public EnumRarity getRarity(ItemStack is)
     {
-	return is.getItem() == ModBase.magicGoldenApple ? EnumRarity.epic : EnumRarity.uncommon;
+	if (is.getItem() == ModBase.magicApple) return EnumRarity.uncommon;
+	if (is.getItem() == ModBase.magicBetterApple) return EnumRarity.rare;
+	if (is.getItem() == ModBase.magicGoldenApple) return EnumRarity.epic;
+	return EnumRarity.common;
     }
 
     @Override
     public void addInformation(ItemStack is, EntityPlayer p, List l, boolean par4)
     {
 	super.addInformation(is, p, l, par4);
-	l.add("Increase " + manaIncrease + " mana.");
+	l.add("Increase mana cap by " + manaIncrease + ".");
     }
 
     @Override

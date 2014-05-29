@@ -37,10 +37,11 @@ public class RenderEntityIcicle extends Render
 	GL11.glDisable(GL11.GL_CULL_FACE);
 	GL11.glTranslated(x, y, z);
 
-	DrawHelper.enableLighting(2F);
+	//DrawHelper.enableLighting(2F);
 	doTheRender((EntityIcicle) var1, partialTick);
 	doTheRender_followLine((EntityIcicle) var1, partialTick);
-	DrawHelper.disableLighting();
+	//DrawHelper.enableLighting(1F);
+	//DrawHelper.disableLighting();
 
 	GL11.glEnable(GL11.GL_CULL_FACE);
 	GL11.glEnable(GL11.GL_TEXTURE_2D);

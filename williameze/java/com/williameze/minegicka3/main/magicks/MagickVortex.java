@@ -57,7 +57,7 @@ public class MagickVortex extends Magick
 	    vortex.setPosition(posX, posY, posZ);
 	    vortex.life = (int) Math.max(40D*speed, 80);
 	    vortex.power = power;
-	    vortex.range = Math.max(power * 2, 2);
+	    vortex.range = Math.max(power * 4, 2);
 	    vortex.interval = (int) Math.max(1,Math.min(10D/speed, 15));
 	    world.spawnEntityInWorld(vortex);
 	}

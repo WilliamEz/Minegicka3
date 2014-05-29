@@ -32,6 +32,7 @@ import net.minecraft.util.ChatStyle;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumChatFormatting;
 
+import com.williameze.minegicka3.ModBase;
 import com.williameze.minegicka3.core.CoreBridge;
 import com.williameze.minegicka3.core.PlayerData;
 import com.williameze.minegicka3.core.PlayersData;
@@ -336,6 +337,7 @@ public class Spell
 	{
 	    EntityPlayer p = (EntityPlayer) e;
 	    if (p.capabilities.isCreativeMode) return 1;
+	    if (p.worldObj.isRemote && ModBase.proxy.getClientPlayer() != p) return 1;
 	    PlayersData psd = PlayersData.getWorldPlayersData(p.worldObj);
 	    PlayerData pd = psd.getPlayerData(p);
 

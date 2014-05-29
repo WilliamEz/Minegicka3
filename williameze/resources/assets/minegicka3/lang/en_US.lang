@@ -6,6 +6,7 @@ tile.minegicka3:CraftStation.name=Magical Craft Station
 item.minegicka3:Thingy.name=Magical Thing of Nothingness
 item.minegicka3:TheStick.name=The Stick
 item.minegicka3:MagicApple.name=Magic Apple
+item.minegicka3:MagicBetterApple.name=Magic "Kinda" Golden Apple
 item.minegicka3:MagicGoldenApple.name=Magic Golden Apple
 item.minegicka3:ArcaneEssence.name=Arcane Essence
 item.minegicka3:ColdEssence.name=Cold Essence
@@ -27,3 +28,5 @@ mgk3.string.Craft Batch=Craft Batch
 mgk3.string.Craftable=Craftable
 mgk3.string.Crafting=Crafting
 mgk3.string.Recipe=Recipe
+
+commands.m3unlock.usage=Unlocked all spells and magicks.

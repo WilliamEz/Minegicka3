@@ -45,13 +45,13 @@ public class ModelCraftStation extends ModelBase
 	if (o == mid)
 	{
 	    GL11.glTranslated(mid.orgX, mid.orgY, mid.orgZ);
-	    GL11.glRotated(-(Values.clientTicked + f) * 1, 0, 1, 0);
+	    GL11.glRotated(-(Values.clientTicked + f) * 3, 0, 1, 0);
 	    GL11.glTranslated(-mid.orgX, -mid.orgY, -mid.orgZ);
 	}
 	if (spinnings.contains(o))
 	{
 	    GL11.glTranslated(0.5, 0.5, 0.5);
-	    GL11.glRotated((Values.clientTicked + f) * 1, 0, 1, 0);
+	    GL11.glRotated((Values.clientTicked + f) * 3, 0, 1, 0);
 	    GL11.glTranslated(-0.5, -0.5, -0.5);
 	}
     }

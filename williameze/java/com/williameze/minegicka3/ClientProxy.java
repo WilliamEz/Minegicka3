@@ -5,10 +5,13 @@ import java.awt.Color;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
+import net.minecraft.command.ICommand;
+import net.minecraft.command.ServerCommandManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
 import net.minecraft.world.World;
+import net.minecraftforge.client.ClientCommandHandler;
 import net.minecraftforge.client.MinecraftForgeClient;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -72,6 +75,11 @@ public class ClientProxy extends CommonProxy
 	FMLCommonHandler.instance().bus().register(new TickHandlerClient());
 	MinecraftForge.EVENT_BUS.register(new TickHandlerClient());
     }
+    
+    @Override
+    public void sidedOnlyLoad()
+    {
+    }
 
     @Override
     public void postLoad()
@@ -82,6 +90,11 @@ public class ClientProxy extends CommonProxy
 	RenderEntityIceShard.load();
 	RenderTileEntityWall.load();
 	ModKeybinding.load();
+    }
+
+    public void registerCommand(ICommand cm)
+    {
+	ClientCommandHandler.instance.registerCommand(cm);
     }
 
     @Override

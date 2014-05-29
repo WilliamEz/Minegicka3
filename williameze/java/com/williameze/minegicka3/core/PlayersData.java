@@ -49,8 +49,8 @@ public class PlayersData
 	    try
 	    {
 		saveDir = new File(world.getSaveHandler().getWorldDirectory().getCanonicalPath() + File.separatorChar + "minegicka"
-			+ File.separatorChar + "Players-WDI" + world.provider.dimensionId + ".dat");
-		saveDir.mkdirs();
+			+ File.separatorChar + "Players-WDI-" + world.provider.dimensionId + ".dat");
+		saveDir.getParentFile().mkdirs();
 	    }
 	    catch (IOException e)
 	    {
@@ -139,7 +139,7 @@ public class PlayersData
 		return data;
 	    }
 	}
-	return null;
+	return allPlayersData.get(name);
     }
 
     public void addOrModifyPlayerData(PlayerData pd)
@@ -172,13 +172,13 @@ public class PlayersData
 	{
 	    if (ModBase.proxy.getClientWorld().provider.dimensionId == dimension)
 	    {
-		getWorldPlayersData(ModBase.proxy.getClientWorld()).getPlayerData(name);
+		return getWorldPlayersData(ModBase.proxy.getClientWorld()).getPlayerData(name);
 	    }
 	}
 	else if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
 	{
-	    getWorldPlayersData(FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(dimension)).getPlayerData(
-		    name);
+	    return getWorldPlayersData(FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(dimension))
+		    .getPlayerData(name);
 	}
 	return null;
     }

@@ -1,6 +1,7 @@
 package com.williameze.minegicka3.core;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import net.minecraft.entity.player.EntityPlayer;
@@ -50,7 +51,7 @@ public class PlayerData
 	if (mana < maxMana)
 	{
 	    double recover = 1 / 6D;
-	    ItemStack is = ref.getCurrentEquippedItem();
+	    ItemStack is = ref == null ? null : ref.getCurrentEquippedItem();
 	    if (is != null && is.getItem() instanceof ItemStaff)
 	    {
 		recover *= ((ItemStaff) is.getItem()).getRecover(is);
@@ -63,6 +64,14 @@ public class PlayerData
     {
 	mana += d;
 	mana = Math.max(Math.min(maxMana, mana), 0);
+    }
+
+    public void unlockEverything()
+    {
+	unlocked.clear();
+	unlocked.addAll(Arrays.asList(Element.values()));
+	unlockedMagicks.clear();
+	unlockedMagicks.addAll(Magick.magicks.values());
     }
 
     public void unlock(Object o)

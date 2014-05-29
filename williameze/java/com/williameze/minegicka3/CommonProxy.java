@@ -1,7 +1,11 @@
 package com.williameze.minegicka3;
 
+import net.minecraft.command.ICommand;
+import net.minecraft.command.ServerCommand;
+import net.minecraft.command.ServerCommandManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 
@@ -24,9 +28,18 @@ public class CommonProxy implements IGuiHandler
 	// MinecraftForge.EVENT_BUS.register(CoreBridge.client);
     }
 
+    public void sidedOnlyLoad()
+    {
+    }
+
     public void postLoad()
     {
 
+    }
+
+    public void registerCommand(ICommand cm)
+    {
+	((ServerCommandManager) FMLCommonHandler.instance().getMinecraftServerInstance().getCommandManager()).registerCommand(cm);
     }
 
     public EntityPlayer getClientPlayer()

@@ -14,6 +14,7 @@ import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.network.play.server.S0EPacketSpawnObject;
 import net.minecraft.util.AxisAlignedBB;
+import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 
 import com.williameze.api.lib.FuncHelper;
@@ -192,8 +193,14 @@ public class EntityVortex extends Entity implements IEntityAdditionalSpawnData, 
 		if (distSqr <= 2)
 		{
 		    if (ent instanceof EntityPlayer && ((EntityPlayer) ent).capabilities.isCreativeMode)
-		    ;
-		    else ent.setDead();
+		    {
+			
+		    }
+		    else
+		    {
+			ent.attackEntityFrom(DamageSource.magic, 9999);
+			if(!ent.isDead) ent.setDead();
+		    }
 		}
 	    }
 	}

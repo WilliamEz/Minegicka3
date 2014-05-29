@@ -44,13 +44,13 @@ public class EntityBeam extends Entity implements IEntityAdditionalSpawnData
     public void setInPortal()
     {
     }
-    
+
     @Override
     public boolean isBurning()
     {
 	return false;
     }
-    
+
     @Override
     public boolean isInRangeToRenderDist(double par1)
     {

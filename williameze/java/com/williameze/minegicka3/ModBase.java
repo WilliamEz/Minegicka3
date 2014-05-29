@@ -5,6 +5,8 @@ import java.util.Arrays;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
+import net.minecraft.command.CommandHandler;
+import net.minecraft.command.CommandHelp;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -12,6 +14,7 @@ import net.minecraft.item.ItemStack;
 
 import com.williameze.minegicka3.core.CoreBridge;
 import com.williameze.minegicka3.main.ClickCraft;
+import com.williameze.minegicka3.main.CommandUnlock;
 import com.williameze.minegicka3.main.Element;
 import com.williameze.minegicka3.main.entities.EntityBeam;
 import com.williameze.minegicka3.main.entities.EntityBeamArea;
@@ -46,6 +49,7 @@ import com.williameze.minegicka3.main.packets.PacketPipeline;
 import com.williameze.minegicka3.main.packets.PacketPlayerClickCraft;
 import com.williameze.minegicka3.main.packets.PacketPlayerData;
 import com.williameze.minegicka3.main.packets.PacketPlayerMana;
+import com.williameze.minegicka3.main.packets.PacketPlayerUnlockAll;
 import com.williameze.minegicka3.main.packets.PacketStartMagick;
 import com.williameze.minegicka3.main.packets.PacketStartSpell;
 import com.williameze.minegicka3.main.packets.PacketStopSpell;
@@ -113,13 +117,14 @@ public class ModBase
     {
 	packetPipeline.postInitialise();
 	proxy.postLoad();
+	proxy.registerCommand(new CommandUnlock());
     }
 
     public static Material magical;
     public static CreativeTabCustom modCreativeTab;
     public static Block shieldBlock, wallBlock;
     public static Block craftStation;
-    public static Item thingy, stick, magicApple, magicGoldenApple;
+    public static Item thingy, stick, magicApple, magicBetterApple, magicGoldenApple;
     public static Item essenceArcane, essenceCold, essenceEarth, essenceFire, essenceIce, essenceLife, essenceLightning, essenceShield,
 	    essenceSteam, essenceWater;
     public static Item magickTablet;
@@ -138,9 +143,11 @@ public class ModBase
 
 	thingy = new Item().setUnlocalizedName(themodid + "Thingy").setTextureName("apple").setCreativeTab(modCreativeTab);
 	stick = new Item().setUnlocalizedName(themodid + "TheStick").setTextureName("apple").setCreativeTab(modCreativeTab);
-	magicApple = new ItemMagicApple(11.24).setUnlocalizedName(themodid + "MagicApple").setTextureName("apple")
+	magicApple = new ItemMagicApple(10).setUnlocalizedName(themodid + "MagicApple").setTextureName("apple")
 		.setCreativeTab(modCreativeTab);
-	magicGoldenApple = new ItemMagicApple(1124).setUnlocalizedName(themodid + "MagicGoldenApple").setTextureName("apple_golden")
+	magicBetterApple = new ItemMagicApple(100).setUnlocalizedName(themodid + "MagicBetterApple").setTextureName("apple_golden")
+		.setCreativeTab(modCreativeTab);
+	magicGoldenApple = new ItemMagicApple(1500).setUnlocalizedName(themodid + "MagicGoldenApple").setTextureName("apple_golden")
 		.setCreativeTab(modCreativeTab);
 	essenceArcane = new ItemEssence(Element.Arcane).setUnlocalizedName(themodid + "ArcaneEssence").setCreativeTab(modCreativeTab);
 	essenceCold = new ItemEssence(Element.Cold).setUnlocalizedName(themodid + "ColdEssence").setCreativeTab(modCreativeTab);
@@ -176,6 +183,7 @@ public class ModBase
 	GameRegistry.registerItem(thingy, themodid + "Thingy");
 	GameRegistry.registerItem(stick, themodid + "TheEssence");
 	GameRegistry.registerItem(magicApple, themodid + "MagicApple");
+	GameRegistry.registerItem(magicBetterApple, themodid + "MagicBetterApple");
 	GameRegistry.registerItem(magicGoldenApple, themodid + "MagicGoldenApple");
 	GameRegistry.registerItem(essenceArcane, themodid + "ArcaneEssence");
 	GameRegistry.registerItem(essenceCold, themodid + "ColdEssence");
@@ -209,16 +217,16 @@ public class ModBase
 	registerEntity(EntitySprayFire.class, "SprayFire", 64, 1);
 	registerEntity(EntitySpraySteam.class, "SpraySteam", 64, 1);
 	registerEntity(EntitySprayWater.class, "SprayWater", 64, 1);
-	registerEntity(EntityLightning.class, "Lightning", 64, Integer.MAX_VALUE);
-	registerEntity(EntityBeam.class, "Beam", 64, Integer.MAX_VALUE);
-	registerEntity(EntityBeamArea.class, "BeamArea", 64, Integer.MAX_VALUE);
+	registerEntity(EntityLightning.class, "Lightning", 64, 2);
+	registerEntity(EntityBeam.class, "Beam", 64, 2);
+	registerEntity(EntityBeamArea.class, "BeamArea", 64, 2);
 	registerEntity(EntityBoulder.class, "Boulder", 64, 1);
 	registerEntity(EntityIcicle.class, "Icicle", 64, 1);
-	registerEntity(EntityEarthRumble.class, "EarthRumble", 64, Integer.MAX_VALUE);
-	registerEntity(EntityIceShard.class, "IceShard", 64, Integer.MAX_VALUE);
-	registerEntity(EntityStorm.class, "Storm", 64, Integer.MAX_VALUE);
-	registerEntity(EntityMine.class, "Mine", 64, Integer.MAX_VALUE);
-	registerEntity(EntityVortex.class, "Vortex", 64, Integer.MAX_VALUE);
+	registerEntity(EntityEarthRumble.class, "EarthRumble", 64, 2);
+	registerEntity(EntityIceShard.class, "IceShard", 64, 2);
+	registerEntity(EntityStorm.class, "Storm", 64, 2);
+	registerEntity(EntityMine.class, "Mine", 64, 2);
+	registerEntity(EntityVortex.class, "Vortex", 64, 2);
     }
 
     public void registerEntity(Class eClass, String eName, int updateRange, int updateFrequency)
@@ -244,5 +252,6 @@ public class ModBase
 	packetPipeline.registerPacket(PacketPlayerMana.class);
 	packetPipeline.registerPacket(PacketStartMagick.class);
 	packetPipeline.registerPacket(PacketPlayerClickCraft.class);
+	packetPipeline.registerPacket(PacketPlayerUnlockAll.class);
     }
 }

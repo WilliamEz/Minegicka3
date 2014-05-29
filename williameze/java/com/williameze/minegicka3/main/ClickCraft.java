@@ -44,8 +44,9 @@ public class ClickCraft
 	registerClickCraftObject(new ItemStack(ModBase.thingy), new Object[] { Items.emerald, Items.gold_ingot });
 	registerClickCraftObject(new ItemStack(ModBase.stick), new Object[] { ModBase.thingy, 2, Items.stick });
 	registerClickCraftObject(new ItemStack(ModBase.magicApple), new Object[] { Items.apple, ModBase.thingy, 4 });
+	registerClickCraftObject(new ItemStack(ModBase.magicBetterApple), new Object[] { Items.golden_apple, ModBase.thingy, 16 });
 	registerClickCraftObject(new ItemStack(ModBase.magicGoldenApple), new Object[] { new ItemStack(Items.golden_apple, 1, 1),
-		ModBase.thingy, 16 });
+		ModBase.thingy, 32 });
 	registerClickCraftObject(new ItemStack(ModBase.essenceArcane), new Object[] { ModBase.thingy, Items.blaze_rod, 4,
 		Items.fermented_spider_eye, 16, Items.nether_wart, 4 });
 	registerClickCraftObject(new ItemStack(ModBase.essenceCold), new Object[] { ModBase.thingy, Items.snowball, 64 });

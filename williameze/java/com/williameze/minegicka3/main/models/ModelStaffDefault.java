@@ -60,7 +60,7 @@ public class ModelStaffDefault extends ModelStaff
 		float manaRate = (float) ModBase.proxy.getCoreClient().getManaRate();
 		orb.setColor(new Color(0.8F, 0.8F * Math.max(0, 0.8F - manaRate), 0.9F * manaRate, 1));
 	    }
-	    GL11.glRotated(Values.clientTicked / 2, 0, 2, 0);
+	    GL11.glRotated(Values.clientTicked * 2, 0, 2, 0);
 	}
     }
 
@@ -74,7 +74,7 @@ public class ModelStaffDefault extends ModelStaff
 	    {
 		orb.setColor(defaultOrbColor);
 	    }
-	    GL11.glRotated(-Values.clientTicked / 2, 0, 2, 0);
+	    GL11.glRotated(-Values.clientTicked * 2, 0, 2, 0);
 	}
     }
 }

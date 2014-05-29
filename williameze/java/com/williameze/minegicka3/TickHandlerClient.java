@@ -15,6 +15,7 @@ import cpw.mods.fml.common.eventhandler.Event;
 import cpw.mods.fml.common.eventhandler.IEventListener;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.ClientTickEvent;
+import cpw.mods.fml.common.gameevent.TickEvent.Phase;
 import cpw.mods.fml.common.gameevent.TickEvent.PlayerTickEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.RenderTickEvent;
 import cpw.mods.fml.common.gameevent.TickEvent.WorldTickEvent;
@@ -28,13 +29,14 @@ public class TickHandlerClient implements IEventListener
 	if (TestOverlay.testMode && TestOverlay.keyToggleTestOverlay.isPressed()) TestOverlay.enabled = !TestOverlay.enabled;
 	if (Values.clientTicked % 200 == 0) Values.renderDistance = Math.max(
 		Math.min(Minecraft.getMinecraft().gameSettings.renderDistanceChunks * 16D, 128), 16);
+
+	if (event.phase == Phase.END) Values.clientTicked++;
     }
 
     @SubscribeEvent
     public void worldTick(WorldTickEvent event)
     {
 	// CoreBridge.instance().onTick(event);
-	Values.clientTicked++;
     }
 
     @SubscribeEvent

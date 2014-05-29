@@ -96,7 +96,7 @@ public class EventsHandler implements IEventListener
     @SubscribeEvent
     public void onEntityKilled(LivingDropsEvent event)
     {
-	if (!event.entityLiving.worldObj.isRemote && new Random().nextInt(1000) == 0)
+	if (!event.entityLiving.worldObj.isRemote && new Random().nextInt(300) == 0)
 	{
 	    EntityItem ei = new EntityItem(event.entityLiving.worldObj, event.entityLiving.posX, event.entityLiving.posY,
 		    event.entityLiving.posZ, new ItemStack(ModBase.thingy));

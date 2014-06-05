@@ -158,21 +158,22 @@ public class CoreClient
 
 	for (KeyBinding mkb : ModKeybinding.elementKeys)
 	{
-	    if (mkb.isPressed() && isWizardnessApplicable()) playerQueueElement(ModKeybinding.keyToElementMap.get(mkb));
+	    if (mkb.isPressed() && isWizardnessApplicable() && currentClientCastingSpell == null) playerQueueElement(ModKeybinding.keyToElementMap
+		    .get(mkb));
 	}
 
-	if (ModKeybinding.keyClear.isPressed())
+	if (ModKeybinding.keyClear.isPressed() && currentClientCastingSpell == null)
 	{
 	    if (isWizardnessApplicable()) ModBase.proxy.getCoreClient().clearQueued();
 	}
 
-	if (ModKeybinding.keyArea.getIsKeyPressed())
+	if (ModKeybinding.keyArea.getIsKeyPressed() && currentClientCastingSpell == null)
 	{
 	    if (isWizardnessApplicable()) currentClientSpellCastType = CastType.Area;
 	}
 	else currentClientSpellCastType = CastType.Single;
 
-	if (ModKeybinding.keyMagick.isPressed())
+	if (ModKeybinding.keyMagick.isPressed() && currentClientCastingSpell == null)
 	{
 	    if (isWizardnessApplicable()) clientCastMagick();
 	}

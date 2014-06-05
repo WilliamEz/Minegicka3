@@ -85,17 +85,20 @@ public enum Element
 	}
     }
 
+    public static Color[] colors = new Color[] { new Color(255, 0, 0), new Color(255, 255, 255), new Color(56, 39, 19), new Color(255, 75, 0),
+	    new Color(144, 255, 255), new Color(0, 255, 0), new Color(255, 84, 253), new Color(255, 246, 56), new Color(171, 171, 171), new Color(37, 41, 255) };
+
     public Color getColor()
     {
-	if (this == Arcane) return new Color(255, 0, 0);
-	else if (this == Cold) return new Color(255, 255, 255);
-	else if (this == Earth) return new Color(56, 39, 19);
-	else if (this == Fire) return new Color(255, 75, 0);
-	else if (this == Ice) return new Color(144, 255, 255);
-	else if (this == Life) return new Color(0, 255, 0);
-	else if (this == Lightning) return new Color(255, 84, 253);
-	else if (this == Shield) return new Color(255, 246, 56);
-	else if (this == Steam) return new Color(171, 171, 171);
-	else return new Color(37, 41, 255);
+	if (this == Arcane) return colors[0];
+	else if (this == Cold) return colors[1];
+	else if (this == Earth) return colors[2];
+	else if (this == Fire) return colors[3];
+	else if (this == Ice) return colors[4];
+	else if (this == Life) return colors[5];
+	else if (this == Lightning) return colors[6];
+	else if (this == Shield) return colors[7];
+	else if (this == Steam) return colors[8];
+	else return colors[9];
     }
 }

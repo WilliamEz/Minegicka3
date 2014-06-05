@@ -1,8 +1,7 @@
 package com.williameze.minegicka3.main;
 
-import java.util.ArrayList;
+import java.awt.Color;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
@@ -10,8 +9,6 @@ import net.minecraft.entity.Entity;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
-import com.mojang.authlib.GameProfile;
-import com.williameze.api.math.IntVector;
 import com.williameze.minegicka3.ModBase;
 
 public abstract class Values
@@ -21,6 +18,12 @@ public abstract class Values
 
     /** Toggleable **/
     public static GuiPosition gui_Position = GuiPosition.BOTTOM_RIGHT;
+
+    /** Colors **/
+    public static Color yellow = new Color(255, 255, 100);
+    public static Color cyan = new Color(29, 177, 255);
+    public static Color purple = new Color(197, 0, 204);
+    public static Color red = new Color(200, 0, 0);
 
     /** Values **/
     public static int clientTicked = 0;

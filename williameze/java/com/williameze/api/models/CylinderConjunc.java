@@ -2,6 +2,7 @@ package com.williameze.api.models;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import com.williameze.api.math.Vector;
@@ -11,15 +12,14 @@ public class CylinderConjunc extends ModelObject
     public List<Vector> midPoints = new ArrayList();
     public List<Cylinder> segments = new ArrayList();
 
-    public static CylinderConjunc createTorus(Vector startPoint, Vector centerPivot, Vector axis, double initialRot,
-	    int segmentCount, double cylRadius, int cylCuts)
+    public static CylinderConjunc createTorus(Vector startPoint, Vector centerPivot, Vector axis, double initialRot, int segmentCount,
+	    double cylRadius, int cylCuts)
     {
-	return createSpiral(startPoint, centerPivot, axis, initialRot, Math.PI * 2D / segmentCount, segmentCount, 0, cylRadius,
-		cylCuts);
+	return createSpiral(startPoint, centerPivot, axis, initialRot, Math.PI * 2D / segmentCount, segmentCount, 0, cylRadius, cylCuts);
     }
 
-    public static CylinderConjunc createSpiral(Vector startPoint, Vector centerPivot, Vector axis, double initialRot,
-	    double rotAngle, int segmentCount, double incrementAlongAxis, double cylRadius, int cylCuts)
+    public static CylinderConjunc createSpiral(Vector startPoint, Vector centerPivot, Vector axis, double initialRot, double rotAngle,
+	    int segmentCount, double incrementAlongAxis, double cylRadius, int cylCuts)
     {
 	List<Vector> l = new ArrayList();
 	Vector axisNor = axis.normalize();
@@ -50,19 +50,24 @@ public class CylinderConjunc extends ModelObject
      */
     public CylinderConjunc(double cylRadius, int cylCuts, List<Vector> list)
     {
-	midPoints.addAll(list.subList(1, list.size()));
-	for (int a = 1; a < list.size() - 2; a++)
+	if (list.size() > 2)
 	{
-	    Vector pre1 = list.get(a - 1);
-	    Vector center1 = list.get(a);
-	    Vector center2 = list.get(a + 1);
-	    Vector post2 = list.get(a + 2);
-	    Vector nor1 = (center2.subtract(center1).crossProduct(pre1.subtract(center1))).crossProduct(pre1.subtract(center1)
-		    .add(center2.subtract(center1)));
-	    Vector nor2 = (post2.subtract(center2).add(center1).subtract(center2)).crossProduct(post2.subtract(center2)
-		    .crossProduct(center1.subtract(center2)));
-	    Cylinder c = new Cylinder(center2, center1, nor2, nor1, cylRadius, cylRadius, cylCuts);
-	    segments.add(c);
+	    midPoints.addAll(list.subList(1, list.size()));
+	    for (int a = 1; a < list.size() - 2; a++)
+	    {
+		Vector pre1 = list.get(a - 1);
+		Vector center1 = list.get(a);
+		Vector center2 = list.get(a + 1);
+		Vector post2 = list.get(a + 2);
+		Vector nor1 = (center2.subtract(center1).crossProduct(pre1.subtract(center1))).crossProduct(pre1.subtract(center1).add(
+			center2.subtract(center1)));
+		Vector nor2 = (post2.subtract(center2).add(center1).subtract(center2)).crossProduct(post2.subtract(center2).crossProduct(
+			center1.subtract(center2)));
+		nor1 = pre1.subtract(center1).normalize().add(center1.subtract(center2).normalize());
+		nor2 = post2.subtract(center2).normalize().add(center2.subtract(center1).normalize());
+		Cylinder c = new Cylinder(center2, center1, nor2, nor1, cylRadius, cylRadius, cylCuts);
+		segments.add(c);
+	    }
 	}
     }
 

@@ -11,7 +11,9 @@ import org.lwjgl.opengl.GL11;
 import com.williameze.api.math.Vector;
 import com.williameze.api.models.Cylinder;
 import com.williameze.api.models.ModelObject;
+import com.williameze.minegicka3.ModBase;
 import com.williameze.minegicka3.main.Element;
+import com.williameze.minegicka3.main.Values;
 import com.williameze.minegicka3.main.objects.ItemEssence;
 
 public class RenderItemStick implements IItemRenderer
@@ -77,7 +79,9 @@ public class RenderItemStick implements IItemRenderer
 	}
 
 	GL11.glScaled(1 / 16D, 1 / 16D, 1 / 16D);
-	cyl.setColor(new Color(255, 255, 100, 255));
+	if (item.getItem() == ModBase.stick) cyl.setColor(Values.yellow);
+	if (item.getItem() == ModBase.stickGood) cyl.setColor(Values.cyan);
+	if (item.getItem() == ModBase.stickSuper) cyl.setColor(Values.purple);
 	cyl.render();
 
 	GL11.glColor4d(1, 1, 1, 1);

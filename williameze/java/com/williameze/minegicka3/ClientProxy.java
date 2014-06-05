@@ -6,7 +6,6 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.command.ICommand;
-import net.minecraft.command.ServerCommandManager;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.Item;
 import net.minecraft.tileentity.TileEntity;
@@ -18,10 +17,12 @@ import net.minecraftforge.common.MinecraftForge;
 import com.williameze.api.models.Sphere;
 import com.williameze.minegicka3.core.CoreBridge;
 import com.williameze.minegicka3.core.CoreClient;
+import com.williameze.minegicka3.main.Values;
 import com.williameze.minegicka3.main.entities.EntityBeam;
 import com.williameze.minegicka3.main.entities.EntityBeamArea;
 import com.williameze.minegicka3.main.entities.EntityBoulder;
 import com.williameze.minegicka3.main.entities.EntityEarthRumble;
+import com.williameze.minegicka3.main.entities.EntityHomingLightning;
 import com.williameze.minegicka3.main.entities.EntityIceShard;
 import com.williameze.minegicka3.main.entities.EntityIcicle;
 import com.williameze.minegicka3.main.entities.EntityLightning;
@@ -47,12 +48,14 @@ import com.williameze.minegicka3.main.renders.RenderEntityBeam;
 import com.williameze.minegicka3.main.renders.RenderEntityBeamArea;
 import com.williameze.minegicka3.main.renders.RenderEntityBoulder;
 import com.williameze.minegicka3.main.renders.RenderEntityEarthRumble;
+import com.williameze.minegicka3.main.renders.RenderEntityHomingLightning;
 import com.williameze.minegicka3.main.renders.RenderEntityIceShard;
 import com.williameze.minegicka3.main.renders.RenderEntityIcicle;
 import com.williameze.minegicka3.main.renders.RenderEntityLightning;
 import com.williameze.minegicka3.main.renders.RenderEntityMine;
 import com.williameze.minegicka3.main.renders.RenderEntityNothingAtAll;
 import com.williameze.minegicka3.main.renders.RenderEntitySpray;
+import com.williameze.minegicka3.main.renders.RenderEntityVortex;
 import com.williameze.minegicka3.main.renders.RenderFXEProjectileCharge;
 import com.williameze.minegicka3.main.renders.RenderFXESimpleParticle;
 import com.williameze.minegicka3.main.renders.RenderItemGeneral;
@@ -75,7 +78,7 @@ public class ClientProxy extends CommonProxy
 	FMLCommonHandler.instance().bus().register(new TickHandlerClient());
 	MinecraftForge.EVENT_BUS.register(new TickHandlerClient());
     }
-    
+
     @Override
     public void sidedOnlyLoad()
     {
@@ -128,7 +131,8 @@ public class ClientProxy extends CommonProxy
 	RenderingRegistry.registerEntityRenderingHandler(EntityIceShard.class, new RenderEntityIceShard());
 	RenderingRegistry.registerEntityRenderingHandler(EntityStorm.class, new RenderEntityNothingAtAll());
 	RenderingRegistry.registerEntityRenderingHandler(EntityMine.class, new RenderEntityMine());
-	RenderingRegistry.registerEntityRenderingHandler(EntityVortex.class, new RenderEntityNothingAtAll());
+	RenderingRegistry.registerEntityRenderingHandler(EntityVortex.class, new RenderEntityVortex());
+	RenderingRegistry.registerEntityRenderingHandler(EntityHomingLightning.class, new RenderEntityHomingLightning());
 
 	registerTileRenderer(TileEntityShield.class, new RenderTileEntityShield());
 	registerTileRenderer(TileEntityWall.class, new RenderTileEntityWall());
@@ -137,7 +141,11 @@ public class ClientProxy extends CommonProxy
 	RenderingRegistry.registerBlockHandler(new BlockCustomRenderer());
 
 	registerItemRenderer(ModBase.thingy);
+	registerItemRenderer(ModBase.thingyGood);
+	registerItemRenderer(ModBase.thingySuper);
 	registerItemRenderer(ModBase.stick);
+	registerItemRenderer(ModBase.stickGood);
+	registerItemRenderer(ModBase.stickSuper);
     }
 
     public void registerTileRenderer(Class<? extends TileEntity> c, TileEntitySpecialRenderer re)
@@ -156,19 +164,26 @@ public class ClientProxy extends CommonProxy
 	{
 	    MinecraftForgeClient.registerItemRenderer(i, new RenderItemMagickTablet());
 	}
-	if (i == ModBase.stick)
+	if (i == ModBase.stick || i == ModBase.stickGood || i == ModBase.stickSuper)
 	{
 	    MinecraftForgeClient.registerItemRenderer(i, new RenderItemStick());
 	}
 	if (i == ModBase.thingy)
 	{
-	    MinecraftForgeClient.registerItemRenderer(i,
-		    new RenderItemGeneral(new Sphere(0, 0, 0, 0.4, 2, 4).setColor(new Color(255, 255, 100, 255))));
+	    MinecraftForgeClient.registerItemRenderer(i, new RenderItemGeneral(new Sphere(0, 0, 0, 0.4, 2, 4).setColor(Values.yellow)));
+	}
+	if (i == ModBase.thingyGood)
+	{
+	    MinecraftForgeClient.registerItemRenderer(i, new RenderItemGeneral(new Sphere(0, 0, 0, 0.4, 2, 4).setColor(Values.cyan)));
+	}
+	if (i == ModBase.thingySuper)
+	{
+	    MinecraftForgeClient.registerItemRenderer(i, new RenderItemGeneral(new Sphere(0, 0, 0, 0.4, 2, 4).setColor(Values.purple)));
 	}
 	if (i instanceof ItemEssence)
 	{
-	    MinecraftForgeClient.registerItemRenderer(i,
-		    new RenderItemGeneral(new Sphere(0, 0, 0, 0.4, 2, 4).setColor(((ItemEssence) i).unlocking.getColor())));
+	    MinecraftForgeClient
+		    .registerItemRenderer(i, new RenderItemGeneral(new Sphere(0, 0, 0, 0.4, 2, 4).setColor(((ItemEssence) i).unlocking.getColor())));
 	}
     }
 

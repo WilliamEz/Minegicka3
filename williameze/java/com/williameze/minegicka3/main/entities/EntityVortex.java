@@ -7,19 +7,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import net.minecraft.block.Block;
+import net.minecraft.block.BlockDynamicLiquid;
+import net.minecraft.block.BlockStaticLiquid;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityFallingBlock;
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.entity.player.EntityPlayerMP;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.network.play.server.S0EPacketSpawnObject;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 
 import com.williameze.api.lib.FuncHelper;
 import com.williameze.api.math.Vector;
-import com.williameze.minegicka3.main.Values;
 
 import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 
@@ -33,6 +32,7 @@ public class EntityVortex extends Entity implements IEntityAdditionalSpawnData, 
 	colors.add(new Color(160, 18, 142));
 	colors.add(new Color(137, 27, 100));
     }
+
     public List<FXESimpleParticle> fxes = new ArrayList();
     public int life;
     public double power;
@@ -42,6 +42,12 @@ public class EntityVortex extends Entity implements IEntityAdditionalSpawnData, 
     public EntityVortex(World par1World)
     {
 	super(par1World);
+    }
+
+    @Override
+    public boolean isBurning()
+    {
+	return false;
     }
 
     @Override
@@ -110,11 +116,10 @@ public class EntityVortex extends Entity implements IEntityAdditionalSpawnData, 
 	    }
 	    fxes.removeAll(toRemove);
 	}
-	else
+	if (!worldObj.isRemote)
 	{
 	    if (ticksExisted % interval == 0)
 	    {
-		List<S0EPacketSpawnObject> packets = new ArrayList();
 		boolean fallen = false;
 		for (int a = 0; a < range && !fallen; a++)
 		{
@@ -130,43 +135,35 @@ public class EntityVortex extends Entity implements IEntityAdditionalSpawnData, 
 			{
 			    for (int z = minZ; z <= maxZ; z++)
 			    {
-				if (rand.nextInt(a + 1) == 0 && getDistanceSq(x, y, z) <= a * a)
+				if (getDistanceSq(x, y, z) <= a * a)
 				{
-				    Block b = worldObj.getBlock(x, y, z);
-				    if (!b.isAir(worldObj, x, x, z) && b.getMaterial().getMaterialMobility() < 2
-					    && worldObj.getTileEntity(x, y, z) == null)
+				    if (a <= 3)
 				    {
-					int id = b.getIdFromBlock(b);
-					int meta = worldObj.getBlockMetadata(x, y, z);
-					fallen = true;
-					EntityFallingBlock falling = new EntityFallingBlock(worldObj, x + 0.5, y + 0.5, z + 0.5, b, meta);
-					if (rand.nextInt(4) == 0)
-					{
-					    int value = (id & 65535) | (meta << 16);
-					    S0EPacketSpawnObject pkt = new S0EPacketSpawnObject(falling, 70, value);
-					    packets.add(pkt);
-					}
-					worldObj.spawnEntityInWorld(falling);
 					worldObj.setBlockToAir(x, y, z);
 				    }
+				    else if (rand.nextInt(a + 1) == 0)
+				    {
+					Block b = worldObj.getBlock(x, y, z);
+					if (!b.isAir(worldObj, x, x, z) && b.getMaterial().getMaterialMobility() < 2
+						&& b.getBlockHardness(worldObj, x, y, z) != -1 && worldObj.getTileEntity(x, y, z) == null)
+					{
+					    if (rand.nextInt(4) == 0)
+					    {
+						int id = b.getIdFromBlock(b);
+						int meta = worldObj.getBlockMetadata(x, y, z);
+						if (b instanceof BlockDynamicLiquid == false) fallen = true;
+						EntityFallingBlock falling = new EntityFallingBlock(worldObj, x + 0.5, y + 0.5, z + 0.5, b,
+							meta);
+						worldObj.spawnEntityInWorld(falling);
+					    }
+					    else
+					    {
+						if (b instanceof BlockDynamicLiquid == false) fallen = true;
+						worldObj.setBlockToAir(x, y, z);
+					    }
+					}
+				    }
 				}
-			    }
-			}
-		    }
-		}
-		if (!packets.isEmpty() && 1 + 1 == 3)
-		{
-		    List<EntityPlayer> list = worldObj.getEntitiesWithinAABB(
-			    EntityPlayer.class,
-			    AxisAlignedBB.getBoundingBox(posX, posY, posZ, posX, posY, posZ).expand(Values.renderDistance,
-				    Values.renderDistance, Values.renderDistance));
-		    for (EntityPlayer p : list)
-		    {
-			if (p instanceof EntityPlayerMP)
-			{
-			    for (S0EPacketSpawnObject pkt : packets)
-			    {
-				((EntityPlayerMP) p).playerNetServerHandler.sendPacket(pkt);
 			    }
 			}
 		    }
@@ -187,23 +184,38 @@ public class EntityVortex extends Entity implements IEntityAdditionalSpawnData, 
 		if (ent instanceof EntityFallingBlock) length /= 12D;
 		Vector v = FuncHelper.vectorToEntity(ent, this);
 		v.setToLength(length);
-		ent.motionX += v.x;
-		ent.motionY += v.y;
-		ent.motionZ += v.z;
-		if (distSqr <= 2)
+		if (ent instanceof EntityPlayer && ((EntityPlayer) ent).capabilities.isCreativeMode)
+		{
+		    ent.motionX += v.x / 4;
+		    ent.motionY += v.y / 4;
+		    ent.motionZ += v.z / 4;
+		}
+		else
+		{
+		    ent.motionX += v.x;
+		    ent.motionY += v.y;
+		    ent.motionZ += v.z;
+		}
+		if (distSqr <= 4)
 		{
 		    if (ent instanceof EntityPlayer && ((EntityPlayer) ent).capabilities.isCreativeMode)
 		    {
-			
+
 		    }
 		    else
 		    {
 			ent.attackEntityFrom(DamageSource.magic, 9999);
-			if(!ent.isDead) ent.setDead();
+			if (!ent.isDead) ent.setDead();
 		    }
 		}
 	    }
 	}
+    }
+
+    @Override
+    public void setDead()
+    {
+	super.setDead();
     }
 
     @Override

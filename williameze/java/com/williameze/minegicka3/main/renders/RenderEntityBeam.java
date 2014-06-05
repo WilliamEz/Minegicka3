@@ -60,13 +60,14 @@ public class RenderEntityBeam extends Render
 	Vector towardTarget = beam.towardTarget;
 	Vector towardNor = towardTarget.normalize();
 	List<Element> l = beam.spell.elements;
-	double radius = 0.13 * Math.pow(l.size(), 0.2);
-	double radius1 = radius / 2;
+	double radiusInner = 0.06 * Math.pow(l.size(), 0.15);
+	double radiusOuter = radiusInner * 1.5;
 
-	GL11.glRotated((Values.clientTicked + partialTick) * 30 / Math.sqrt(beam.spell.countElements()), towardNor.x, towardNor.y, towardNor.z);
+	GL11.glRotated((Values.clientTicked + partialTick) * 40 / Math.sqrt(beam.spell.countElements()), towardNor.x, towardNor.y,
+		towardNor.z);
 
 	GL11.glPushMatrix();
-	Cylinder cli = new Cylinder(Vector.root, towardTarget, towardTarget, towardTarget.reverse(), radius1, radius1, 8);
+	Cylinder cli = new Cylinder(Vector.root, towardTarget, towardTarget, towardTarget.reverse(), radiusInner, radiusInner, 8);
 	if (l.contains(Element.Arcane)) cli.setColor(Color.red);
 	else cli.setColor(Color.green);
 	cli.render();
@@ -76,41 +77,22 @@ public class RenderEntityBeam extends Render
 	{
 	    Plane p = new Plane(towardNor, 0);
 	    base = p.getAssurancePoint();
-	    base.setToLength(radius);
+	    base.setToLength(radiusOuter);
 	}
 	int loops = l.size();
-	int towardCuts = (int) Math.round(towardTarget.lengthVector());
+	int towardCuts = (int) Math.round(Math.pow(towardTarget.lengthVector(), 0.6) * 8);
 	for (int a = 0; a < loops; a++)
 	{
 	    base = base.rotateAround(towardNor, Math.PI * 2 / loops);
 	    Element e = l.get(a % l.size());
-	    /**
-	     * switch (e) { case Arcane: GL11.glColor4d(1, 0, 0, 0.5); break;
-	     * case Cold: GL11.glColor4d(1, 1, 1, 0.5); break; case Steam:
-	     * GL11.glColor4d(0.5, 0.5, 0.5, 0.5); break; case Life:
-	     * GL11.glColor4d(0, 1, 0, 0.5); break; case Earth:
-	     * GL11.glColor4d(0.4, 0.3, 0, 0.5); break; case Fire:
-	     * GL11.glColor4d(1, 0.3, 0, 0.5); break; case Ice:
-	     * GL11.glColor4d(0, 1, 1, 0.5); break; case Lightning:
-	     * GL11.glColor4d(1, 0, 1, 0.5); break; case Shield:
-	     * GL11.glColor4d(1, 1, 0, 0.5); break; case Water:
-	     * GL11.glColor4d(0, 0, 1, 0.5); break; default: GL11.glColor4d(1,
-	     * 0, 0, 0.5); break; }
-	     **/
-	    // GL11.glLineWidth(2);
-	    // GL11.glBegin(GL11.GL_LINE_STRIP);
 	    for (int b = 0; b <= towardCuts - 1; b++)
 	    {
 		Vector thisPoint = towardTarget.multiply((double) b / (double) towardCuts).add(
 			base.rotateAround(towardNor, Math.PI / 8D * b));
-
 		Vector thatPoint = towardTarget.multiply((double) (b + 1) / (double) towardCuts).add(
 			base.rotateAround(towardNor, Math.PI / 8D * (b + 1)));
-		// GL11.glVertex3d(thisPoint.x, thisPoint.y, thisPoint.z);
-		Cylinder.create(thisPoint, thatPoint, 0.01, 2).setColor(e.getColor()).render();
+		Cylinder.create(thisPoint, thatPoint, 0.01, 4).setColor(e.getColor()).render();
 	    }
-	    // GL11.glEnd();
-	    // GL11.glLineWidth(1);
 	}
     }
 

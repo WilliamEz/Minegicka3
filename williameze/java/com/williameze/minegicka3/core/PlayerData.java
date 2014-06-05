@@ -2,7 +2,8 @@ package com.williameze.minegicka3.core;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.HashSet;
+import java.util.Set;
 
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
@@ -11,7 +12,6 @@ import net.minecraft.world.World;
 
 import org.apache.commons.lang3.math.NumberUtils;
 
-import com.mojang.authlib.GameProfile;
 import com.williameze.minegicka3.ModBase;
 import com.williameze.minegicka3.main.Element;
 import com.williameze.minegicka3.main.magicks.Magick;
@@ -28,8 +28,8 @@ public class PlayerData
     public int dimensionID;
     public double maxMana;
     public double mana;
-    public List<Element> unlocked = new ArrayList();
-    public List<Magick> unlockedMagicks = new ArrayList();
+    public Set<Element> unlocked = new HashSet<Element>();
+    public Set<Magick> unlockedMagicks = new HashSet<Magick>();
 
     public PlayerData()
     {
@@ -68,9 +68,7 @@ public class PlayerData
 
     public void unlockEverything()
     {
-	unlocked.clear();
 	unlocked.addAll(Arrays.asList(Element.values()));
-	unlockedMagicks.clear();
 	unlockedMagicks.addAll(Magick.magicks.values());
     }
 
@@ -142,40 +140,50 @@ public class PlayerData
 	{
 	    s += String.valueOf(e.ordinal());
 	}
-	s += ";";
+	s += ";!";
 	for (Magick m : unlockedMagicks)
 	{
-	    s += String.valueOf(m.getID()) + ".";
+	    s += String.valueOf(m.getID()) + "!";
 	}
-	s += ".;";
+	s += ";";
 	return s;
+    }
+
+    public void dataFromString(String s)
+    {
+	String[] ss = s.split(";");
+	dimensionID = Integer.parseInt(ss[0]);
+	playerName = ss[1];
+	maxMana = Double.parseDouble(ss[2]);
+	mana = Double.parseDouble(ss[3]);
+	for (char c : ss[4].toCharArray())
+	{
+	    if (Character.isDigit(c))
+	    {
+		unlock(Element.values()[Integer.parseInt(String.valueOf(c))]);
+	    }
+	}
+	String unlockedMagicksString = ss[5];
+	String[] unlockedMagicksID = unlockedMagicksString.split("!");
+	for (String sm : unlockedMagicksID)
+	{
+	    if (sm == null || sm == "" || sm.length() < 1) continue;
+	    try
+	    {
+		unlock(Magick.getMagickFromID(Integer.parseInt(sm)));
+	    }
+	    catch (NumberFormatException e)
+	    {
+		throw e;
+	    }
+	}
+	loadPlayerRef();
     }
 
     public static PlayerData stringToData(String s)
     {
 	PlayerData pd = new PlayerData();
-	String[] ss = s.split(";");
-	pd.dimensionID = Integer.parseInt(ss[0]);
-	pd.playerName = ss[1];
-	pd.maxMana = Double.parseDouble(ss[2]);
-	pd.mana = Double.parseDouble(ss[3]);
-	for (char c : ss[4].toCharArray())
-	{
-	    if (Character.isDigit(c))
-	    {
-		pd.unlocked.add(Element.values()[Integer.parseInt(String.valueOf(c))]);
-	    }
-	}
-	String unlockedMagicksString = ss[5];
-	String[] unlockedMagicksID = unlockedMagicksString.split(".");
-	for (String sm : unlockedMagicksID)
-	{
-	    if (NumberUtils.isDigits(sm))
-	    {
-		pd.unlockedMagicks.add(Magick.getMagickFromID(Integer.parseInt(sm)));
-	    }
-	}
-	pd.loadPlayerRef();
+	pd.dataFromString(s);
 	return pd;
     }
 

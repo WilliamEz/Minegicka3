@@ -14,19 +14,18 @@ import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
-public class ItemMagicApple extends Item
+public class ItemMagicCookie extends Item
 {
-    public double manaIncrease;
+    public double manaRecover;
 
-    public ItemMagicApple(double d)
+    public ItemMagicCookie(double d)
     {
 	super();
-	manaIncrease = d;
+	manaRecover = d;
     }
 
-    @SideOnly(Side.CLIENT)
     @Override
-    public boolean hasEffect(ItemStack is)
+    public boolean hasEffect(ItemStack par1ItemStack, int pass)
     {
 	return true;
     }
@@ -34,9 +33,9 @@ public class ItemMagicApple extends Item
     @Override
     public EnumRarity getRarity(ItemStack is)
     {
-	if (is.getItem() == ModBase.magicApple) return EnumRarity.uncommon;
-	if (is.getItem() == ModBase.magicGoodApple) return EnumRarity.rare;
-	if (is.getItem() == ModBase.magicSuperApple) return EnumRarity.epic;
+	if (is.getItem() == ModBase.magicCookie) return EnumRarity.common;
+	if (is.getItem() == ModBase.magicGoodCookie) return EnumRarity.uncommon;
+	if (is.getItem() == ModBase.magicSuperCookie) return EnumRarity.rare;
 	return EnumRarity.common;
     }
 
@@ -44,7 +43,7 @@ public class ItemMagicApple extends Item
     public void addInformation(ItemStack is, EntityPlayer p, List l, boolean par4)
     {
 	super.addInformation(is, p, l, par4);
-	l.add("Increase mana cap by " + manaIncrease);
+	l.add("Recover " + manaRecover + " mana");
     }
 
     @Override
@@ -52,9 +51,8 @@ public class ItemMagicApple extends Item
     {
 	is.stackSize--;
 	PlayerData pd = PlayersData.getPlayerData_static(p);
-	pd.maxMana += manaIncrease;
-	pd.mana += manaIncrease;
-	if(!w.isRemote) PlayersData.sendPlayerDataToClient(p, p);
+	pd.shiftMana(manaRecover);
+	if (!w.isRemote) PlayersData.sendPlayerDataToClient(p, p);
 	p.inventory.markDirty();
 	return is;
     }

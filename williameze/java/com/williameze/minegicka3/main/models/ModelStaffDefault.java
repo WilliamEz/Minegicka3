@@ -20,13 +20,6 @@ public class ModelStaffDefault extends ModelStaff
     public static Color defaultOrbColor = new Color(0.8F, 0, 0.9F, 1);
     public Sphere orb;
 
-    public ModelStaffDefault()
-    {
-	super();
-	components.clear();
-	addComponents();
-    }
-
     @Override
     public void addComponents()
     {

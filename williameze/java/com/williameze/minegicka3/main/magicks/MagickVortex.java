@@ -49,9 +49,9 @@ public class MagickVortex extends Magick
 	    double speed = Math.min(props[1], 6.66);
 	    if (caster.getLookVec() != null)
 	    {
-		posX += caster.getLookVec().xCoord * Math.max(3 * power, 5);
-		posY += caster.getLookVec().yCoord * Math.max(3 * power, 5);
-		posZ += caster.getLookVec().zCoord * Math.max(3 * power, 5);
+		posX += caster.getLookVec().xCoord * Math.max(5 * power, 5);
+		posY += caster.getLookVec().yCoord * Math.max(5 * power, 5);
+		posZ += caster.getLookVec().zCoord * Math.max(5 * power, 5);
 	    }
 	    EntityVortex vortex = new EntityVortex(world);
 	    vortex.setPosition(posX, posY, posZ);

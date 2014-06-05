@@ -2,13 +2,12 @@ package com.williameze.minegicka3.core;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Iterator;
-import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Set;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -18,7 +17,6 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
 
-import com.mojang.authlib.GameProfile;
 import com.williameze.minegicka3.ModBase;
 import com.williameze.minegicka3.main.packets.PacketPlayerData;
 import com.williameze.minegicka3.main.packets.PacketPlayerMana;
@@ -39,7 +37,7 @@ public class PlayersData
 
     public World world;
     public File saveDir;
-    public Map<String, PlayerData> allPlayersData = new HashMap();
+    public Set<PlayerData> allPlayersData = new HashSet();
 
     public PlayersData(World w)
     {
@@ -48,8 +46,8 @@ public class PlayersData
 	{
 	    try
 	    {
-		saveDir = new File(world.getSaveHandler().getWorldDirectory().getCanonicalPath() + File.separatorChar + "minegicka"
-			+ File.separatorChar + "Players-WDI-" + world.provider.dimensionId + ".dat");
+		saveDir = new File(world.getSaveHandler().getWorldDirectory().getCanonicalPath() + File.separatorChar + "minegicka" + File.separatorChar
+			+ "Players-WDI-" + world.provider.dimensionId + ".dat");
 		saveDir.getParentFile().mkdirs();
 	    }
 	    catch (IOException e)
@@ -67,12 +65,11 @@ public class PlayersData
 	saveDir.createNewFile();
 	NBTTagCompound tag = new NBTTagCompound();
 	String playerIDs = "";
-	Iterator<Entry<String, PlayerData>> ite = allPlayersData.entrySet().iterator();
+	Iterator<PlayerData> ite = allPlayersData.iterator();
 	while (ite.hasNext())
 	{
-	    Entry<String, PlayerData> e = ite.next();
-	    String name = e.getKey();
-	    PlayerData data = e.getValue();
+	    PlayerData data = ite.next();
+	    String name = data.playerName;
 	    if (name != null && data != null && data.dimensionID == world.provider.dimensionId)
 	    {
 		tag.setString(name, data.dataToString());
@@ -100,7 +97,7 @@ public class PlayersData
 		    {
 			String data = tag.getString(id);
 			PlayerData pd = PlayerData.stringToData(data);
-			allPlayersData.put(pd.playerName, pd);
+			allPlayersData.add(pd);
 		    }
 		}
 	    }
@@ -128,37 +125,31 @@ public class PlayersData
 
     public PlayerData getPlayerData(String name)
     {
-	Iterator<Entry<String, PlayerData>> ite = allPlayersData.entrySet().iterator();
+	Iterator<PlayerData> ite = allPlayersData.iterator();
 	while (ite.hasNext())
 	{
-	    Entry<String, PlayerData> entry = ite.next();
-	    String aname = entry.getKey();
-	    PlayerData data = entry.getValue();
-	    if (aname != null && aname.equals(name))
+	    PlayerData data = ite.next();
+	    if (data != null && data.playerName.equals(name))
 	    {
 		return data;
 	    }
 	}
-	return allPlayersData.get(name);
+	return null;
     }
 
-    public void addOrModifyPlayerData(PlayerData pd)
+    public PlayerData addOrModifyPlayerData(PlayerData pd)
     {
-	String matchingName = null;
-	Iterator<Entry<String, PlayerData>> ite = allPlayersData.entrySet().iterator();
-	while (ite.hasNext())
+	PlayerData pd1 = getPlayerData(pd.playerName);
+	if (pd1 != null)
 	{
-	    Entry<String, PlayerData> entry = ite.next();
-	    String name = entry.getKey();
-	    PlayerData data = entry.getValue();
-	    if (name != null && name.equals(pd.playerName))
-	    {
-		matchingName = name;
-		break;
-	    }
+	    pd1.dataFromString(pd.dataToString());
+	    return pd1;
 	}
-	if (matchingName != null) allPlayersData.put(matchingName, pd);
-	else allPlayersData.put(pd.playerName, pd);
+	else
+	{
+	    allPlayersData.add(pd);
+	    return pd;
+	}
     }
 
     public static PlayerData getPlayerData_static(EntityPlayer p)
@@ -177,8 +168,7 @@ public class PlayersData
 	}
 	else if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
 	{
-	    return getWorldPlayersData(FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(dimension))
-		    .getPlayerData(name);
+	    return getWorldPlayersData(FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(dimension)).getPlayerData(name);
 	}
 	return null;
     }
@@ -246,14 +236,14 @@ public class PlayersData
     @SideOnly(Side.CLIENT)
     public static void addPlayerDataToClient(PlayerData pd)
     {
-	if (Minecraft.getMinecraft().thePlayer.getGameProfile().getName().equals(pd.playerName))
-	{
-	    clientPlayerData = pd;
-	}
 	World w = ModBase.proxy.getClientWorld();
 	if (w.provider.dimensionId == pd.dimensionID)
 	{
-	    getWorldPlayersData(w).addOrModifyPlayerData(pd);
+	    PlayerData pd1 = getWorldPlayersData(w).addOrModifyPlayerData(pd);
+	    if (Minecraft.getMinecraft().thePlayer.getGameProfile().getName().equals(pd.playerName))
+	    {
+		clientPlayerData = pd1;
+	    }
 	}
     }
 }

@@ -76,6 +76,7 @@ public class RenderItemStaff implements IItemRenderer
 		GL11.glTranslated(3, -2.5, 0);
 		GL11.glScaled(6, 6, 6);
 		GL11.glRotated(20, 1, 0, -1);
+		GL11.glRotated(180, 0, 1, 0);
 	    }
 	    if (type == ItemRenderType.EQUIPPED)
 	    {

@@ -1,5 +1,6 @@
 package com.williameze.minegicka3.main.renders;
 
+import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
 import net.minecraft.tileentity.TileEntity;
 

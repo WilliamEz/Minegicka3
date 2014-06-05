@@ -5,6 +5,7 @@ import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
@@ -28,6 +29,7 @@ import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
 
 public abstract class Magick
 {
+    public static Random rnd = new Random();
     private static int currentMagickID = 0;
     private static boolean useLangName = false;
     public static Map<Integer, Magick> magicks = new HashMap();
@@ -71,7 +73,7 @@ public abstract class Magick
 	return es;
     }
 
-    public int id;
+    public final int id;
     public String displayID;
     public String unlocalizedName;
     public Element[] combination;

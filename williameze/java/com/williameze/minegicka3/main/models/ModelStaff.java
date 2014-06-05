@@ -5,11 +5,13 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 
 import org.lwjgl.opengl.GL11;
 
 import com.williameze.api.models.ModelObject;
+import com.williameze.minegicka3.ModBase;
 import com.williameze.minegicka3.main.objects.ItemStaff;
 
 public class ModelStaff
@@ -31,13 +33,24 @@ public class ModelStaff
     
     public static void load()
     {
-	
+	addStaffModel(ModBase.staffGrand, new ModelStaffGrand());
+	addStaffModel(ModBase.staffSuper, new ModelStaffSuper());
+    }
+    
+    public static void addStaffModel(Item i, ModelStaff model)
+    {
+	if(i instanceof ItemStaff)
+	{
+	    staffModels.put((ItemStaff) i, model);
+	}
     }
     
     public List<ModelObject> components = new ArrayList();
 
     public ModelStaff()
     {
+	components = new ArrayList();
+	addComponents();
     }
     
     public ModelStaff getDetailedModel(ItemStack is)

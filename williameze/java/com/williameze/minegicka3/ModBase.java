@@ -5,8 +5,6 @@ import java.util.Arrays;
 import net.minecraft.block.Block;
 import net.minecraft.block.material.MapColor;
 import net.minecraft.block.material.Material;
-import net.minecraft.command.CommandHandler;
-import net.minecraft.command.CommandHelp;
 import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
@@ -20,6 +18,7 @@ import com.williameze.minegicka3.main.entities.EntityBeam;
 import com.williameze.minegicka3.main.entities.EntityBeamArea;
 import com.williameze.minegicka3.main.entities.EntityBoulder;
 import com.williameze.minegicka3.main.entities.EntityEarthRumble;
+import com.williameze.minegicka3.main.entities.EntityHomingLightning;
 import com.williameze.minegicka3.main.entities.EntityIceShard;
 import com.williameze.minegicka3.main.entities.EntityIcicle;
 import com.williameze.minegicka3.main.entities.EntityLightning;
@@ -40,6 +39,7 @@ import com.williameze.minegicka3.main.objects.BlockShield;
 import com.williameze.minegicka3.main.objects.BlockWall;
 import com.williameze.minegicka3.main.objects.ItemEssence;
 import com.williameze.minegicka3.main.objects.ItemMagicApple;
+import com.williameze.minegicka3.main.objects.ItemMagicCookie;
 import com.williameze.minegicka3.main.objects.ItemMagickTablet;
 import com.williameze.minegicka3.main.objects.ItemStaff;
 import com.williameze.minegicka3.main.objects.TileEntityCraftStation;
@@ -124,11 +124,12 @@ public class ModBase
     public static CreativeTabCustom modCreativeTab;
     public static Block shieldBlock, wallBlock;
     public static Block craftStation;
-    public static Item thingy, stick, magicApple, magicBetterApple, magicGoldenApple;
-    public static Item essenceArcane, essenceCold, essenceEarth, essenceFire, essenceIce, essenceLife, essenceLightning, essenceShield,
-	    essenceSteam, essenceWater;
+    public static Item thingy, thingyGood, thingySuper, stick, stickGood, stickSuper;
+    public static Item magicApple, magicGoodApple, magicSuperApple, magicCookie, magicGoodCookie, magicSuperCookie;
+    public static Item essenceArcane, essenceCold, essenceEarth, essenceFire, essenceIce, essenceLife, essenceLightning, essenceShield, essenceSteam,
+	    essenceWater;
     public static Item magickTablet;
-    public static Item staff, hemmyStaff;
+    public static Item staff, staffGrand, staffSuper, hemmyStaff;
 
     public void initObjects()
     {
@@ -138,16 +139,23 @@ public class ModBase
 
 	shieldBlock = new BlockShield().setBlockName(themodid + "ShieldBlock").setBlockTextureName("glass");
 	wallBlock = new BlockWall().setBlockName(themodid + "WallBlock").setBlockTextureName("glass");
-	craftStation = new BlockCraftStation().setBlockName(themodid + "CraftStation").setBlockTextureName("obsidian")
-		.setCreativeTab(modCreativeTab);
+	craftStation = new BlockCraftStation().setBlockName(themodid + "CraftStation").setBlockTextureName("obsidian").setCreativeTab(modCreativeTab);
 
 	thingy = new Item().setUnlocalizedName(themodid + "Thingy").setTextureName("apple").setCreativeTab(modCreativeTab);
+	thingyGood = new Item().setUnlocalizedName(themodid + "ThingyGood").setTextureName("apple").setCreativeTab(modCreativeTab);
+	thingySuper = new Item().setUnlocalizedName(themodid + "ThingySuper").setTextureName("apple").setCreativeTab(modCreativeTab);
 	stick = new Item().setUnlocalizedName(themodid + "TheStick").setTextureName("apple").setCreativeTab(modCreativeTab);
-	magicApple = new ItemMagicApple(10).setUnlocalizedName(themodid + "MagicApple").setTextureName("apple")
+	stickGood = new Item().setUnlocalizedName(themodid + "TheStickGood").setTextureName("apple").setCreativeTab(modCreativeTab);
+	stickSuper = new Item().setUnlocalizedName(themodid + "TheStickSuper").setTextureName("apple").setCreativeTab(modCreativeTab);
+	magicApple = new ItemMagicApple(5).setUnlocalizedName(themodid + "MagicApple").setTextureName("apple").setCreativeTab(modCreativeTab);
+	magicGoodApple = new ItemMagicApple(100).setUnlocalizedName(themodid + "MagicGoodApple").setTextureName("apple_golden")
 		.setCreativeTab(modCreativeTab);
-	magicBetterApple = new ItemMagicApple(100).setUnlocalizedName(themodid + "MagicBetterApple").setTextureName("apple_golden")
+	magicSuperApple = new ItemMagicApple(2000).setUnlocalizedName(themodid + "MagicSuperApple").setTextureName("apple_golden")
 		.setCreativeTab(modCreativeTab);
-	magicGoldenApple = new ItemMagicApple(1500).setUnlocalizedName(themodid + "MagicGoldenApple").setTextureName("apple_golden")
+	magicCookie = new ItemMagicCookie(20).setUnlocalizedName(themodid + "MagicCookie").setTextureName("cookie").setCreativeTab(modCreativeTab);
+	magicGoodCookie = new ItemMagicCookie(120).setUnlocalizedName(themodid + "MagicGoodCookie").setTextureName("cookie")
+		.setCreativeTab(modCreativeTab);
+	magicSuperCookie = new ItemMagicCookie(960).setUnlocalizedName(themodid + "MagicSuperCookie").setTextureName("cookie")
 		.setCreativeTab(modCreativeTab);
 	essenceArcane = new ItemEssence(Element.Arcane).setUnlocalizedName(themodid + "ArcaneEssence").setCreativeTab(modCreativeTab);
 	essenceCold = new ItemEssence(Element.Cold).setUnlocalizedName(themodid + "ColdEssence").setCreativeTab(modCreativeTab);
@@ -155,15 +163,15 @@ public class ModBase
 	essenceFire = new ItemEssence(Element.Fire).setUnlocalizedName(themodid + "FireEssence").setCreativeTab(modCreativeTab);
 	essenceIce = new ItemEssence(Element.Ice).setUnlocalizedName(themodid + "IceEssence").setCreativeTab(modCreativeTab);
 	essenceLife = new ItemEssence(Element.Life).setUnlocalizedName(themodid + "LifeEssence").setCreativeTab(modCreativeTab);
-	essenceLightning = new ItemEssence(Element.Lightning).setUnlocalizedName(themodid + "LightningEssence").setCreativeTab(
-		modCreativeTab);
+	essenceLightning = new ItemEssence(Element.Lightning).setUnlocalizedName(themodid + "LightningEssence").setCreativeTab(modCreativeTab);
 	essenceShield = new ItemEssence(Element.Shield).setUnlocalizedName(themodid + "ShieldEssence").setCreativeTab(modCreativeTab);
 	essenceSteam = new ItemEssence(Element.Steam).setUnlocalizedName(themodid + "SteamEssence").setCreativeTab(modCreativeTab);
 	essenceWater = new ItemEssence(Element.Water).setUnlocalizedName(themodid + "WaterEssence").setCreativeTab(modCreativeTab);
 
 	staff = new ItemStaff().setUnlocalizedName(themodid + "Staff").setCreativeTab(modCreativeTab);
-	hemmyStaff = new ItemStaff().setBaseStats(14, 14, 14, 14).setUnlocalizedName(themodid + "HemmyStaff")
-		.setCreativeTab(modCreativeTab);
+	staffGrand = new ItemStaff().setBaseStats(2, 2, 0.5, 1.5).setUnlocalizedName(themodid + "StaffGrand").setCreativeTab(modCreativeTab);
+	staffSuper = new ItemStaff().setBaseStats(5, 5, 0.25, 2).setUnlocalizedName(themodid + "StaffSuper").setCreativeTab(modCreativeTab);
+	hemmyStaff = new ItemStaff().setBaseStats(14, 14, 14, 14).setUnlocalizedName(themodid + "HemmyStaff").setCreativeTab(modCreativeTab);
 
 	magickTablet = new ItemMagickTablet().setUnlocalizedName(themodid + "MagickTablet").setCreativeTab(modCreativeTab);
     }
@@ -171,7 +179,7 @@ public class ModBase
     public void registerObjects()
     {
 	String themodid = MODID + ":";
-	modCreativeTab.setTabIconItem(staff);
+	modCreativeTab.setTabIconItem(thingySuper);
 
 	GameRegistry.registerBlock(shieldBlock, themodid + "ShieldBlock");
 	GameRegistry.registerTileEntity(TileEntityShield.class, themodid + "ShieldBlockTile");
@@ -181,10 +189,17 @@ public class ModBase
 	GameRegistry.registerTileEntity(TileEntityCraftStation.class, themodid + "CraftStationTile");
 
 	GameRegistry.registerItem(thingy, themodid + "Thingy");
-	GameRegistry.registerItem(stick, themodid + "TheEssence");
+	GameRegistry.registerItem(thingyGood, themodid + "ThingyGood");
+	GameRegistry.registerItem(thingySuper, themodid + "ThingySuper");
+	GameRegistry.registerItem(stick, themodid + "TheStick");
+	GameRegistry.registerItem(stickGood, themodid + "TheStickGood");
+	GameRegistry.registerItem(stickSuper, themodid + "TheStickSuper");
 	GameRegistry.registerItem(magicApple, themodid + "MagicApple");
-	GameRegistry.registerItem(magicBetterApple, themodid + "MagicBetterApple");
-	GameRegistry.registerItem(magicGoldenApple, themodid + "MagicGoldenApple");
+	GameRegistry.registerItem(magicGoodApple, themodid + "MagicGoodApple");
+	GameRegistry.registerItem(magicSuperApple, themodid + "MagicSuperApple");
+	GameRegistry.registerItem(magicCookie, themodid + "MagicCookie");
+	GameRegistry.registerItem(magicGoodCookie, themodid + "MagicGoodCookie");
+	GameRegistry.registerItem(magicSuperCookie, themodid + "MagicSuperCookie");
 	GameRegistry.registerItem(essenceArcane, themodid + "ArcaneEssence");
 	GameRegistry.registerItem(essenceCold, themodid + "ColdEssence");
 	GameRegistry.registerItem(essenceEarth, themodid + "EarthEssence");
@@ -198,35 +213,39 @@ public class ModBase
 	GameRegistry.registerItem(magickTablet, themodid + "MagickTablet");
 
 	GameRegistry.registerItem(staff, themodid + "Staff");
+	GameRegistry.registerItem(staffGrand, themodid + "StaffGrand");
+	GameRegistry.registerItem(staffSuper, themodid + "StaffSuper");
 	GameRegistry.registerItem(hemmyStaff, themodid + "HemmyStaff");
 
     }
 
     public void registerRecipes()
     {
-	GameRegistry.addRecipe(new ItemStack(craftStation), new Object[] { "DTD", "GEG", "OOO", ('O'), Blocks.obsidian, ('D'),
-		Items.diamond, ('G'), Items.gold_ingot, ('T'), thingy, ('E'), Items.emerald });
+	GameRegistry.addRecipe(new ItemStack(craftStation), new Object[] { "DTD", "GEG", "OOO", ('O'), Blocks.obsidian, ('D'), Items.diamond, ('G'),
+		Items.gold_ingot, ('T'), thingy, ('E'), Items.emerald });
     }
 
     public void registerEntities()
     {
-	registerEntity(FXEProjectileCharge.class, "FXEProjectileCharge", 64, Integer.MAX_VALUE);
-	registerEntity(FXESimpleParticle.class, "FXESimpleParticle", 64, Integer.MAX_VALUE);
+	int superSlowUpdateFreq = Integer.MAX_VALUE;
+	registerEntity(FXEProjectileCharge.class, "FXEProjectileCharge", 64, superSlowUpdateFreq);
+	registerEntity(FXESimpleParticle.class, "FXESimpleParticle", 64, superSlowUpdateFreq);
 
-	registerEntity(EntitySprayCold.class, "SprayCold", 64, 1);
-	registerEntity(EntitySprayFire.class, "SprayFire", 64, 1);
-	registerEntity(EntitySpraySteam.class, "SpraySteam", 64, 1);
-	registerEntity(EntitySprayWater.class, "SprayWater", 64, 1);
-	registerEntity(EntityLightning.class, "Lightning", 64, 2);
-	registerEntity(EntityBeam.class, "Beam", 64, 2);
-	registerEntity(EntityBeamArea.class, "BeamArea", 64, 2);
+	registerEntity(EntitySprayCold.class, "SprayCold", 64, superSlowUpdateFreq);
+	registerEntity(EntitySprayFire.class, "SprayFire", 64, superSlowUpdateFreq);
+	registerEntity(EntitySpraySteam.class, "SpraySteam", 64, superSlowUpdateFreq);
+	registerEntity(EntitySprayWater.class, "SprayWater", 64, superSlowUpdateFreq);
+	registerEntity(EntityLightning.class, "Lightning", 64, superSlowUpdateFreq);
+	registerEntity(EntityBeam.class, "Beam", 64, superSlowUpdateFreq);
+	registerEntity(EntityBeamArea.class, "BeamArea", 64, superSlowUpdateFreq);
 	registerEntity(EntityBoulder.class, "Boulder", 64, 1);
 	registerEntity(EntityIcicle.class, "Icicle", 64, 1);
-	registerEntity(EntityEarthRumble.class, "EarthRumble", 64, 2);
-	registerEntity(EntityIceShard.class, "IceShard", 64, 2);
-	registerEntity(EntityStorm.class, "Storm", 64, 2);
-	registerEntity(EntityMine.class, "Mine", 64, 2);
-	registerEntity(EntityVortex.class, "Vortex", 64, 2);
+	registerEntity(EntityEarthRumble.class, "EarthRumble", 64, superSlowUpdateFreq);
+	registerEntity(EntityIceShard.class, "IceShard", 64, superSlowUpdateFreq);
+	registerEntity(EntityStorm.class, "Storm", 64, superSlowUpdateFreq);
+	registerEntity(EntityMine.class, "Mine", 64, superSlowUpdateFreq);
+	registerEntity(EntityVortex.class, "Vortex", 64, superSlowUpdateFreq);
+	registerEntity(EntityHomingLightning.class, "HomingLightning", 64, superSlowUpdateFreq);
     }
 
     public void registerEntity(Class eClass, String eName, int updateRange, int updateFrequency)

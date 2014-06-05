@@ -1,6 +1,5 @@
 package com.williameze.minegicka3.core;
 
-import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
@@ -9,8 +8,6 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
-
-import org.apache.commons.lang3.math.NumberUtils;
 
 import com.williameze.minegicka3.ModBase;
 import com.williameze.minegicka3.main.Element;

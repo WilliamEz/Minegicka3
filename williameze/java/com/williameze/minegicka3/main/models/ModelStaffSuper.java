@@ -50,12 +50,4 @@ public class ModelStaffSuper extends ModelStaff
 	components.add(new Sphere(0, -6.25, 0, 0.75, 2, 4).setColor(c1));
     }
 
-    @Override
-    public void render(ItemStack staff)
-    {
-	components.clear();
-	addComponents();
-	doRenderParameters(staff);
-    }
-
 }

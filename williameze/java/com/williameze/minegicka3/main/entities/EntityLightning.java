@@ -22,6 +22,7 @@ import com.williameze.api.lib.FuncHelper;
 import com.williameze.api.math.MathHelper;
 import com.williameze.api.math.Vector;
 import com.williameze.minegicka3.ModBase;
+import com.williameze.minegicka3.core.PlayersData;
 import com.williameze.minegicka3.main.Element;
 import com.williameze.minegicka3.main.Values;
 import com.williameze.minegicka3.main.spells.Spell;

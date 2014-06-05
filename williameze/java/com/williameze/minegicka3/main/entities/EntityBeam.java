@@ -3,20 +3,21 @@ package com.williameze.minegicka3.main.entities;
 import io.netty.buffer.ByteBuf;
 
 import java.io.IOException;
-import java.util.List;
+import java.util.Arrays;
 
 import net.minecraft.block.Block;
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.util.MovingObjectPosition;
 import net.minecraft.world.World;
 
+import com.williameze.api.HitObject;
+import com.williameze.api.HitObject.HitType;
 import com.williameze.api.lib.FuncHelper;
 import com.williameze.api.math.Vector;
+import com.williameze.api.selectors.BlockSelectorSolid;
 import com.williameze.minegicka3.ModBase;
 import com.williameze.minegicka3.main.Element;
 import com.williameze.minegicka3.main.Values;
@@ -131,34 +132,32 @@ public class EntityBeam extends Entity implements IEntityAdditionalSpawnData
 
 	Vector from = new Vector(posX, posY, posZ);
 	Vector to = from.add(vec.multiply(getBeamMaxLength()));
-	MovingObjectPosition mop = worldObj.func_147447_a(from.vec3(), to.vec3(), false, true, false);
-	double mopdsq = lengthSqrToTarget;
-	if (mop != null) mopdsq = getDistanceSq(mop.blockX + 0.5, mop.blockY + 0.5, mop.blockZ + 0.5);
 
-	List<Entity> l = FuncHelper.getEntitiesWithinBoundingBoxMovement(worldObj, boundingBox, vec.multiply(mopdsq),
-		EntityLivingBase.class, new ESelectorDefault(spell));
-	Entity pointingAt = FuncHelper.getEntityClosestTo(posX, posY, posZ, l);
+	HitObject hit = FuncHelper.rayTrace(worldObj, from, to, new BlockSelectorSolid(), new ESelectorDefault(spell), Arrays.asList(caster, this));
 
-	if (pointingAt != null)
+	if (hit != null)
 	{
-	    affectEntity(pointingAt);
-	    lengthSqrToTarget = pointingAt.getDistanceSqToEntity(this);
+	    if (hit.hitType == HitType.Block)
+	    {
+		if (lastAffectedBlock == 0) affectBlock(hit, hit.blockX, hit.blockY, hit.blockZ);
+		lengthSqrToTarget = hit.hitPosition.subtract(from).lengthSqrVector();
+	    }
+	    else if (hit.hitType == HitType.Entity)
+	    {
+		affectEntity(hit.hitEntity);
+		lengthSqrToTarget = hit.hitPosition.subtract(from).lengthSqrVector();
+	    }
 	}
-	else if (mop != null)
-	{
-	    if (lastAffectedBlock == 0) affectBlock(mop, mop.blockX, mop.blockY, mop.blockZ);
-	    lengthSqrToTarget = mopdsq;
-	}
-	towardTarget = vec.multiply(Math.sqrt(lengthSqrToTarget)).add(posX - caster.posX,
-		posY - caster.posY - caster.getEyeHeight() + 0.25, posZ - caster.posZ);
+	towardTarget = vec.multiply(Math.sqrt(lengthSqrToTarget)).add(posX - caster.posX, posY - caster.posY - caster.getEyeHeight() + 0.25,
+		posZ - caster.posZ);
     }
 
-    public void affectBlock(MovingObjectPosition mop, int x, int y, int z)
+    public void affectBlock(HitObject hit, int x, int y, int z)
     {
 	if (worldObj.isRemote) return;
-	if (mop != null)
+	if (hit != null)
 	{
-	    switch (mop.sideHit)
+	    switch (hit.sideHit)
 	    {
 		case 0:
 		    y--;

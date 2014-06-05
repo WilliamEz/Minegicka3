@@ -1,4 +1,4 @@
-package com.williameze.api;
+package com.williameze.api.selectors;
 
 import net.minecraft.world.IBlockAccess;
 

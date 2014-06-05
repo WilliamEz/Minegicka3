@@ -12,13 +12,13 @@ import net.minecraft.init.Blocks;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 
-import com.williameze.api.BlockSelector;
 import com.williameze.api.HitObject;
 import com.williameze.api.HitObject.HitType;
 import com.williameze.api.math.IntVector;
 import com.williameze.api.math.Line;
 import com.williameze.api.math.Plane;
 import com.williameze.api.math.Vector;
+import com.williameze.api.selectors.BlockSelector;
 
 public class FuncHelper
 {
@@ -64,7 +64,7 @@ public class FuncHelper
 		for (int z = minZ; z <= maxZ; z++)
 		{
 		    Block b = world.getBlock(x, y, z);
-		    if (b.isAir(world, x, y, z) && (blockSelector == null || blockSelector.acceptBlock(world, x, y, z)))
+		    if (!b.isAir(world, x, y, z) && (blockSelector == null || blockSelector.acceptBlock(world, x, y, z)))
 		    {
 			AxisAlignedBB aabb = b.getCollisionBoundingBoxFromPool(world, x, y, z);
 			Vector intersect = getIntersectionPoint(start, path, aabb);

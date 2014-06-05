@@ -24,9 +24,8 @@ public class ItemMagicApple extends Item
 	manaIncrease = d;
     }
 
-    @SideOnly(Side.CLIENT)
     @Override
-    public boolean hasEffect(ItemStack is)
+    public boolean hasEffect(ItemStack par1ItemStack, int pass)
     {
 	return true;
     }

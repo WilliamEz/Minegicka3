@@ -14,6 +14,10 @@ import com.williameze.api.models.ModelObject;
 import com.williameze.minegicka3.ModBase;
 import com.williameze.minegicka3.main.objects.ItemStaff;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
+@SideOnly(Side.CLIENT)
 public class ModelStaff
 {
     public static ModelStaffDefault defaultStaffModel = new ModelStaffDefault();

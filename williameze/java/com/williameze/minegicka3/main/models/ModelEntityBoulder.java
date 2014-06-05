@@ -13,6 +13,10 @@ import com.williameze.api.lib.NoiseGen2D;
 import com.williameze.api.models.Sphere;
 import com.williameze.minegicka3.main.entities.EntityBoulder;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
+@SideOnly(Side.CLIENT)
 public class ModelEntityBoulder extends ModelBase
 {
     public static List<Color> colors = new ArrayList();

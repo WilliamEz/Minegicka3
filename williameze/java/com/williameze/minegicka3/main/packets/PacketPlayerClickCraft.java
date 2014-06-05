@@ -2,22 +2,21 @@ package com.williameze.minegicka3.main.packets;
 
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
-
-import java.util.UUID;
-
-import com.williameze.minegicka3.core.CoreBridge;
-import com.williameze.minegicka3.main.ClickCraft;
-import com.williameze.minegicka3.main.spells.Spell;
-
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.world.World;
+
+import com.williameze.minegicka3.main.ClickCraft;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 
 public class PacketPlayerClickCraft extends Packet
 {
     public EntityPlayer crafter;
-    public UUID playerUUID;
+    public String playerName;
+    public int dimension;
     public ItemStack toCraft;
     public int repeat;
 
@@ -28,7 +27,8 @@ public class PacketPlayerClickCraft extends Packet
     public PacketPlayerClickCraft(EntityPlayer p, ItemStack is, int rp)
     {
 	crafter = p;
-	playerUUID = crafter.getPersistentID();
+	playerName = p.getGameProfile().getName();
+	dimension = p.worldObj.provider.dimensionId;
 	toCraft = is;
 	repeat = rp;
     }
@@ -38,12 +38,13 @@ public class PacketPlayerClickCraft extends Packet
     {
 	try
 	{
-	    buffer.writeLong(playerUUID.getMostSignificantBits());
-	    buffer.writeLong(playerUUID.getLeastSignificantBits());
-	    buffer.writeInt(crafter.worldObj.provider.dimensionId);
+	    byte[] b = playerName.getBytes();
+	    buffer.writeInt(b.length);
+	    buffer.writeBytes(b);
+	    buffer.writeInt(dimension);
 	    buffer.writeInt(repeat);
 	    NBTTagCompound isTag = toCraft.writeToNBT(new NBTTagCompound());
-	    byte[] b = CompressedStreamTools.compress(isTag);
+	    b = CompressedStreamTools.compress(isTag);
 	    buffer.writeInt(b.length);
 	    buffer.writeBytes(b);
 	}
@@ -58,14 +59,15 @@ public class PacketPlayerClickCraft extends Packet
     {
 	try
 	{
-	    playerUUID = new UUID(buffer.readLong(), buffer.readLong());
-	    int dimension = buffer.readInt();
-	    repeat = buffer.readInt();
 	    byte[] b = new byte[buffer.readInt()];
+	    buffer.readBytes(b);
+	    playerName = new String(b);
+	    dimension = buffer.readInt();
+	    repeat = buffer.readInt();
+	    b = new byte[buffer.readInt()];
 	    buffer.readBytes(b);
 	    NBTTagCompound isTag = CompressedStreamTools.decompress(b);
 	    toCraft = ItemStack.loadItemStackFromNBT(isTag);
-	    crafter = (EntityPlayer) CoreBridge.instance().getEntityByUUID(dimension, playerUUID);
 	}
 	catch (Exception e)
 	{
@@ -81,6 +83,15 @@ public class PacketPlayerClickCraft extends Packet
     @Override
     public void handleServerSide(EntityPlayer player)
     {
+	World world = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(dimension);
+	for (Object p : world.playerEntities)
+	{
+	    if (p instanceof EntityPlayer && ((EntityPlayer) p).getGameProfile().getName().equals(playerName))
+	    {
+		crafter = (EntityPlayer) p;
+		break;
+	    }
+	}
 	ClickCraft.playerCraft(crafter, toCraft, repeat);
     }
 

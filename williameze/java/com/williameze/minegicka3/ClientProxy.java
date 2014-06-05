@@ -37,6 +37,8 @@ import com.williameze.minegicka3.main.entities.FXEProjectileCharge;
 import com.williameze.minegicka3.main.entities.FXESimpleParticle;
 import com.williameze.minegicka3.main.guis.GuiCraftStation;
 import com.williameze.minegicka3.main.models.ModelEntityBoulder;
+import com.williameze.minegicka3.main.models.ModelHat;
+import com.williameze.minegicka3.main.models.ModelStaff;
 import com.williameze.minegicka3.main.objects.ItemEssence;
 import com.williameze.minegicka3.main.objects.ItemMagickTablet;
 import com.williameze.minegicka3.main.objects.ItemStaff;
@@ -77,6 +79,8 @@ public class ClientProxy extends CommonProxy
 	super.load();
 	FMLCommonHandler.instance().bus().register(new TickHandlerClient());
 	MinecraftForge.EVENT_BUS.register(new TickHandlerClient());
+	ModelStaff.load();
+	ModelHat.load();
     }
 
     @Override
@@ -104,6 +108,12 @@ public class ClientProxy extends CommonProxy
     public EntityPlayer getClientPlayer()
     {
 	return Minecraft.getMinecraft().thePlayer;
+    }
+
+    @Override
+    public World getWorldForDimension(int dim)
+    {
+	return dim == getClientWorld().provider.dimensionId ? getClientWorld() : null;
     }
 
     @Override
@@ -182,8 +192,8 @@ public class ClientProxy extends CommonProxy
 	}
 	if (i instanceof ItemEssence)
 	{
-	    MinecraftForgeClient
-		    .registerItemRenderer(i, new RenderItemGeneral(new Sphere(0, 0, 0, 0.4, 2, 4).setColor(((ItemEssence) i).unlocking.getColor())));
+	    MinecraftForgeClient.registerItemRenderer(i,
+		    new RenderItemGeneral(new Sphere(0, 0, 0, 0.4, 2, 4).setColor(((ItemEssence) i).unlocking.getColor())));
 	}
     }
 

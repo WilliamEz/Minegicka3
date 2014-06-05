@@ -13,6 +13,10 @@ import com.williameze.api.models.CylinderConjunc;
 import com.williameze.api.models.Sphere;
 import com.williameze.minegicka3.main.Values;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
+@SideOnly(Side.CLIENT)
 public class ModelStaffSuper extends ModelStaff
 {
     @Override

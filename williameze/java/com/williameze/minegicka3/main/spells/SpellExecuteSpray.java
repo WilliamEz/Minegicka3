@@ -49,10 +49,12 @@ public class SpellExecuteSpray extends SpellExecute
 		}
 		dir.y = dir.y / 100;
 		dir = dir.normalize();
-		dir.rotateAroundY(Math.PI / 16 * (s.spellTicks) * s.getPower());
+		dir.rotateAroundY(Math.PI / 16 * (s.spellTicks));
 		loop *= 2;
 		consume *= 1.5;
 	    }
+
+	    loop = (int) (loop * Math.pow(s.getPower(), 1));
 
 	    double consumeRate = consumeMana(s, consume, true, false, 0);
 	    power *= consumeRate;
@@ -68,10 +70,9 @@ public class SpellExecuteSpray extends SpellExecute
 	    {
 		for (Element e : s.elements)
 		{
-		    if (client && rnd.nextInt(4 * count * (isFromStorm ? 2 : 1)) <= 6 || !client
-			    && rnd.nextInt(10 * (isFromStorm ? 2 : 1)) == 0)
+		    if (client && rnd.nextInt(4 * count * (isFromStorm ? 2 : 1)) <= 6 || !client && rnd.nextInt(10 * (isFromStorm ? 2 : 1)) == 0)
 		    {
-			shootSpray(s, e, pos, dir, power, 0.4, client);
+			shootSpray(s, e, pos, dir, power, 0.5, client);
 		    }
 		}
 	    }

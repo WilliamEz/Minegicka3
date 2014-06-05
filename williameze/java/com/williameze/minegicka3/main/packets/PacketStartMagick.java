@@ -5,18 +5,18 @@ import io.netty.channel.ChannelHandlerContext;
 
 import java.util.UUID;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
-import com.williameze.api.lib.FuncHelper;
 import com.williameze.minegicka3.ModBase;
 import com.williameze.minegicka3.core.CoreBridge;
 import com.williameze.minegicka3.main.magicks.Magick;
 
+import cpw.mods.fml.client.FMLClientHandler;
 import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.server.FMLServerHandler;
 
 public class PacketStartMagick extends Packet
 {
@@ -25,14 +25,17 @@ public class PacketStartMagick extends Packet
     public int dimensionID;
     public double x, y, z;
     public UUID casterUUID;
+    public String casterName = null;
     public NBTTagCompound tag;
+
+    public Entity loadedCaster;
 
     public PacketStartMagick()
     {
 	tag = new NBTTagCompound();
     }
 
-    public PacketStartMagick(Magick m, World world, double x, double y, double z, UUID uuid, NBTTagCompound tag)
+    public PacketStartMagick(Magick m, World world, double x, double y, double z, UUID uuid, String name, NBTTagCompound tag)
     {
 	magick = m;
 	magickID = m.getID();
@@ -41,6 +44,7 @@ public class PacketStartMagick extends Packet
 	this.y = y;
 	this.z = z;
 	casterUUID = uuid;
+	if (name != null && name.length() > 0 && name != "") casterName = name;
 	this.tag = tag;
 	if (tag == null) tag = new NBTTagCompound();
     }
@@ -57,7 +61,12 @@ public class PacketStartMagick extends Packet
 	    buffer.writeDouble(z);
 	    buffer.writeLong(casterUUID.getMostSignificantBits());
 	    buffer.writeLong(casterUUID.getLeastSignificantBits());
-	    byte[] b = CompressedStreamTools.compress(tag);
+	    String name = casterName;
+	    if (name == null) name = "@NULL@#";
+	    byte[] b = name.getBytes();
+	    buffer.writeInt(b.length);
+	    buffer.writeBytes(b);
+	    b = CompressedStreamTools.compress(tag);
 	    buffer.writeInt(b.length);
 	    buffer.writeBytes(b);
 	}
@@ -81,6 +90,11 @@ public class PacketStartMagick extends Packet
 	    casterUUID = new UUID(buffer.readLong(), buffer.readLong());
 	    byte[] b = new byte[buffer.readInt()];
 	    buffer.readBytes(b);
+	    String name = new String(b);
+	    if (name.equals("@NULL@#")) name = null;
+	    casterName = name;
+	    b = new byte[buffer.readInt()];
+	    buffer.readBytes(b);
 	    tag = CompressedStreamTools.decompress(b);
 	}
 	catch (Exception e)
@@ -92,15 +106,42 @@ public class PacketStartMagick extends Packet
     @Override
     public void handleClientSide(EntityPlayer player)
     {
-	if (dimensionID == ModBase.proxy.getClientWorld().provider.dimensionId) magick.clientReceivedMagick(ModBase.proxy.getClientWorld(),
-		x, y, z, CoreBridge.instance().getEntityByUUID(dimensionID, casterUUID), tag);
+	if (dimensionID == ModBase.proxy.getClientWorld().provider.dimensionId)
+	{
+	    loadedCaster = CoreBridge.instance().getEntityByUUID(dimensionID, casterUUID);
+	    if (casterName != null)
+	    {
+		World world = FMLClientHandler.instance().getWorldClient();
+		for (Object p : world.playerEntities)
+		{
+		    if (p instanceof EntityPlayer && ((EntityPlayer) p).getGameProfile().getName().equals(casterName))
+		    {
+			loadedCaster = (EntityPlayer) p;
+			break;
+		    }
+		}
+	    }
+	    magick.clientReceivedMagick(ModBase.proxy.getClientWorld(), x, y, z, loadedCaster, tag);
+	}
+
     }
 
     @Override
     public void handleServerSide(EntityPlayer player)
     {
 	World world = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(dimensionID);
-	magick.serverReceivedMagick(world, x, y, z, CoreBridge.instance().getEntityByUUID(dimensionID, casterUUID), tag);
+	loadedCaster = CoreBridge.instance().getEntityByUUID(dimensionID, casterUUID);
+	if (casterName != null)
+	{
+	    for (Object p : world.playerEntities)
+	    {
+		if (p instanceof EntityPlayer && ((EntityPlayer) p).getGameProfile().getName().equals(casterName))
+		{
+		    loadedCaster = (EntityPlayer) p;
+		    break;
+		}
+	    }
+	}
+	magick.serverReceivedMagick(world, x, y, z, loadedCaster, tag);
     }
-
 }

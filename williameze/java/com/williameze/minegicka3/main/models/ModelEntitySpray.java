@@ -8,6 +8,10 @@ import com.williameze.api.math.Vector;
 import com.williameze.api.models.Box;
 import com.williameze.minegicka3.main.entities.EntitySpray;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
+@SideOnly(Side.CLIENT)
 public class ModelEntitySpray extends ModelBase
 {
     public static Box box = Box.create(new Vector(0, 0, 0), 1);

@@ -15,6 +15,10 @@ import com.williameze.api.models.Sphere;
 import com.williameze.minegicka3.ModBase;
 import com.williameze.minegicka3.main.Values;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
+@SideOnly(Side.CLIENT)
 public class ModelStaffDefault extends ModelStaff
 {
     public static Color defaultOrbColor = new Color(0.8F, 0, 0.9F, 1);

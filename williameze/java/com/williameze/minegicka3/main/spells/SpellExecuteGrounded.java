@@ -31,7 +31,7 @@ public class SpellExecuteGrounded extends SpellExecute
 	List<Element> l = new ArrayList();
 	l.addAll(s.elements);
 	l.removeAll(Collections.singleton(Element.Shield));
-	Spell s1 = new Spell(l, s.dimensionID, s.casterUUID, s.castType, s.additionalData);
+	Spell s1 = new Spell(l, s.dimensionID, s.casterUUID, s.casterName, s.castType, s.additionalData);
 
 	int count = s.countElements();
 	double manaCost = (count == 1 ? 250 : (count - 1) * (count - 1) * 100) * (area ? 4 : 1) * s.getManaConsumeRate();
@@ -55,15 +55,13 @@ public class SpellExecuteGrounded extends SpellExecute
 		    {
 			for (int z = minZ; z <= maxZ; z++)
 			{
-			    double distSqr = (center.x - x) * (center.x - x) + (center.y - y) * (center.y - y) + (center.z - z)
-				    * (center.z - z);
+			    double distSqr = (center.x - x) * (center.x - x) + (center.y - y) * (center.y - y) + (center.z - z) * (center.z - z);
 			    int distInt = (int) Math.ceil(Math.sqrt(distSqr));
 			    int radiusInt = (int) Math.floor(radius);
 			    if (distInt == radiusInt)
 			    {
 				Block b = caster.worldObj.getBlock(x, y, z);
-				if (caster.worldObj.isAirBlock(x, y, z) || b.getMaterial().isReplaceable()
-					&& b.getMaterial() != Material.lava)
+				if (caster.worldObj.isAirBlock(x, y, z) || b.getMaterial().isReplaceable() && b.getMaterial() != Material.lava)
 				{
 				    boolean inAngle = area;
 				    if (!area)
@@ -148,10 +146,10 @@ public class SpellExecuteGrounded extends SpellExecute
 		    {
 			Vector dir = vec.rotateAround(Vector.unitY, angleDif * a);
 			EntityStorm storm = new EntityStorm(caster.worldObj);
-			storm.spell = new Spell(l, s.dimensionID, storm.getPersistentID(), CastType.Single, s.additionalData);
+			storm.spell = new Spell(l, s.dimensionID, storm.getPersistentID(), null, CastType.Single, s.additionalData);
 			storm.maxTick = 75 + s.countElements() * 25;
-			storm.setPosition(caster.posX + dir.x * radius, caster.posY + 2 + Math.pow(s.countElements(), 0.85), caster.posZ
-				+ dir.z * radius);
+			storm.setPosition(caster.posX + dir.x * radius, caster.posY + 2 + Math.pow(s.countElements(), 0.85), caster.posZ + dir.z
+				* radius);
 			caster.worldObj.spawnEntityInWorld(storm);
 			storm.spell.startSpell();
 		    }
@@ -162,7 +160,7 @@ public class SpellExecuteGrounded extends SpellExecute
 		    {
 			Vector dir = vec.rotateAround(Vector.unitY, angleDif * a);
 			EntityMine mine = new EntityMine(caster.worldObj);
-			mine.spell = new Spell(l, s.dimensionID, mine.getPersistentID(), CastType.Area, s.additionalData);
+			mine.spell = new Spell(l, s.dimensionID, mine.getPersistentID(), null, CastType.Area, s.additionalData);
 			mine.setPosition(caster.posX + dir.x * radius, caster.posY + 2, caster.posZ + dir.z * radius);
 			caster.worldObj.spawnEntityInWorld(mine);
 		    }

@@ -31,6 +31,7 @@ import net.minecraft.util.ChatComponentText;
 import net.minecraft.util.ChatStyle;
 import net.minecraft.util.DamageSource;
 import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.world.World;
 
 import com.williameze.minegicka3.ModBase;
 import com.williameze.minegicka3.core.CoreBridge;
@@ -40,10 +41,12 @@ import com.williameze.minegicka3.main.Element;
 import com.williameze.minegicka3.main.SpellDamageModifier;
 import com.williameze.minegicka3.main.objects.ItemStaff;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+
 public class Spell
 {
     public static Random rnd = new Random();
-    public static Spell none = new Spell(new ArrayList(), 0, null, CastType.Single, null);
+    public static Spell none = new Spell(new ArrayList(), 0, null, null, CastType.Single, null);
 
     public static enum CastType
     {
@@ -60,6 +63,7 @@ public class Spell
     public List<Element> elements = new ArrayList();
     public int dimensionID;
     public UUID casterUUID;
+    public String casterName = null;
     public CastType castType;
     public SpellType spellType;
     public NBTTagCompound additionalData;
@@ -68,13 +72,14 @@ public class Spell
     public Entity caster;
     public Map<Entity, Integer> recentlyAffected = new HashMap();
 
-    public Spell(List<Element> l, int dimID, UUID entityID, CastType type, NBTTagCompound addi)
+    public Spell(List<Element> l, int dimID, UUID entityID, String entityName, CastType type, NBTTagCompound addi)
     {
 	toBeInvalidated = false;
 	spellTicks = 0;
 	setElements(l);
 	dimensionID = dimID;
 	casterUUID = entityID;
+	if (entityName != null && entityName.length() > 0 && entityName != "") casterName = entityName;
 	castType = type;
 	additionalData = addi;
     }
@@ -112,6 +117,18 @@ public class Spell
 	if (caster == null)
 	{
 	    caster = CoreBridge.instance().getEntityByUUID(dimensionID, casterUUID);
+	    if (casterName != null)
+	    {
+		World world = ModBase.proxy.getWorldForDimension(dimensionID);
+		for (Object p : world.playerEntities)
+		{
+		    if (p instanceof EntityPlayer && ((EntityPlayer) p).getGameProfile().getName().equals(casterName))
+		    {
+			caster = (EntityPlayer) p;
+			break;
+		    }
+		}
+	    }
 	}
 	return caster;
     }
@@ -234,8 +251,8 @@ public class Spell
 	{
 	    EntityLivingBase be = (EntityLivingBase) e;
 	    if (countCold > 0) be.addPotionEffect(new PotionEffect(Potion.moveSlowdown.getId(), 20 * countCold, countCold));
-	    if (countCold + countWater + countSteam > 0) be.addPotionEffect(new PotionEffect(Potion.fireResistance.getId(), (countCold
-		    + countWater + countSteam) * 20, countCold + countWater + countSteam));
+	    if (countCold + countWater + countSteam > 0) be.addPotionEffect(new PotionEffect(Potion.fireResistance.getId(),
+		    (countCold + countWater + countSteam) * 20, countCold + countWater + countSteam));
 	    if (countLife > 0) ((EntityLivingBase) e).removePotionEffect(Potion.poison.getId());
 	}
 
@@ -366,14 +383,14 @@ public class Spell
 		    }
 		    else if (showChatMessage == 2)
 		    {
-			p.addChatMessage(new ChatComponentText("Requires " + (int) (Math.round(m * 10) / 10) + " mana.")
-				.setChatStyle(new ChatStyle().setItalic(true).setColor(EnumChatFormatting.RED)));
+			p.addChatMessage(new ChatComponentText("Requires " + (int) (Math.round(m * 10) / 10) + " mana.").setChatStyle(new ChatStyle()
+				.setItalic(true).setColor(EnumChatFormatting.RED)));
 		    }
 		    else if (showChatMessage == 3)
 		    {
-			p.addChatMessage(new ChatComponentText("Requires " + (int) (Math.round(m * 10) / 10)
-				+ " mana. Shame you only have " + (int) (Math.round(pd.mana * 10) / 10) + " mana.")
-				.setChatStyle(new ChatStyle().setItalic(true).setColor(EnumChatFormatting.RED)));
+			p.addChatMessage(new ChatComponentText("Requires " + (int) (Math.round(m * 10) / 10) + " mana. Shame you only have "
+				+ (int) (Math.round(pd.mana * 10) / 10) + " mana.").setChatStyle(new ChatStyle().setItalic(true).setColor(
+				EnumChatFormatting.RED)));
 		    }
 		}
 	    }
@@ -418,7 +435,8 @@ public class Spell
 	{
 	    elementsString = elementsString.concat(String.valueOf(e.ordinal()));
 	}
-	String data = elementsString + ";" + dimensionID + ";" + casterUUID.toString() + ";" + castType.toString();
+	String data = elementsString + ";" + dimensionID + ";" + casterUUID.toString() + ";" + (casterName == null ? "@NULL@#" : casterName) + ";"
+		+ castType.toString();
 	tag.setString("Data", data);
 
 	return tag;
@@ -437,11 +455,13 @@ public class Spell
 
 	int dID = Integer.parseInt(datas[1]);
 	UUID eUUID = UUID.fromString(datas[2]);
-	CastType cast = CastType.valueOf(datas[3]);
+	String eName = datas[3];
+	if (eName.equals("@NULL@#")) eName = null;
+	CastType cast = CastType.valueOf(datas[4]);
 
 	NBTTagCompound addi = tag.getCompoundTag("Addition");
 
-	return new Spell(l, dID, eUUID, cast, addi);
+	return new Spell(l, dID, eUUID, eName, cast, addi);
     }
 
     public static NBTTagCompound createAdditionalInfo(EntityPlayer p)
@@ -457,13 +477,18 @@ public class Spell
 	return tag;
     }
 
+    public boolean sameCaster(Spell s)
+    {
+	return s.casterUUID.equals(casterUUID) || (casterName != null && casterName.equals(s.casterName));
+    }
+
     @Override
     public boolean equals(Object obj)
     {
 	if (obj instanceof Spell)
 	{
 	    Spell o = (Spell) obj;
-	    return o.dimensionID == dimensionID && o.casterUUID.equals(casterUUID) && castType == o.castType && elements.equals(o.elements);
+	    return o.dimensionID == dimensionID && sameCaster(o) && castType == o.castType && elements.equals(o.elements);
 	}
 	return false;
     }
@@ -476,6 +501,7 @@ public class Spell
 	{
 	    i += e.ordinal();
 	}
-	return (int) (dimensionID + casterUUID.getLeastSignificantBits() * casterUUID.getMostSignificantBits() + i);
+	return (int) (dimensionID + casterUUID.getLeastSignificantBits() * casterUUID.getMostSignificantBits()
+		+ (casterName != null ? casterName.hashCode() : 0) + i);
     }
 }

@@ -10,6 +10,10 @@ import org.lwjgl.opengl.GL11;
 
 import com.williameze.api.models.ModelObject;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
+@SideOnly(Side.CLIENT)
 public class ModelBase
 {
     public List<ModelObject> components = new ArrayList();

@@ -2,25 +2,24 @@ package com.williameze.minegicka3.main.objects;
 
 import java.util.List;
 
+import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.EnumRarity;
+import net.minecraft.item.ItemFood;
+import net.minecraft.item.ItemStack;
+import net.minecraft.world.World;
+
 import com.williameze.minegicka3.ModBase;
 import com.williameze.minegicka3.core.PlayerData;
 import com.williameze.minegicka3.core.PlayersData;
 
-import cpw.mods.fml.relauncher.Side;
-import cpw.mods.fml.relauncher.SideOnly;
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.item.EnumRarity;
-import net.minecraft.item.Item;
-import net.minecraft.item.ItemStack;
-import net.minecraft.world.World;
-
-public class ItemMagicApple extends Item
+public class ItemMagicApple extends ItemFood
 {
     public double manaIncrease;
 
     public ItemMagicApple(double d)
     {
-	super();
+	super(4, (float) Math.pow(d / 16D, 0.2), false);
+	setAlwaysEdible();
 	manaIncrease = d;
     }
 
@@ -53,7 +52,7 @@ public class ItemMagicApple extends Item
 	PlayerData pd = PlayersData.getPlayerData_static(p);
 	pd.maxMana += manaIncrease;
 	pd.mana += manaIncrease;
-	if(!w.isRemote) PlayersData.sendPlayerDataToClient(p, p);
+	if (!w.isRemote) PlayersData.sendPlayerDataToClient(p, p);
 	p.inventory.markDirty();
 	return is;
     }

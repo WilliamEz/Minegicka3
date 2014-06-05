@@ -73,8 +73,7 @@ public class CoreClient
 
     public boolean isWizardnessApplicable()
     {
-	return isWizard() && mc.thePlayer.getCurrentEquippedItem() != null
-		&& mc.thePlayer.getCurrentEquippedItem().getItem() instanceof ItemStaff;
+	return isWizard() && mc.thePlayer.getCurrentEquippedItem() != null && mc.thePlayer.getCurrentEquippedItem().getItem() instanceof ItemStaff;
     }
 
     public boolean hasStaff(EntityPlayer p)
@@ -120,8 +119,8 @@ public class CoreClient
 	{
 	    if (currentClientCastingSpell == null)
 	    {
-		Spell s = new Spell(queuedElements, w.provider.dimensionId, p.getPersistentID(), currentClientSpellCastType,
-			Spell.createAdditionalInfo(p));
+		Spell s = new Spell(queuedElements, w.provider.dimensionId, p.getPersistentID(), p.getGameProfile().getName(),
+			currentClientSpellCastType, Spell.createAdditionalInfo(p));
 		currentClientCastingSpell = s;
 		ModBase.packetPipeline.sendToServer(new PacketStartSpell(s));
 	    }
@@ -401,13 +400,14 @@ public class CoreClient
 		DrawHelper.drawRect(0.5, 0.5, manaBarWidth - 0.5, manaBarHeight - 0.5, 0, 0, 0, partialTranslucent1);
 		if (pd.mana < Values.minManaToCastSpell && recoveringMana)
 		{
-		    DrawHelper.drawRect(manaBarWidth / 2 - (manaBarWidth - 2) / 2 * manaRate, 1, manaBarWidth / 2 + (manaBarWidth - 2) / 2
-			    * manaRate, manaBarHeight - 1, 0.8, 0.8, 0.8, partialTranslucent1);
+		    DrawHelper.drawRect(manaBarWidth / 2 - (manaBarWidth - 2) / 2 * manaRate, 1,
+			    manaBarWidth / 2 + (manaBarWidth - 2) / 2 * manaRate, manaBarHeight - 1, 0.8, 0.8, 0.8, partialTranslucent1);
 		}
 		else
 		{
-		    DrawHelper.drawRect(manaBarWidth / 2 - (manaBarWidth - 2) / 2 * manaRate, 1, manaBarWidth / 2 + (manaBarWidth - 2) / 2
-			    * manaRate, manaBarHeight - 1, 0.7, 0.7 * Math.max(0, 0.7F - manaRate), 0.8 * manaRate, partialTranslucent1);
+		    DrawHelper.drawRect(manaBarWidth / 2 - (manaBarWidth - 2) / 2 * manaRate, 1,
+			    manaBarWidth / 2 + (manaBarWidth - 2) / 2 * manaRate, manaBarHeight - 1, 0.7, 0.7 * Math.max(0, 0.7F - manaRate),
+			    0.8 * manaRate, partialTranslucent1);
 		}
 		if (isWizardnessApplicable())
 		{
@@ -430,8 +430,7 @@ public class CoreClient
 		GL11.glTranslated((guiWidth - queuedWidth) / 2, 0, 0);
 		GL11.glColor4d(1, 1, 1, fullTranslucent);
 		drawQueuedElement(queuedElementSize, queuedElementSize, queuedElementGapX, queuedElementGapY, queuedElementsPerRow);
-		drawRemovingElement(queuedElementSize, queuedElementSize, queuedElementGapX, queuedElementGapY, queuedElementsPerRow,
-			positionTop);
+		drawRemovingElement(queuedElementSize, queuedElementSize, queuedElementGapX, queuedElementGapY, queuedElementsPerRow, positionTop);
 		GL11.glTranslated(-(guiWidth - queuedWidth) / 2, 0, 0);
 		if (!positionTop) GL11.glTranslated(0, queuedHeight, 0);
 	    }
@@ -463,8 +462,8 @@ public class CoreClient
     public void drawHotkeyElements(double unitWidth, double unitHeight, double gapX, double gapY)
     {
 	mc.renderEngine.bindTexture(Values.elementsTexture);
-	List<Element> l = Arrays.asList(Element.Water, Element.Life, Element.Shield, Element.Cold, Element.Lightning, Element.Arcane,
-		Element.Earth, Element.Fire);
+	List<Element> l = Arrays.asList(Element.Water, Element.Life, Element.Shield, Element.Cold, Element.Lightning, Element.Arcane, Element.Earth,
+		Element.Fire);
 	double x = 0;
 	double y = 0;
 	for (int a = 0; a < l.size(); a++)
@@ -487,8 +486,8 @@ public class CoreClient
 	    {
 		Element e = l.get(a);
 		String hotkey = Keyboard.getKeyName(ModKeybinding.elementToKeyMap.get(e).getKeyCode());
-		mc.fontRenderer.drawStringWithShadow(hotkey, (int) (x + unitWidth - mc.fontRenderer.getStringWidth(hotkey)), (int) (y
-			+ unitHeight - 7), 0xffffffff);
+		mc.fontRenderer.drawStringWithShadow(hotkey, (int) (x + unitWidth - mc.fontRenderer.getStringWidth(hotkey)),
+			(int) (y + unitHeight - 7), 0xffffffff);
 		x += unitWidth + gapX;
 		if ((a + 1) % 4 == 0)
 		{

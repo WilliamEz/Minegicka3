@@ -67,7 +67,7 @@ public class SpellExecuteProjectile extends SpellExecute
 			{
 			    if (e == Element.Earth) earths.add(e);
 			}
-			Spell s1 = new Spell(earths, s.dimensionID, s.casterUUID, CastType.Area, s.additionalData);
+			Spell s1 = new Spell(earths, s.dimensionID, s.casterUUID, s.casterName, CastType.Area, s.additionalData);
 			EntityEarthRumble rumb = new EntityEarthRumble(caster.worldObj);
 			rumb.setPosition(caster.posX, caster.posY, caster.posZ);
 			rumb.setSpell(s1);

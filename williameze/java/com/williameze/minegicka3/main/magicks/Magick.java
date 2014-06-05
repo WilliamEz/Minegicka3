@@ -9,6 +9,7 @@ import java.util.Random;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.init.Blocks;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
@@ -139,7 +140,8 @@ public abstract class Magick
 	Spell.none.caster = null;
 	if (haveEnoughMana)
 	{
-	    ModBase.packetPipeline.sendToServer(new PacketStartMagick(this, world, x, y, z, caster.getPersistentID(), additionalData));
+	    ModBase.packetPipeline.sendToServer(new PacketStartMagick(this, world, x, y, z, caster.getPersistentID(),
+		    caster instanceof EntityPlayer ? ((EntityPlayer) caster).getGameProfile().getName() : null, additionalData));
 	    return true;
 	}
 	return false;
@@ -153,7 +155,8 @@ public abstract class Magick
     public void serverSendMagick(World world, double x, double y, double z, Entity caster, NBTTagCompound additionalData)
     {
 	TargetPoint point = new TargetPoint(world.provider.dimensionId, x, y, z, Values.magickUpdateRange);
-	ModBase.packetPipeline.sendToAllAround(new PacketStartMagick(this, world, x, y, z, caster.getPersistentID(), additionalData), point);
+	ModBase.packetPipeline.sendToAllAround(new PacketStartMagick(this, world, x, y, z, caster.getPersistentID(),
+		caster instanceof EntityPlayer ? ((EntityPlayer) caster).getGameProfile().getName() : null, additionalData), point);
     }
 
     public void serverReceivedMagick(World world, double x, double y, double z, Entity caster, NBTTagCompound additionalData)

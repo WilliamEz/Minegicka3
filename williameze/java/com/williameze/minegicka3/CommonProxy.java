@@ -46,6 +46,11 @@ public class CommonProxy implements IGuiHandler
     {
 	return null;
     }
+    
+    public World getWorldForDimension(int dim)
+    {
+	return FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(dim);
+    }
 
     public World getClientWorld()
     {

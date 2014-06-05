@@ -100,8 +100,6 @@ public class ModBase
 	registerRecipes();
 	registerEntities();
 	ClickCraft.load();
-	ModelStaff.load();
-	ModelHat.load();
     }
 
     @EventHandler
@@ -170,7 +168,7 @@ public class ModBase
 
 	staff = new ItemStaff().setUnlocalizedName(themodid + "Staff").setCreativeTab(modCreativeTab);
 	staffGrand = new ItemStaff().setBaseStats(2, 2, 0.5, 1.5).setUnlocalizedName(themodid + "StaffGrand").setCreativeTab(modCreativeTab);
-	staffSuper = new ItemStaff().setBaseStats(5, 5, 0.25, 2).setUnlocalizedName(themodid + "StaffSuper").setCreativeTab(modCreativeTab);
+	staffSuper = new ItemStaff().setBaseStats(4, 4, 0.25, 2).setUnlocalizedName(themodid + "StaffSuper").setCreativeTab(modCreativeTab);
 	hemmyStaff = new ItemStaff().setBaseStats(14, 14, 14, 14).setUnlocalizedName(themodid + "HemmyStaff").setCreativeTab(modCreativeTab);
 
 	magickTablet = new ItemMagickTablet().setUnlocalizedName(themodid + "MagickTablet").setCreativeTab(modCreativeTab);

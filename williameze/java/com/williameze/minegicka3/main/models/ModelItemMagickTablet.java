@@ -11,6 +11,10 @@ import com.williameze.minegicka3.core.PlayersData;
 import com.williameze.minegicka3.main.Element;
 import com.williameze.minegicka3.main.magicks.Magick;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
+@SideOnly(Side.CLIENT)
 public class ModelItemMagickTablet extends ModelBase
 {
     public Magick currentRendering;

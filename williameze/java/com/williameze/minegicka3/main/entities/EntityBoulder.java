@@ -59,7 +59,7 @@ public class EntityBoulder extends Entity implements IEntityAdditionalSpawnData
     {
 	return false;
     }
-    
+
     @Override
     public boolean isInRangeToRenderDist(double par1)
     {
@@ -159,8 +159,8 @@ public class EntityBoulder extends Entity implements IEntityAdditionalSpawnData
 	}
 	if (!isDead)
 	{
-	    List<Entity> entities = FuncHelper.getEntitiesWithinBoundingBoxMovement(worldObj, boundingBox, new Vector(motionX, motionY,
-		    motionZ), EntityLivingBase.class, new ESelectorDefault(getSpell()));
+	    List<Entity> entities = FuncHelper.getEntitiesWithinBoundingBoxMovement(worldObj, boundingBox, new Vector(motionX, motionY, motionZ),
+		    EntityLivingBase.class, new ESelectorDefault(getSpell()));
 	    entities.remove(spell.getCaster());
 	    Entity e = FuncHelper.getEntityClosestTo(posX, posY, posZ, entities);
 	    collideWithEntity(e);
@@ -186,8 +186,8 @@ public class EntityBoulder extends Entity implements IEntityAdditionalSpawnData
 		for (int a = 0; a < 4; a++)
 		{
 		    worldObj.spawnParticle("blockcrack_" + Block.getIdFromBlock(block) + "_" + worldObj.getBlockMetadata(j, k, l), posX
-			    + ((double) rand.nextFloat() - 0.5D) * (double) width, boundingBox.minY + 0.1D,
-			    posZ + ((double) rand.nextFloat() - 0.5D) * (double) width, -motionX * 4.0D, 1.5D, -motionZ * 4.0D);
+			    + ((double) rand.nextFloat() - 0.5D) * (double) width, boundingBox.minY + 0.1D, posZ + ((double) rand.nextFloat() - 0.5D)
+			    * (double) width, -motionX * 4.0D, 1.5D, -motionZ * 4.0D);
 		}
 	    }
 	}
@@ -245,9 +245,9 @@ public class EntityBoulder extends Entity implements IEntityAdditionalSpawnData
 
 	    for (int a = 0; a < 8; a++)
 	    {
-		worldObj.spawnParticle("blockcrack_" + Block.getIdFromBlock(block) + "_" + worldObj.getBlockMetadata(j, k, l), posX
-			+ ((double) rand.nextFloat() - 0.5D) * (double) width, boundingBox.minY + 0.1D, posZ
-			+ ((double) rand.nextFloat() - 0.5D) * (double) width, -motionX * 4.0D, 1.5D, -motionZ * 4.0D);
+		worldObj.spawnParticle("blockcrack_" + Block.getIdFromBlock(block) + "_" + worldObj.getBlockMetadata(j, k, l),
+			posX + ((double) rand.nextFloat() - 0.5D) * (double) width, boundingBox.minY + 0.1D, posZ
+				+ ((double) rand.nextFloat() - 0.5D) * (double) width, -motionX * 4.0D, 1.5D, -motionZ * 4.0D);
 	    }
 	    if (block.getMaterial() != Material.air)
 	    {
@@ -355,7 +355,7 @@ public class EntityBoulder extends Entity implements IEntityAdditionalSpawnData
     {
 	if (!worldObj.isRemote && !isDead)
 	{
-	    Spell s = new Spell(getSpell().elements, getSpell().dimensionID, getPersistentID(), CastType.Area, getSpell().additionalData);
+	    Spell s = new Spell(getSpell().elements, getSpell().dimensionID, getPersistentID(), null, CastType.Area, getSpell().additionalData);
 	    EntityBeamArea beamA = new EntityBeamArea(worldObj);
 	    beamA.spell = s;
 	    beamA.setPosition(posX, posY + 1, posZ);

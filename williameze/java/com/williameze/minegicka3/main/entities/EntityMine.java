@@ -89,11 +89,8 @@ public class EntityMine extends Entity implements IEntityAdditionalSpawnData, IE
 	    l.remove(this);
 	    for (Entity e : l)
 	    {
-		if (e instanceof EntityFX == false)
-		{
-		    novaHere();
-		    return;
-		}
+		novaHere();
+		return;
 	    }
 	}
     }
@@ -112,7 +109,7 @@ public class EntityMine extends Entity implements IEntityAdditionalSpawnData, IE
     {
 	if (!worldObj.isRemote && !isDead)
 	{
-	    Spell s = new Spell(spell.elements, spell.dimensionID, getPersistentID(), CastType.Area, spell.additionalData);
+	    Spell s = new Spell(spell.elements, spell.dimensionID, getPersistentID(), null, CastType.Area, spell.additionalData);
 	    EntityBeamArea beamA = new EntityBeamArea(worldObj);
 	    beamA.spell = s;
 	    beamA.setPosition(posX, posY + 1, posZ);

@@ -12,9 +12,9 @@ import com.williameze.minegicka3.main.spells.Spell;
 
 public class EntitySprayFire extends EntitySpray
 {
-    public static Color color1 = new Color(255, 40, 0, 250);
+    public static Color color1 = new Color(255, 60, 0, 250);
     public static Color color2 = new Color(255, 160, 0, 235);
-    public static Color color3 = new Color(255, 100, 0, 220);
+    public static Color color3 = new Color(255, 110, 0, 220);
 
     public EntitySprayFire(World par1World)
     {

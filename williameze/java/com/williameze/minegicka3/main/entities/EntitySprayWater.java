@@ -11,8 +11,8 @@ import net.minecraft.world.World;
 
 public class EntitySprayWater extends EntitySpray
 {
-    public static Color color1 = new Color(20, 50, 244, 220);
-    public static Color color2 = new Color(29, 69, 247, 210);
+    public static Color color1 = new Color(20, 50, 247, 220);
+    public static Color color2 = new Color(29, 69, 240, 210);
 
     public EntitySprayWater(World par1World)
     {
@@ -40,7 +40,7 @@ public class EntitySprayWater extends EntitySpray
     public void affectEntity(Entity e)
     {
 	super.affectEntity(e);
-	double power = getSpell().getPower() / e.width / e.width / e.height;
+	double power = Math.pow(Math.min(getSpell().getPower(), 8), 0.6) / e.width / e.width / e.height;
 	e.motionX += motionX * power;
 	e.motionY += motionY * power;
 	e.motionZ += motionZ * power;

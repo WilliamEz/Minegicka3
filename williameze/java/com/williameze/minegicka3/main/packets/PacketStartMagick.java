@@ -111,7 +111,7 @@ public class PacketStartMagick extends Packet
 	    loadedCaster = CoreBridge.instance().getEntityByUUID(dimensionID, casterUUID);
 	    if (casterName != null)
 	    {
-		World world = FMLClientHandler.instance().getWorldClient();
+		World world = ModBase.proxy.getClientWorld();
 		for (Object p : world.playerEntities)
 		{
 		    if (p instanceof EntityPlayer && ((EntityPlayer) p).getGameProfile().getName().equals(casterName))
@@ -129,7 +129,7 @@ public class PacketStartMagick extends Packet
     @Override
     public void handleServerSide(EntityPlayer player)
     {
-	World world = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(dimensionID);
+	World world = ModBase.proxy.getWorldForDimension(dimensionID);
 	loadedCaster = CoreBridge.instance().getEntityByUUID(dimensionID, casterUUID);
 	if (casterName != null)
 	{

@@ -11,13 +11,12 @@ import net.minecraft.util.ResourceLocation;
 import org.lwjgl.opengl.GL11;
 
 import com.williameze.api.models.FOStar;
+import com.williameze.api.models.Sphere;
 import com.williameze.minegicka3.main.models.ModelBase;
 
 public class RenderEntityHomingLightning extends Render
 {
-    public FOStar star = (FOStar) new FOStar(0, 0, 0, 0.15, 0.18, 32).setCenterColor(0xffffff, 120).setOuterColor(0xffffff, 120)
-	    .setColor(0xffff00, 150);
-    public ModelBase model = new ModelBase(star);
+    public ModelBase model = new ModelBase(new Sphere(0, 0, 0, 0.16, 2, 16).setColor(0xffff77, 150));
 
     protected void bindEntityTexture(Entity par1Entity)
     {
@@ -37,7 +36,6 @@ public class RenderEntityHomingLightning extends Render
 	GL11.glDisable(GL11.GL_CULL_FACE);
 	GL11.glTranslated(x, y, z);
 
-	star.setOpposing(-x, -y, -z);
 	model.render(var1, partialTick);
 
 	GL11.glEnable(GL11.GL_CULL_FACE);

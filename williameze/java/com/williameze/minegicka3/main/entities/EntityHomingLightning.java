@@ -98,9 +98,9 @@ public class EntityHomingLightning extends Entity implements IEntityAdditionalSp
 	motionX *= 0.96;
 	motionY *= 0.96;
 	motionZ *= 0.96;
-	motionX += v.x * 0.2;
-	motionY += v.y * 0.2;
-	motionZ += v.z * 0.2;
+	motionX += v.x * 0.1;
+	motionY += v.y * 0.1;
+	motionZ += v.z * 0.1;
 	moveEntity(motionX, motionY, motionZ);
 	double distSq = getDistanceSq(targetX, targetY, targetZ);
 	if (distSq < 4 || distSq < motionX * motionX + motionY * motionY + motionZ * motionZ)

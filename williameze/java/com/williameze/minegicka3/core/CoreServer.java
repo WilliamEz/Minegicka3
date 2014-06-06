@@ -64,7 +64,7 @@ public class CoreServer
 	if (event.phase == Phase.END)
 	{
 	    if (!playerToSpell.containsKey(event.player)) recoverMana(event.player);
-	    
+
 	    if (event.player.ticksExisted % 50 == 0)
 	    {
 		PlayersData.sendPlayerDataToClient(event.player, event.player);
@@ -117,8 +117,8 @@ public class CoreServer
 	    List<Spell> l = worldsSpellsList.get(w);
 	    if (start)
 	    {
-		ModBase.packetPipeline.sendToAllAround(new PacketStartSpell(s), new TargetPoint(s.dimensionID, caster.posX, caster.posY,
-			caster.posZ, Values.spellUpdateRange));
+		ModBase.packetPipeline.sendToAllAround(new PacketStartSpell(s), new TargetPoint(s.dimensionID, caster.posX, caster.posY, caster.posZ,
+			Values.spellUpdateRange));
 		if (!l.contains(s))
 		{
 		    s.startSpell();
@@ -131,8 +131,8 @@ public class CoreServer
 	    }
 	    else
 	    {
-		ModBase.packetPipeline.sendToAllAround(new PacketStopSpell(s), new TargetPoint(s.dimensionID, caster.posX, caster.posY,
-			caster.posZ, Values.spellUpdateRange));
+		ModBase.packetPipeline.sendToAllAround(new PacketStopSpell(s), new TargetPoint(s.dimensionID, caster.posX, caster.posY, caster.posZ,
+			Values.spellUpdateRange));
 		if (l.contains(s))
 		{
 		    s.stopSpell();

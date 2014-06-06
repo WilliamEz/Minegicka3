@@ -79,8 +79,7 @@ public class EntityStorm extends Entity implements IEntityAdditionalSpawnData, I
 	super.onUpdate();
 	if (spell.getCaster() == null)
 	{
-	    spell.caster = this;
-	    spell.casterUUID = getPersistentID();
+	    spell.setCaster(this);
 	}
 	if (ticksExisted > maxTick)
 	{

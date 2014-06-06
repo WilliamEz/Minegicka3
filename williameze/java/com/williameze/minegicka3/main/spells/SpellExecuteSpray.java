@@ -83,10 +83,10 @@ public class SpellExecuteSpray extends SpellExecute
     {
 	Entity caster = s.getCaster();
 	EntitySpray sp;
-	if (e == Element.Fire) sp = new EntitySprayFire(s.caster.worldObj);
-	else if (e == Element.Water) sp = new EntitySprayWater(s.caster.worldObj);
-	else if (e == Element.Cold) sp = new EntitySprayCold(s.caster.worldObj);
-	else sp = new EntitySpraySteam(s.caster.worldObj);
+	if (e == Element.Fire) sp = new EntitySprayFire(s.getCaster().worldObj);
+	else if (e == Element.Water) sp = new EntitySprayWater(s.getCaster().worldObj);
+	else if (e == Element.Cold) sp = new EntitySprayCold(s.getCaster().worldObj);
+	else sp = new EntitySpraySteam(s.getCaster().worldObj);
 	sp.setSpell(s);
 	sp.spiralCore = dir;
 	sp.setPosition(pos.x, pos.y, pos.z);

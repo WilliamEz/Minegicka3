@@ -133,11 +133,11 @@ public abstract class Magick
 	if (additionalData == null) additionalData = new NBTTagCompound();
 	addDataToMagick(world, x, y, z, caster, additionalData);
 
-	Spell.none.caster = caster;
+	Spell.none.setCaster(caster);
 	double[] props = getStaffMainProperties(additionalData);
 	double manaCost = getBaseManaCost() * props[2];
 	boolean haveEnoughMana = Spell.none.consumeMana(manaCost, false, true, 3) >= 1;
-	Spell.none.caster = null;
+	Spell.none.setCaster(null);
 	if (haveEnoughMana)
 	{
 	    ModBase.packetPipeline.sendToServer(new PacketStartMagick(this, world, x, y, z, caster.getPersistentID(),
@@ -201,11 +201,11 @@ public abstract class Magick
     {
 	caster = getPossibleCaster(world, x, y, z, caster);
 
-	Spell.none.caster = caster;
+	Spell.none.setCaster(caster);
 	double[] props = getStaffMainProperties(additionalData);
 	double manaCost = getBaseManaCost() * props[2];
 	Spell.none.consumeMana(manaCost, true, true, 0);
-	Spell.none.caster = null;
+	Spell.none.setCaster(null);
 	doTheMagick(world, x, y, z, caster, additionalData);
     }
 

@@ -152,8 +152,7 @@ public class EntityVortex extends Entity implements IEntityAdditionalSpawnData, 
 						int id = b.getIdFromBlock(b);
 						int meta = worldObj.getBlockMetadata(x, y, z);
 						if (b instanceof BlockDynamicLiquid == false) fallen = true;
-						EntityFallingBlock falling = new EntityFallingBlock(worldObj, x + 0.5, y + 0.5, z + 0.5, b,
-							meta);
+						EntityFallingBlock falling = new EntityFallingBlock(worldObj, x + 0.5, y + 0.5, z + 0.5, b, meta);
 						worldObj.spawnEntityInWorld(falling);
 					    }
 					    else
@@ -169,43 +168,44 @@ public class EntityVortex extends Entity implements IEntityAdditionalSpawnData, 
 		    }
 		}
 	    }
-	}
-	List<Entity> list = worldObj.getEntitiesWithinAABBExcludingEntity(this,
-		AxisAlignedBB.getBoundingBox(posX, posY, posZ, posX, posY, posZ).expand(range, range, range));
-	list.removeAll(fxes);
-	double rangeSqr = range * range;
-	for (Entity ent : list)
-	{
-	    double distSqr = getDistanceSqToEntity(ent);
-	    if (distSqr < rangeSqr)
+
+	    List<Entity> list = worldObj.getEntitiesWithinAABBExcludingEntity(this, AxisAlignedBB.getBoundingBox(posX, posY, posZ, posX, posY, posZ)
+		    .expand(range, range, range));
+	    list.removeAll(fxes);
+	    double rangeSqr = range * range;
+	    for (Entity ent : list)
 	    {
-		double dist = Math.pow(distSqr, 1 / 4);
-		double length = power / 4D / Math.max(dist, 1);
-		if (ent instanceof EntityFallingBlock) length /= 12D;
-		Vector v = FuncHelper.vectorToEntity(ent, this);
-		v.setToLength(length);
-		if (ent instanceof EntityPlayer && ((EntityPlayer) ent).capabilities.isCreativeMode)
+		double distSqr = getDistanceSqToEntity(ent);
+		if (distSqr < rangeSqr)
 		{
-		    ent.motionX += v.x / 4;
-		    ent.motionY += v.y / 4;
-		    ent.motionZ += v.z / 4;
-		}
-		else
-		{
-		    ent.motionX += v.x;
-		    ent.motionY += v.y;
-		    ent.motionZ += v.z;
-		}
-		if (distSqr <= 4)
-		{
+		    double dist = Math.pow(distSqr, 1 / 4);
+		    double length = power / 4D / Math.max(dist, 1);
+		    if (ent instanceof EntityFallingBlock) length /= 12D;
+		    Vector v = FuncHelper.vectorToEntity(ent, this);
+		    v.setToLength(length);
 		    if (ent instanceof EntityPlayer && ((EntityPlayer) ent).capabilities.isCreativeMode)
 		    {
-
+			ent.motionX += v.x / 4;
+			ent.motionY += v.y / 4;
+			ent.motionZ += v.z / 4;
 		    }
 		    else
 		    {
-			ent.attackEntityFrom(DamageSource.magic, 9999);
-			if (!ent.isDead) ent.setDead();
+			ent.motionX += v.x;
+			ent.motionY += v.y;
+			ent.motionZ += v.z;
+		    }
+		    if (distSqr <= 4)
+		    {
+			if (ent instanceof EntityPlayer && ((EntityPlayer) ent).capabilities.isCreativeMode)
+			{
+
+			}
+			else
+			{
+			    ent.attackEntityFrom(DamageSource.magic, 9999);
+			    if (!ent.isDead) ent.setDead();
+			}
 		    }
 		}
 	    }

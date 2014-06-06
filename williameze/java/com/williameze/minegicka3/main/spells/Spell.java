@@ -69,7 +69,7 @@ public class Spell
     public NBTTagCompound additionalData;
     public boolean toBeInvalidated;
 
-    public Entity caster;
+    private Entity caster;
     public Map<Entity, Integer> recentlyAffected = new HashMap();
 
     public Spell(List<Element> l, int dimID, UUID entityID, String entityName, CastType type, NBTTagCompound addi)
@@ -110,6 +110,23 @@ public class Spell
     public SpellExecute getExecute()
     {
 	return SpellExecute.getSpellExecute(this);
+    }
+
+    public void setCaster(Entity e)
+    {
+	if (e == null)
+	{
+	    caster = null;
+	    casterUUID = new UUID(0, 0);
+	    casterName = null;
+	}
+	else
+	{
+	    caster = e;
+	    casterUUID = e.getPersistentID();
+	    if (e instanceof EntityPlayer) casterName = ((EntityPlayer) e).getGameProfile().getName();
+	    else casterName = null;
+	}
     }
 
     public Entity getCaster()
@@ -479,7 +496,7 @@ public class Spell
 
     public boolean sameCaster(Spell s)
     {
-	return s.casterUUID.equals(casterUUID) || (casterName != null && casterName.equals(s.casterName));
+	return s.getCaster() == getCaster() || s.casterUUID.equals(casterUUID) || (casterName != null && casterName.equals(s.casterName));
     }
 
     @Override

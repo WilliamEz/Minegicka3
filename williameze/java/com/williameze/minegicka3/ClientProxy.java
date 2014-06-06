@@ -70,6 +70,7 @@ import com.williameze.minegicka3.main.renders.RenderTileEntityWall;
 
 import cpw.mods.fml.client.registry.RenderingRegistry;
 import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.relauncher.Side;
 
 public class ClientProxy extends CommonProxy
 {
@@ -79,8 +80,6 @@ public class ClientProxy extends CommonProxy
 	super.load();
 	FMLCommonHandler.instance().bus().register(new TickHandlerClient());
 	MinecraftForge.EVENT_BUS.register(new TickHandlerClient());
-	ModelStaff.load();
-	ModelHat.load();
     }
 
     @Override
@@ -92,6 +91,8 @@ public class ClientProxy extends CommonProxy
     public void postLoad()
     {
 	super.postLoad();
+	ModelStaff.load();
+	ModelHat.load();
 	ModelEntityBoulder.load();
 	RenderEntityBeamArea.load();
 	RenderEntityIceShard.load();
@@ -113,7 +114,14 @@ public class ClientProxy extends CommonProxy
     @Override
     public World getWorldForDimension(int dim)
     {
-	return dim == getClientWorld().provider.dimensionId ? getClientWorld() : null;
+	if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
+	{
+	    return super.getWorldForDimension(dim);
+	}
+	else
+	{
+	    return dim == getClientWorld().provider.dimensionId ? getClientWorld() : null;
+	}
     }
 
     @Override

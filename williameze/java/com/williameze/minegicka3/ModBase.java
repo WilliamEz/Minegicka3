@@ -270,5 +270,6 @@ public class ModBase
 	packetPipeline.registerPacket(PacketStartMagick.class);
 	packetPipeline.registerPacket(PacketPlayerClickCraft.class);
 	packetPipeline.registerPacket(PacketPlayerUnlockAll.class);
+	new PacketStartMagick();
     }
 }

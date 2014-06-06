@@ -6,6 +6,8 @@ import com.williameze.minegicka3.main.entities.EntityBeam;
 import com.williameze.minegicka3.main.entities.EntityBeamArea;
 import com.williameze.minegicka3.main.spells.Spell.CastType;
 
+import cpw.mods.fml.common.FMLCommonHandler;
+
 public class SpellExecuteBeam extends SpellExecute
 {
     @Override

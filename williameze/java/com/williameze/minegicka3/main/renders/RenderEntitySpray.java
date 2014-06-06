@@ -32,7 +32,7 @@ public class RenderEntitySpray extends Render
 	GL11.glDisable(GL11.GL_CULL_FACE);
 	GL11.glTranslated(x, y + var1.width / 2, z);
 	GL11.glRotated(Values.clientTicked+var1.hashCode(), var1.motionX, var1.motionY, var1.motionZ);
-
+	
 	DrawHelper.enableLighting(1);
 	model.render(var1, partialTick);
 	DrawHelper.disableLighting();

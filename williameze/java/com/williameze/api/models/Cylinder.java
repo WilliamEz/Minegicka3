@@ -136,33 +136,33 @@ public class Cylinder extends ModelObject
     {
 	GL11.glPushMatrix();
 
-	GL11.glBegin(GL11.GL_POLYGON);
+	begin(GL11.GL_POLYGON);
 	glSetColor();
 	GL11.glNormal3d(face1.get(0).x, face1.get(0).y, face1.get(0).z);
 	for (int a = 1; a < face1.size(); a++)
 	{
 	    addVertex(face1.get(a));
 	}
-	GL11.glEnd();
+	end();
 	glResetColor();
 
-	GL11.glBegin(GL11.GL_POLYGON);
+	begin(GL11.GL_POLYGON);
 	glSetColor();
 	GL11.glNormal3d(face2.get(0).x, face2.get(0).y, face2.get(0).z);
 	for (int a = 1; a < face2.size(); a++)
 	{
 	    addVertex(face2.get(a));
 	}
-	GL11.glEnd();
+	end();
 	glResetColor();
 
-	GL11.glBegin(GL11.GL_QUADS);
+	begin(GL11.GL_QUADS);
 	glSetColor();
 	for (Quad q : sideQuads)
 	{
 	    q.addQuadToGL();
 	}
-	GL11.glEnd();
+	end();
 	glResetColor();
 
 	GL11.glPopMatrix();

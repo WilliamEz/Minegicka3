@@ -31,15 +31,15 @@ public class FOCircle extends FlatOpposing
     {
 	Vector pointing = new Vector(0, radius, 0);
 	pointing.rotateAroundZ(initialRotation);
-	if (edgeOnly) GL11.glBegin(GL11.GL_LINE_LOOP);
-	else GL11.glBegin(GL11.GL_POLYGON);
+	if (edgeOnly) begin(GL11.GL_LINE_LOOP);
+	else begin(GL11.GL_POLYGON);
 	glSetColor();
 	for (int a = 0; a < cuts; a++)
 	{
-	    GL11.glVertex3d(pointing.x, pointing.y, 0);
+	    addVertex(pointing);
 	    pointing.rotateAroundZ(Math.PI * 2 / cuts);
 	}
-	GL11.glEnd();
+	end();
     }
 
 }

@@ -70,10 +70,10 @@ public class ModelEntityBoulder extends ModelBase
     }
 
     @Override
-    public void doRenderParameters(Object o, float f)
+    public void preRender(Object o, float f)
     {
 	// load();
-	super.doRenderParameters(o, f);
+	super.preRender(o, f);
 	if (o instanceof EntityBoulder)
 	{
 	    Entity e = (Entity) o;
@@ -82,7 +82,7 @@ public class ModelEntityBoulder extends ModelBase
     }
 
     @Override
-    public void doRenderComponents(Object o, float f)
+    public void renderComponents(Object o, float f)
     {
 	if (o instanceof EntityBoulder)
 	{

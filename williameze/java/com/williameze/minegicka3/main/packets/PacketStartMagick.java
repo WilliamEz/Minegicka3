@@ -1,12 +1,10 @@
 package com.williameze.minegicka3.main.packets;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
 
 import java.util.UUID;
 
 import net.minecraft.entity.Entity;
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
@@ -15,8 +13,7 @@ import com.williameze.minegicka3.ModBase;
 import com.williameze.minegicka3.core.CoreBridge;
 import com.williameze.minegicka3.main.magicks.Magick;
 
-import cpw.mods.fml.client.FMLClientHandler;
-import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
 public class PacketStartMagick extends Packet
 {
@@ -50,7 +47,7 @@ public class PacketStartMagick extends Packet
     }
 
     @Override
-    public void encodeInto(ChannelHandlerContext ctx, ByteBuf buffer)
+    public void encodeInto(ByteBuf buffer)
     {
 	try
 	{
@@ -77,7 +74,7 @@ public class PacketStartMagick extends Packet
     }
 
     @Override
-    public void decodeInto(ChannelHandlerContext ctx, ByteBuf buffer)
+    public void decodeFrom(ByteBuf buffer)
     {
 	try
 	{
@@ -104,44 +101,20 @@ public class PacketStartMagick extends Packet
     }
 
     @Override
-    public void handleClientSide(EntityPlayer player)
+    public void handleClientSide(Object ctx)
     {
 	if (dimensionID == ModBase.proxy.getClientWorld().provider.dimensionId)
 	{
-	    loadedCaster = CoreBridge.instance().getEntityByUUID(dimensionID, casterUUID);
-	    if (casterName != null)
-	    {
-		World world = ModBase.proxy.getClientWorld();
-		for (Object p : world.playerEntities)
-		{
-		    if (p instanceof EntityPlayer && ((EntityPlayer) p).getGameProfile().getName().equals(casterName))
-		    {
-			loadedCaster = (EntityPlayer) p;
-			break;
-		    }
-		}
-	    }
+	    loadedCaster = CoreBridge.instance().getEntityFromArgs(casterUUID, dimensionID, casterName, true, false, true);
 	    magick.clientReceivedMagick(ModBase.proxy.getClientWorld(), x, y, z, loadedCaster, tag);
 	}
-
     }
 
     @Override
-    public void handleServerSide(EntityPlayer player)
+    public void handleServerSide(Object ctx)
     {
 	World world = ModBase.proxy.getWorldForDimension(dimensionID);
-	loadedCaster = CoreBridge.instance().getEntityByUUID(dimensionID, casterUUID);
-	if (casterName != null)
-	{
-	    for (Object p : world.playerEntities)
-	    {
-		if (p instanceof EntityPlayer && ((EntityPlayer) p).getGameProfile().getName().equals(casterName))
-		{
-		    loadedCaster = (EntityPlayer) p;
-		    break;
-		}
-	    }
-	}
+	loadedCaster = CoreBridge.instance().getEntityFromArgs(casterUUID, dimensionID, casterName, true, false, true);
 	magick.serverReceivedMagick(world, x, y, z, loadedCaster, tag);
     }
 }

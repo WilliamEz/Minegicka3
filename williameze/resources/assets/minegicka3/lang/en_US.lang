@@ -1,35 +1,38 @@
 key.categories.minegicka3=Minegicka 3
 itemGroup.Minegicka 3=Minegicka 3
 
-tile.minegicka3:CraftStation.name=Magical Craft Station
+tile.minegicka3-CraftStation.name=Magical Craft Station
 
-item.minegicka3:Thingy.name=Magical Thing of Nothingness
-item.minegicka3:ThingyGood.name=Magical Thing of Something-ness
-item.minegicka3:ThingySuper.name=Magical Thing of Really-something-ness
-item.minegicka3:TheStick.name=The Stick
-item.minegicka3:TheStickGood.name=The Pretty Good Stick
-item.minegicka3:TheStickSuper.name=The Really Good Stick
-item.minegicka3:MagicApple.name=Magic Apple
-item.minegicka3:MagicGoodApple.name=Magic "Kinda" Golden Apple
-item.minegicka3:MagicSuperApple.name=Magic Golden Apple
-item.minegicka3:MagicCookie.name=Magic Cookie
-item.minegicka3:MagicGoodCookie.name=Magic Good Cookie
-item.minegicka3:MagicSuperCookie.name=Magic "Really" Good Cookie
-item.minegicka3:ArcaneEssence.name=Arcane Essence
-item.minegicka3:ColdEssence.name=Cold Essence
-item.minegicka3:EarthEssence.name=Earth Essence
-item.minegicka3:FireEssence.name=Fire Essence
-item.minegicka3:IceEssence.name=Ice Essence
-item.minegicka3:LifeEssence.name=Life Essence
-item.minegicka3:LightningEssence.name=Lightning Essence
-item.minegicka3:ShieldEssence.name=Shield Essence
-item.minegicka3:SteamEssence.name=Steam Essence
-item.minegicka3:WaterEssence.name=Water Essence
-item.minegicka3:MagickTablet.name=Tablet
-item.minegicka3:Staff.name=Staff
-item.minegicka3:StaffGrand.name=Grand Staff
-item.minegicka3:StaffSuper.name=Super Staff
-item.minegicka3:HemmyStaff.name=Hemmy's Staff of Mighty
+item.minegicka3-Thingy.name=Magical Thing of Nothingness
+item.minegicka3-ThingyGood.name=Magical Thing of Something-ness
+item.minegicka3-ThingySuper.name=Magical Thing of Really-something-ness
+item.minegicka3-TheStick.name=The Stick
+item.minegicka3-TheStickGood.name=The Pretty Good Stick
+item.minegicka3-TheStickSuper.name=The Really Good Stick
+item.minegicka3-MagicApple.name=Magic Apple
+item.minegicka3-MagicGoodApple.name=Magic "Kinda" Golden Apple
+item.minegicka3-MagicSuperApple.name=Magic Golden Apple
+item.minegicka3-MagicCookie.name=Magic Cookie
+item.minegicka3-MagicGoodCookie.name=Magic Good Cookie
+item.minegicka3-MagicSuperCookie.name=Magic "Really" Good Cookie
+item.minegicka3-ArcaneEssence.name=Arcane Essence
+item.minegicka3-ColdEssence.name=Cold Essence
+item.minegicka3-EarthEssence.name=Earth Essence
+item.minegicka3-FireEssence.name=Fire Essence
+item.minegicka3-IceEssence.name=Ice Essence
+item.minegicka3-LifeEssence.name=Life Essence
+item.minegicka3-LightningEssence.name=Lightning Essence
+item.minegicka3-ShieldEssence.name=Shield Essence
+item.minegicka3-SteamEssence.name=Steam Essence
+item.minegicka3-WaterEssence.name=Water Essence
+item.minegicka3-MagickTablet.name=Tablet
+
+item.minegicka3-Staff.name=Staff
+item.minegicka3-StaffGrand.name=Grand Staff
+item.minegicka3-StaffSuper.name=Super Staff
+item.minegicka3-HemmyStaff.name=Hemmy's Staff of Mighty
+
+item.minegicka3-Hat.name=Wizard Hat
 
 mgk3.string.Categories=Categories
 mgk3.string.Craft=Craft

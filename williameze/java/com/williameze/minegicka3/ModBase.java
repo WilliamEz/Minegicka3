@@ -12,7 +12,6 @@ import net.minecraft.item.ItemStack;
 
 import com.williameze.minegicka3.core.CoreBridge;
 import com.williameze.minegicka3.main.ClickCraft;
-import com.williameze.minegicka3.main.CommandUnlock;
 import com.williameze.minegicka3.main.Element;
 import com.williameze.minegicka3.main.entities.EntityBeam;
 import com.williameze.minegicka3.main.entities.EntityBeamArea;
@@ -32,12 +31,11 @@ import com.williameze.minegicka3.main.entities.EntityVortex;
 import com.williameze.minegicka3.main.entities.FXEProjectileCharge;
 import com.williameze.minegicka3.main.entities.FXESimpleParticle;
 import com.williameze.minegicka3.main.magicks.Magicks;
-import com.williameze.minegicka3.main.models.ModelHat;
-import com.williameze.minegicka3.main.models.ModelStaff;
 import com.williameze.minegicka3.main.objects.BlockCraftStation;
 import com.williameze.minegicka3.main.objects.BlockShield;
 import com.williameze.minegicka3.main.objects.BlockWall;
 import com.williameze.minegicka3.main.objects.ItemEssence;
+import com.williameze.minegicka3.main.objects.ItemHat;
 import com.williameze.minegicka3.main.objects.ItemMagicApple;
 import com.williameze.minegicka3.main.objects.ItemMagicCookie;
 import com.williameze.minegicka3.main.objects.ItemMagickTablet;
@@ -45,14 +43,7 @@ import com.williameze.minegicka3.main.objects.ItemStaff;
 import com.williameze.minegicka3.main.objects.TileEntityCraftStation;
 import com.williameze.minegicka3.main.objects.TileEntityShield;
 import com.williameze.minegicka3.main.objects.TileEntityWall;
-import com.williameze.minegicka3.main.packets.PacketPipeline;
-import com.williameze.minegicka3.main.packets.PacketPlayerClickCraft;
-import com.williameze.minegicka3.main.packets.PacketPlayerData;
-import com.williameze.minegicka3.main.packets.PacketPlayerMana;
-import com.williameze.minegicka3.main.packets.PacketPlayerUnlockAll;
-import com.williameze.minegicka3.main.packets.PacketStartMagick;
-import com.williameze.minegicka3.main.packets.PacketStartSpell;
-import com.williameze.minegicka3.main.packets.PacketStopSpell;
+import com.williameze.minegicka3.main.packets.PacketHandler;
 
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -72,14 +63,14 @@ public class ModBase
     public static final String PACKAGE = "com.williameze.minegicka3";
     public static final String MODNAME = "Minegicka III";
     public static final String MODID = "minegicka3";
-    public static final String VERSION = "0.0";
+    public static final String VERSION = "0.1.0.3";
 
     @Instance("minegicka3")
     public static ModBase instance;
 
     @SidedProxy(clientSide = "com.williameze.minegicka3.ClientProxy", serverSide = "com.williameze.minegicka3.CommonProxy")
     public static CommonProxy proxy;
-    public static PacketPipeline packetPipeline = new PacketPipeline();
+    public static PacketHandler packetPipeline;
 
     @EventHandler
     public void preInit(FMLPreInitializationEvent event)
@@ -106,16 +97,13 @@ public class ModBase
     public void init(FMLInitializationEvent event)
     {
 	proxy.registerRenderHandler();
-	packetPipeline.initialise();
-	registerPackets();
+	packetPipeline = new PacketHandler();
     }
 
     @EventHandler
     public void postInit(FMLPostInitializationEvent event)
     {
-	packetPipeline.postInitialise();
 	proxy.postLoad();
-	proxy.registerCommand(new CommandUnlock());
     }
 
     public static Material magical;
@@ -128,10 +116,11 @@ public class ModBase
 	    essenceWater;
     public static Item magickTablet;
     public static Item staff, staffGrand, staffSuper, hemmyStaff;
+    public static Item hat;
 
     public void initObjects()
     {
-	String themodid = MODID + ":";
+	String themodid = MODID + "-";
 	magical = new Material(MapColor.adobeColor);
 	modCreativeTab = new CreativeTabCustom("Minegicka 3");
 
@@ -166,17 +155,19 @@ public class ModBase
 	essenceSteam = new ItemEssence(Element.Steam).setUnlocalizedName(themodid + "SteamEssence").setCreativeTab(modCreativeTab);
 	essenceWater = new ItemEssence(Element.Water).setUnlocalizedName(themodid + "WaterEssence").setCreativeTab(modCreativeTab);
 
-	staff = new ItemStaff().setUnlocalizedName(themodid + "Staff").setCreativeTab(modCreativeTab);
-	staffGrand = new ItemStaff().setBaseStats(2, 2, 0.5, 1.5).setUnlocalizedName(themodid + "StaffGrand").setCreativeTab(modCreativeTab);
-	staffSuper = new ItemStaff().setBaseStats(4, 4, 0.25, 2).setUnlocalizedName(themodid + "StaffSuper").setCreativeTab(modCreativeTab);
-	hemmyStaff = new ItemStaff().setBaseStats(14, 14, 14, 14).setUnlocalizedName(themodid + "HemmyStaff").setCreativeTab(modCreativeTab);
+	staff = new ItemStaff().setUnlocalizedName(themodid + "Staff");
+	staffGrand = new ItemStaff().setBaseStats(2, 2, 0.5, 1.5).setUnlocalizedName(themodid + "StaffGrand");
+	staffSuper = new ItemStaff().setBaseStats(4, 4, 0.25, 2).setUnlocalizedName(themodid + "StaffSuper");
+	hemmyStaff = new ItemStaff().setBaseStats(7, 7, 0.07, 7).setUnlocalizedName(themodid + "HemmyStaff");
+
+	hat = new ItemHat().setUnlocalizedName(themodid + "Hat");
 
 	magickTablet = new ItemMagickTablet().setUnlocalizedName(themodid + "MagickTablet").setCreativeTab(modCreativeTab);
     }
 
     public void registerObjects()
     {
-	String themodid = MODID + ":";
+	String themodid = MODID + "-";
 	modCreativeTab.setTabIconItem(thingySuper);
 
 	GameRegistry.registerBlock(shieldBlock, themodid + "ShieldBlock");
@@ -215,6 +206,7 @@ public class ModBase
 	GameRegistry.registerItem(staffSuper, themodid + "StaffSuper");
 	GameRegistry.registerItem(hemmyStaff, themodid + "HemmyStaff");
 
+	GameRegistry.registerItem(hat, themodid + "Hat");
     }
 
     public void registerRecipes()
@@ -261,15 +253,4 @@ public class ModBase
 	 */
     }
 
-    public void registerPackets()
-    {
-	packetPipeline.registerPacket(PacketStartSpell.class);
-	packetPipeline.registerPacket(PacketStopSpell.class);
-	packetPipeline.registerPacket(PacketPlayerData.class);
-	packetPipeline.registerPacket(PacketPlayerMana.class);
-	packetPipeline.registerPacket(PacketStartMagick.class);
-	packetPipeline.registerPacket(PacketPlayerClickCraft.class);
-	packetPipeline.registerPacket(PacketPlayerUnlockAll.class);
-	new PacketStartMagick();
-    }
 }

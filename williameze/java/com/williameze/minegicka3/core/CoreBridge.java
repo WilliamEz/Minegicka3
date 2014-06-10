@@ -2,8 +2,8 @@ package com.williameze.minegicka3.core;
 
 import java.util.UUID;
 
-import net.minecraft.client.Minecraft;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.world.World;
 
 import com.williameze.minegicka3.ModBase;
@@ -63,24 +63,104 @@ public class CoreBridge
 	}
     }
 
+    /**
+     * Search for players based on name. Seach for entities based on uuid.
+     * 
+     * @param uuid
+     *            target UUID
+     * @param dim
+     *            world dimension id
+     * @param name
+     *            target name(mostly username)
+     * @param checkInWorldPlayers
+     *            whether to find players in world.playerEntities
+     * @param checkInWorldEntities
+     *            whether to search in world.loadedEntityList if mentioned uuid
+     *            is not saved
+     * @param playerPriority
+     *            prefer to return player (true) or non-player (false)
+     **/
+    public Entity getEntityFromArgs(UUID uuid, int dim, String name, boolean checkInWorldPlayers, boolean checkInWorldEntities, boolean playerPriority)
+    {
+	World w = getWorldByDim(dim);
+	EntityPlayer p = null;
+	if (checkInWorldPlayers)
+	{
+	    if (w != null)
+	    {
+		for (Object o : w.playerEntities)
+		{
+		    EntityPlayer pl = (EntityPlayer) o;
+		    if (name != null && name.equals(pl.getGameProfile().getName()))
+		    {
+			if (playerPriority) return pl;
+			else p = pl;
+			break;
+		    }
+		}
+	    }
+	}
+	Entity e = getEntityByUUID(dim, uuid);
+	if (checkInWorldEntities && uuid != null)
+	{
+	    if (w != null)
+	    {
+		for (Object o : w.loadedEntityList)
+		{
+		    Entity ent = (Entity) o;
+		    if (ent != null && ent != p && uuid.equals(ent.getPersistentID()))
+		    {
+			if (!playerPriority) return ent;
+			else e = ent;
+			break;
+		    }
+		}
+	    }
+	}
+	if (e == null) return p;
+	else if (p == null) return e;
+	else
+	{
+	    if (playerPriority) return p;
+	    else return e;
+	}
+    }
+
     public Entity getEntityByUUID(int dimensionID, UUID uuid)
     {
 	if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
 	{
-	    if (Minecraft.getMinecraft().theWorld.provider.dimensionId == dimensionID)
+	    if (ModBase.proxy.getClientWorld().provider.dimensionId == dimensionID
+		    && Values.worldEntitiesUUIDMap.containsKey(ModBase.proxy.getClientWorld()))
 	    {
-		return Values.worldEntitiesUUIDMap.get(Minecraft.getMinecraft().theWorld).get(uuid);
+		return Values.worldEntitiesUUIDMap.get(ModBase.proxy.getClientWorld()).get(uuid);
 	    }
 	}
 	else if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
 	{
 	    World w = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(dimensionID);
-	    if (w != null)
+	    if (w != null && Values.worldEntitiesUUIDMap.containsKey(w))
 	    {
 		return Values.worldEntitiesUUIDMap.get(w).get(uuid);
 	    }
 	}
 	return null;
     }
-    
+
+    public World getWorldByDim(int dimensionID)
+    {
+	if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
+	{
+	    if (ModBase.proxy.getClientWorld().provider.dimensionId == dimensionID)
+	    {
+		return ModBase.proxy.getClientWorld();
+	    }
+	}
+	else if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
+	{
+	    World w = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(dimensionID);
+	    return w;
+	}
+	return null;
+    }
 }

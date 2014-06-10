@@ -1,19 +1,13 @@
 package com.williameze.minegicka3.main.packets;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
 
-import java.io.IOException;
+import java.util.UUID;
 
-import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.nbt.NBTTagCompound;
-
-import com.mojang.authlib.GameProfile;
-import com.williameze.minegicka3.core.CoreBridge;
 import com.williameze.minegicka3.core.PlayerData;
 import com.williameze.minegicka3.core.PlayersData;
-import com.williameze.minegicka3.main.spells.Spell;
+
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
 public class PacketPlayerMana extends Packet
 {
@@ -30,7 +24,7 @@ public class PacketPlayerMana extends Packet
     }
 
     @Override
-    public void encodeInto(ChannelHandlerContext ctx, ByteBuf buffer)
+    public void encodeInto(ByteBuf buffer)
     {
 	try
 	{
@@ -45,7 +39,7 @@ public class PacketPlayerMana extends Packet
     }
 
     @Override
-    public void decodeInto(ChannelHandlerContext ctx, ByteBuf buffer)
+    public void decodeFrom(ByteBuf buffer)
     {
 	try
 	{
@@ -53,8 +47,8 @@ public class PacketPlayerMana extends Packet
 	    buffer.readBytes(b);
 	    String[] strings = (new String(b)).split(";");
 	    int dimension = Integer.parseInt(strings[0]);
-	    String name = strings[1];
-	    p = PlayersData.getPlayerData_static(name, dimension);
+	    String playerName = strings[1];
+	    p = PlayersData.getPlayerData_static(playerName, dimension);
 	    mana = Double.parseDouble(strings[2]);
 	}
 	catch (Exception e)
@@ -64,7 +58,7 @@ public class PacketPlayerMana extends Packet
     }
 
     @Override
-    public void handleClientSide(EntityPlayer player)
+    public void handleClientSide(Object ctx)
     {
 	if (p != null)
 	{
@@ -74,7 +68,7 @@ public class PacketPlayerMana extends Packet
     }
 
     @Override
-    public void handleServerSide(EntityPlayer player)
+    public void handleServerSide(Object ctx)
     {
 	if (p != null)
 	{

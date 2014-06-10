@@ -44,14 +44,14 @@ public class Ring extends ModelObject
     public void render()
     {
 	GL11.glPushMatrix();
-	GL11.glBegin(GL11.GL_QUAD_STRIP);
+	begin(GL11.GL_QUAD_STRIP);
 	glSetColor();
-	GL11.glNormal3d(normal.x, normal.y, normal.z);
+	setNormal(normal);
 	for (Vector v : vertexes)
 	{
-	    GL11.glVertex3d(v.x, v.y, v.z);
+	    addVertex(v);
 	}
-	GL11.glEnd();
+	end();
 	glResetColor();
 	GL11.glPopMatrix();
     }

@@ -1,9 +1,11 @@
 package com.williameze.minegicka3.main;
 
+import java.io.IOException;
 import java.util.AbstractMap.SimpleEntry;
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
+import java.util.Arrays;
 import java.util.Iterator;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -14,15 +16,19 @@ import net.minecraft.init.Blocks;
 import net.minecraft.init.Items;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompressedStreamTools;
+
+import org.apache.commons.lang3.ArrayUtils;
 
 import com.williameze.minegicka3.ModBase;
 import com.williameze.minegicka3.main.magicks.Magick;
 import com.williameze.minegicka3.main.objects.ItemMagickTablet;
+import com.williameze.minegicka3.main.objects.ItemStaff;
 import com.williameze.minegicka3.main.packets.PacketPlayerClickCraft;
 
 public class ClickCraft
 {
-    public static final String catGeneral = "General", catStaff = "Staff", catMagick = "Magick";
+    public static final String catGeneral = "General", catStaff = "Staff", catMagick = "Magick", catHat = "Hat";
 
     public static Map<ItemStack, List<Entry<ItemStack, Integer>>> clickCraftRecipes = new LinkedHashMap();
     public static Map<String, Map<ItemStack, List<Entry<ItemStack, Integer>>>> categorizedClickCraftRecipes = new LinkedHashMap();
@@ -37,6 +43,7 @@ public class ClickCraft
 	generalRecipes();
 	stavesRecipe();
 	magicksRecipe();
+	hatsRecipe();
     }
 
     public static void generalRecipes()
@@ -95,6 +102,11 @@ public class ClickCraft
 
     }
 
+    public static void hatsRecipe()
+    {
+	registerClickCraftObject(catHat, new ItemStack(ModBase.hat), new Object[] { Items.leather, 8, Items.dye, ModBase.thingy });
+    }
+
     public static List<Entry<ItemStack, Integer>> getRecipe(ItemStack is)
     {
 	return getRecipeFrom(is, clickCraftRecipes);
@@ -116,9 +128,15 @@ public class ClickCraft
 	{
 	    Entry<ItemStack, List<Entry<ItemStack, Integer>>> entry = ite.next();
 	    ItemStack entryIS = entry.getKey();
-	    if (entryIS != null && ItemStack.areItemStacksEqual(entryIS, is))
+	    if (entryIS != null && is != null && entryIS.getItem() == is.getItem() && entryIS.getItemDamage() == is.getItemDamage()
+		    && entryIS.stackSize == is.stackSize)
 	    {
-		return entry.getValue();
+		if (entryIS.stackTagCompound == null && is.stackTagCompound == null) return entry.getValue();
+
+		if (entryIS.stackTagCompound != null && is.stackTagCompound != null && entryIS.stackTagCompound.equals(is.stackTagCompound))
+		{
+		    return entry.getValue();
+		}
 	    }
 	}
 	return null;
@@ -190,7 +208,7 @@ public class ClickCraft
 		recipe.add(entry);
 	    }
 	}
-
+	if (output.getItem() instanceof ItemStaff) ((ItemStaff) output.getItem()).getStaffTag(output);
 	if (recipe.isEmpty()) return null;
 	else return new SimpleEntry<ItemStack, List<Entry<ItemStack, Integer>>>(output, recipe);
     }
@@ -203,6 +221,11 @@ public class ClickCraft
     public static void playerCraft(EntityPlayer p, ItemStack is, int repeat)
     {
 	List<Entry<ItemStack, Integer>> recipe = getRecipe(is);
+	if (recipe == null)
+	{
+	    System.err.println("ClickCraft error. No recipe found for " + is.toString());
+	    return;
+	}
 	for (int a = 0; a < repeat; a++)
 	{
 	    ItemStack toAdd = is.copy();

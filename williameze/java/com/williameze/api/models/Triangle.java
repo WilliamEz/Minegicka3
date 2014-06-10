@@ -110,20 +110,20 @@ public class Triangle extends ModelObject
 
     public void addTriangleToGL()
     {
-	GL11.glNormal3d(normal.x, normal.y, normal.z);
-	GL11.glVertex3d(v1.x, v1.y, v1.z);
-	GL11.glVertex3d(v2.x, v2.y, v2.z);
-	GL11.glVertex3d(v3.x, v3.y, v3.z);
+	setNormal(normal);
+	addVertex(v1);
+	addVertex(v2);
+	addVertex(v3);
     }
 
     @Override
     public void render()
     {
 	GL11.glPushMatrix();
-	GL11.glBegin(GL11.GL_TRIANGLES);
+	begin(GL11.GL_TRIANGLES);
 	glSetColor();
 	addTriangleToGL();
-	GL11.glEnd();
+	end();
 	glResetColor();
 	GL11.glPopMatrix();
     }

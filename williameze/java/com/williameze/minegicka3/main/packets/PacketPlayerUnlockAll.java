@@ -1,24 +1,19 @@
 package com.williameze.minegicka3.main.packets;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
 
-import java.io.IOException;
+import java.util.UUID;
 
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.nbt.NBTTagCompound;
 
-import com.mojang.authlib.GameProfile;
-import com.williameze.minegicka3.core.CoreBridge;
 import com.williameze.minegicka3.core.PlayerData;
 import com.williameze.minegicka3.core.PlayersData;
-import com.williameze.minegicka3.main.CommandUnlock;
-import com.williameze.minegicka3.main.spells.Spell;
+
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
 public class PacketPlayerUnlockAll extends Packet
 {
-    public String name;
+    public String playerName;
     public int dim;
 
     public PacketPlayerUnlockAll()
@@ -27,18 +22,18 @@ public class PacketPlayerUnlockAll extends Packet
 
     public PacketPlayerUnlockAll(EntityPlayer p)
     {
-	name = p.getGameProfile().getName();
+	playerName = p.getGameProfile().getName();
 	dim = p.worldObj.provider.dimensionId;
     }
 
     @Override
-    public void encodeInto(ChannelHandlerContext ctx, ByteBuf buffer)
+    public void encodeInto(ByteBuf buffer)
     {
 	try
 	{
 	    buffer.writeInt(dim);
-	    buffer.writeInt(name.getBytes().length);
-	    buffer.writeBytes(name.getBytes());
+	    buffer.writeInt(playerName.getBytes().length);
+	    buffer.writeBytes(playerName.getBytes());
 	}
 	catch (Exception e)
 	{
@@ -47,14 +42,14 @@ public class PacketPlayerUnlockAll extends Packet
     }
 
     @Override
-    public void decodeInto(ChannelHandlerContext ctx, ByteBuf buffer)
+    public void decodeFrom(ByteBuf buffer)
     {
 	try
 	{
 	    dim = buffer.readInt();
 	    byte[] b = new byte[buffer.readInt()];
 	    buffer.readBytes(b);
-	    name = new String(b);
+	    playerName = new String(b);
 	}
 	catch (Exception e)
 	{
@@ -63,14 +58,14 @@ public class PacketPlayerUnlockAll extends Packet
     }
 
     @Override
-    public void handleClientSide(EntityPlayer player)
+    public void handleClientSide(Object ctx)
     {
     }
 
     @Override
-    public void handleServerSide(EntityPlayer player)
+    public void handleServerSide(Object ctx)
     {
-	PlayerData pd = PlayersData.getPlayerData_static(name, dim);
+	PlayerData pd = PlayersData.getPlayerData_static(playerName, dim);
 	pd.unlockEverything();
     }
 

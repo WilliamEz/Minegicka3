@@ -51,8 +51,9 @@ public abstract class Values
 	}
     }
 
-    public static void onWorldUnload()
+    public static void onWorldUnload(World world)
     {
-	worldEntitiesUUIDMap.clear();
+	worldEntitiesUUIDMap.remove(world);
     }
+
 }

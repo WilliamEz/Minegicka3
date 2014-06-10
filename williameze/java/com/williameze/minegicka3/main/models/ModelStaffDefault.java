@@ -33,7 +33,7 @@ public class ModelStaffDefault extends ModelStaff
 
 	components.add(CylinderConjunc.createTorus(new Vector(0, 8, 0), new Vector(0, 11, 0), new Vector(1, 0, 0), 0, 8, 0.4685,
 		16).setColor(c1));
-	components.add(orb = (Sphere) new Sphere(0, 11, 0, 1, 2, 4).setColor(defaultOrbColor));
+	components.add(orb = (Sphere) new Sphere(0, 11, 0, 1, 2, 4).setColor(defaultOrbColor).setPivot(new Vector(0,11,0)));
 	components.add(Cylinder.create(new Vector(0, 8, 0), new Vector(0, -6, 0), 0.4685, 16).setColor(c));
 	components.add(new Sphere(0, -6.25, 0, 0.75, 2, 4).setColor(c2));
     }
@@ -43,13 +43,13 @@ public class ModelStaffDefault extends ModelStaff
     {
 	//components.clear();
 	//addComponents();
-	doRenderParameters(staff);
+	preRender(staff);
     }
 
     @Override
-    public void onComponentPreRender(ItemStack staff, ModelObject o)
+    public void componentPreRender(ItemStack staff, ModelObject o)
     {
-	super.onComponentPreRender(staff, o);
+	super.componentPreRender(staff, o);
 	if (o == orb)
 	{
 	    if (Minecraft.getMinecraft().thePlayer.inventory.hasItemStack(staff))
@@ -57,21 +57,21 @@ public class ModelStaffDefault extends ModelStaff
 		float manaRate = (float) ModBase.proxy.getCoreClient().getManaRate();
 		orb.setColor(new Color(0.8F, 0.8F * Math.max(0, 0.8F - manaRate), 0.9F * manaRate, 1));
 	    }
-	    GL11.glRotated(Values.clientTicked * 2, 0, 2, 0);
+	    orb.setRotation(Values.clientTicked*2, 0);
 	}
     }
 
     @Override
-    public void onComponentPostRender(ItemStack staff, ModelObject o)
+    public void componentPostRender(ItemStack staff, ModelObject o)
     {
-	super.onComponentPostRender(staff, o);
+	super.componentPostRender(staff, o);
 	if (o == orb)
 	{
 	    if (Minecraft.getMinecraft().thePlayer.inventory.hasItemStack(staff))
 	    {
 		orb.setColor(defaultOrbColor);
 	    }
-	    GL11.glRotated(-Values.clientTicked * 2, 0, 2, 0);
+	    orb.setRotation(-Values.clientTicked*2, 0);
 	}
     }
 }

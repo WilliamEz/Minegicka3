@@ -119,8 +119,8 @@ public class CoreClient
 	{
 	    if (currentClientCastingSpell == null)
 	    {
-		Spell s = new Spell(queuedElements, w.provider.dimensionId, p.getPersistentID(), p.getGameProfile().getName(),
-			currentClientSpellCastType, Spell.createAdditionalInfo(p));
+		Spell s = new Spell(queuedElements, w.provider.dimensionId, p.getPersistentID(), p.getGameProfile().getName(), currentClientSpellCastType,
+			Spell.createAdditionalInfo(p));
 		currentClientCastingSpell = s;
 		ModBase.packetPipeline.sendToServer(new PacketStartSpell(s));
 	    }

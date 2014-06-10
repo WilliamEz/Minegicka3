@@ -33,9 +33,9 @@ public class ModelItemMagickTablet extends ModelBase
     }
 
     @Override
-    public void doRenderComponents(Object e, float f)
+    public void renderComponents(Object e, float f)
     {
-	super.doRenderComponents(e, f);
+	super.renderComponents(e, f);
 	if (currentRendering != null)
 	{
 	    Element[] es = currentRendering.getCombination();

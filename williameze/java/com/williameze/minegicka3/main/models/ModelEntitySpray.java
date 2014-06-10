@@ -24,9 +24,9 @@ public class ModelEntitySpray extends ModelBase
     }
 
     @Override
-    public void doRenderParameters(Object o, float f)
+    public void preRender(Object o, float f)
     {
-	super.doRenderParameters(o, f);
+	super.preRender(o, f);
 	if (o instanceof EntitySpray)
 	{
 	    Entity e = (Entity) o;

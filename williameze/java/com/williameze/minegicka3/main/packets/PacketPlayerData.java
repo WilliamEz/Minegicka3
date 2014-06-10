@@ -1,40 +1,39 @@
 package com.williameze.minegicka3.main.packets;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
-
-import java.io.IOException;
-
 import net.minecraft.entity.player.EntityPlayer;
-import net.minecraft.nbt.CompressedStreamTools;
-import net.minecraft.nbt.NBTTagCompound;
+import net.minecraft.util.ChatComponentText;
 
-import com.williameze.minegicka3.core.CoreBridge;
+import com.williameze.minegicka3.ModBase;
 import com.williameze.minegicka3.core.PlayerData;
 import com.williameze.minegicka3.core.PlayersData;
-import com.williameze.minegicka3.main.spells.Spell;
+
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
 public class PacketPlayerData extends Packet
 {
+    public static int count = 0;
     public PlayerData p;
 
     public PacketPlayerData()
     {
+	count++;
     }
 
     public PacketPlayerData(PlayerData pd)
     {
+	count++;
 	p = pd;
     }
 
     @Override
-    public void encodeInto(ChannelHandlerContext ctx, ByteBuf buffer)
+    public void encodeInto(ByteBuf buffer)
     {
 	try
 	{
 	    String s = p.dataToString();
 	    byte[] b = s.getBytes();
-	    if(b==null) b = new byte[0];
+	    if (b == null) b = new byte[0];
 	    buffer.writeInt(b.length);
 	    buffer.writeBytes(b);
 	}
@@ -45,7 +44,7 @@ public class PacketPlayerData extends Packet
     }
 
     @Override
-    public void decodeInto(ChannelHandlerContext ctx, ByteBuf buffer)
+    public void decodeFrom(ByteBuf buffer)
     {
 	try
 	{
@@ -62,13 +61,13 @@ public class PacketPlayerData extends Packet
     }
 
     @Override
-    public void handleClientSide(EntityPlayer player)
+    public void handleClientSide(Object ctx)
     {
 	PlayersData.addPlayerDataToClient(p);
     }
 
     @Override
-    public void handleServerSide(EntityPlayer player)
+    public void handleServerSide(Object ctx)
     {
 	PlayersData.addPlayerDataToServer(p);
     }

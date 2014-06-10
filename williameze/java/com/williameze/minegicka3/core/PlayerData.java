@@ -3,25 +3,22 @@ package com.williameze.minegicka3.core;
 import java.util.Arrays;
 import java.util.HashSet;
 import java.util.Set;
+import java.util.UUID;
 
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
-import net.minecraft.server.MinecraftServer;
-import net.minecraft.world.World;
 
-import com.williameze.minegicka3.ModBase;
 import com.williameze.minegicka3.main.Element;
 import com.williameze.minegicka3.main.magicks.Magick;
 import com.williameze.minegicka3.main.objects.ItemStaff;
-
-import cpw.mods.fml.common.FMLCommonHandler;
-import cpw.mods.fml.relauncher.Side;
 
 public class PlayerData
 {
     public EntityPlayer ref;
 
     public String playerName;
+    public UUID playerUUID;
     public int dimensionID;
     public double maxMana;
     public double mana;
@@ -40,11 +37,13 @@ public class PlayerData
 	this();
 	ref = p;
 	playerName = p.getGameProfile().getName();
+	playerUUID = p.getPersistentID();
 	dimensionID = p.worldObj.provider.dimensionId;
     }
 
     public void recoverMana()
     {
+	if (ref == null) loadPlayerRef();
 	if (mana < maxMana)
 	{
 	    double recover = 1 / 6D;
@@ -83,6 +82,7 @@ public class PlayerData
 
     public boolean isUnlocked(Object o)
     {
+	if (ref == null) loadPlayerRef();
 	if (ref != null && ref.capabilities.isCreativeMode)
 	{
 	    return true;
@@ -100,39 +100,18 @@ public class PlayerData
 
     public void loadPlayerRef()
     {
-	if (FMLCommonHandler.instance().getEffectiveSide() == Side.CLIENT)
-	{
-	    loadPlayerRefFromID(ModBase.proxy.getClientWorld());
-	}
-	else if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
-	{
-	    loadPlayerRefFromServer(FMLCommonHandler.instance().getMinecraftServerInstance());
-	}
-    }
-
-    public void loadPlayerRefFromServer(MinecraftServer server)
-    {
-	World w = server.worldServerForDimension(dimensionID);
-	loadPlayerRefFromID(w);
-    }
-
-    public void loadPlayerRefFromID(World w)
-    {
-	for (int a = 0; a < w.playerEntities.size(); a++)
-	{
-	    EntityPlayer e = (EntityPlayer) w.playerEntities.get(a);
-	    if (e.getGameProfile().getName().equals(playerName))
-	    {
-		ref = e;
-		return;
-	    }
-	}
+	Entity located = CoreBridge.instance().getEntityFromArgs(playerUUID, dimensionID, playerName, true, false, true);
+	if (located instanceof EntityPlayer) ref = (EntityPlayer) located;
     }
 
     public String dataToString()
     {
 	String s = "";
-	s += dimensionID + ";" + playerName + ";" + maxMana + ";" + mana + ";";
+	s += dimensionID + ";";
+	s += (playerUUID == null ? "NAN" : playerUUID.toString()) + ";";
+	s += (playerName == null ? "@NAN#" : playerName) + ";";
+	s += maxMana + ";";
+	s += mana + ";";
 	for (Element e : unlocked)
 	{
 	    s += String.valueOf(e.ordinal());
@@ -150,17 +129,22 @@ public class PlayerData
     {
 	String[] ss = s.split(";");
 	dimensionID = Integer.parseInt(ss[0]);
-	playerName = ss[1];
-	maxMana = Double.parseDouble(ss[2]);
-	mana = Double.parseDouble(ss[3]);
-	for (char c : ss[4].toCharArray())
+	String uuidString = ss[1];
+	if (uuidString.equals("NAN")) playerUUID = null;
+	else playerUUID = UUID.fromString(uuidString);
+	String nameString = ss[2];
+	if (nameString.equals("@NAN#")) playerName = null;
+	else playerName = nameString;
+	maxMana = Double.parseDouble(ss[3]);
+	mana = Double.parseDouble(ss[4]);
+	for (char c : ss[5].toCharArray())
 	{
 	    if (Character.isDigit(c))
 	    {
 		unlock(Element.values()[Integer.parseInt(String.valueOf(c))]);
 	    }
 	}
-	String unlockedMagicksString = ss[5];
+	String unlockedMagicksString = ss[6];
 	String[] unlockedMagicksID = unlockedMagicksString.split("!");
 	for (String sm : unlockedMagicksID)
 	{
@@ -179,6 +163,7 @@ public class PlayerData
 
     public static PlayerData stringToData(String s)
     {
+	System.out.println(s);
 	PlayerData pd = new PlayerData();
 	pd.dataFromString(s);
 	return pd;
@@ -187,12 +172,12 @@ public class PlayerData
     @Override
     public int hashCode()
     {
-	return playerName.hashCode();
+	return super.hashCode();
     }
 
     @Override
     public boolean equals(Object obj)
     {
-	return obj instanceof PlayerData && ((PlayerData) obj).playerName.equals(playerName);
+	return obj instanceof PlayerData && ((PlayerData) obj).playerUUID.equals(playerUUID);
     }
 }

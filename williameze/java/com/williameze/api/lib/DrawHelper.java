@@ -158,8 +158,6 @@ public class DrawHelper
 
     public static void enableLighting(float intensity)
     {
-	RenderHelper.disableStandardItemLighting();
-	
 	GL11.glPushMatrix();
 	GL11.glEnable(GL11.GL_LIGHTING);
 	GL11.glEnable(GL11.GL_LIGHT0);

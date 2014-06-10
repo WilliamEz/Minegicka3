@@ -1,7 +1,5 @@
 package com.williameze.minegicka3;
 
-import java.awt.Color;
-
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.tileentity.TileEntityRendererDispatcher;
 import net.minecraft.client.renderer.tileentity.TileEntitySpecialRenderer;
@@ -40,6 +38,7 @@ import com.williameze.minegicka3.main.models.ModelEntityBoulder;
 import com.williameze.minegicka3.main.models.ModelHat;
 import com.williameze.minegicka3.main.models.ModelStaff;
 import com.williameze.minegicka3.main.objects.ItemEssence;
+import com.williameze.minegicka3.main.objects.ItemHat;
 import com.williameze.minegicka3.main.objects.ItemMagickTablet;
 import com.williameze.minegicka3.main.objects.ItemStaff;
 import com.williameze.minegicka3.main.objects.TileEntityCraftStation;
@@ -61,6 +60,7 @@ import com.williameze.minegicka3.main.renders.RenderEntityVortex;
 import com.williameze.minegicka3.main.renders.RenderFXEProjectileCharge;
 import com.williameze.minegicka3.main.renders.RenderFXESimpleParticle;
 import com.williameze.minegicka3.main.renders.RenderItemGeneral;
+import com.williameze.minegicka3.main.renders.RenderItemHat;
 import com.williameze.minegicka3.main.renders.RenderItemMagickTablet;
 import com.williameze.minegicka3.main.renders.RenderItemStaff;
 import com.williameze.minegicka3.main.renders.RenderItemStick;
@@ -182,6 +182,15 @@ public class ClientProxy extends CommonProxy
 	{
 	    MinecraftForgeClient.registerItemRenderer(i, new RenderItemMagickTablet());
 	}
+	if (i instanceof ItemEssence)
+	{
+	    MinecraftForgeClient.registerItemRenderer(i,
+		    new RenderItemGeneral(new Sphere(0, 0, 0, 0.4, 2, 4).setColor(((ItemEssence) i).unlocking.getColor())));
+	}
+	if (i instanceof ItemHat)
+	{
+	    MinecraftForgeClient.registerItemRenderer(i, new RenderItemHat());
+	}
 	if (i == ModBase.stick || i == ModBase.stickGood || i == ModBase.stickSuper)
 	{
 	    MinecraftForgeClient.registerItemRenderer(i, new RenderItemStick());
@@ -197,11 +206,6 @@ public class ClientProxy extends CommonProxy
 	if (i == ModBase.thingySuper)
 	{
 	    MinecraftForgeClient.registerItemRenderer(i, new RenderItemGeneral(new Sphere(0, 0, 0, 0.4, 2, 4).setColor(Values.purple)));
-	}
-	if (i instanceof ItemEssence)
-	{
-	    MinecraftForgeClient.registerItemRenderer(i,
-		    new RenderItemGeneral(new Sphere(0, 0, 0, 0.4, 2, 4).setColor(((ItemEssence) i).unlocking.getColor())));
 	}
     }
 

@@ -9,6 +9,7 @@ public class Magicks
     public static Magick explosion = new MagickExplosion();
     public static Magick vortex = new MagickVortex();
     public static Magick homingLightning = new MagickHomingLightning();
+    public static Magick extinguish = new MagickExtinguish();
 
     public static void load()
     {

@@ -74,13 +74,13 @@ public class Box extends ModelObject
     public void render()
     {
 	GL11.glPushMatrix();
-	GL11.glBegin(GL11.GL_QUADS);
+	begin(GL11.GL_QUADS);
 	glSetColor();
 	for (Quad f : faces)
 	{
 	    f.addQuadToGL();
 	}
-	GL11.glEnd();
+	end();
 	glResetColor();
 	GL11.glPopMatrix();
     }

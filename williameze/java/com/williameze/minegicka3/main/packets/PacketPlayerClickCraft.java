@@ -1,16 +1,19 @@
 package com.williameze.minegicka3.main.packets;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
+
+import java.util.UUID;
+
+import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
-import net.minecraft.world.World;
 
+import com.williameze.minegicka3.core.CoreBridge;
 import com.williameze.minegicka3.main.ClickCraft;
 
-import cpw.mods.fml.common.FMLCommonHandler;
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
 public class PacketPlayerClickCraft extends Packet
 {
@@ -34,7 +37,7 @@ public class PacketPlayerClickCraft extends Packet
     }
 
     @Override
-    public void encodeInto(ChannelHandlerContext ctx, ByteBuf buffer)
+    public void encodeInto(ByteBuf buffer)
     {
 	try
 	{
@@ -55,7 +58,7 @@ public class PacketPlayerClickCraft extends Packet
     }
 
     @Override
-    public void decodeInto(ChannelHandlerContext ctx, ByteBuf buffer)
+    public void decodeFrom(ByteBuf buffer)
     {
 	try
 	{
@@ -76,22 +79,15 @@ public class PacketPlayerClickCraft extends Packet
     }
 
     @Override
-    public void handleClientSide(EntityPlayer player)
+    public void handleClientSide(Object ctx)
     {
     }
 
     @Override
-    public void handleServerSide(EntityPlayer player)
+    public void handleServerSide(Object ctx)
     {
-	World world = FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(dimension);
-	for (Object p : world.playerEntities)
-	{
-	    if (p instanceof EntityPlayer && ((EntityPlayer) p).getGameProfile().getName().equals(playerName))
-	    {
-		crafter = (EntityPlayer) p;
-		break;
-	    }
-	}
+	Entity e = CoreBridge.instance().getEntityFromArgs(null, dimension, playerName, true, false, true);
+	if (e instanceof EntityPlayer) crafter = (EntityPlayer) e;
 	ClickCraft.playerCraft(crafter, toCraft, repeat);
     }
 

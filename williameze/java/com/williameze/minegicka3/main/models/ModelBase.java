@@ -3,9 +3,6 @@ package com.williameze.minegicka3.main.models;
 import java.util.ArrayList;
 import java.util.List;
 
-import net.minecraft.entity.Entity;
-import net.minecraft.item.ItemStack;
-
 import org.lwjgl.opengl.GL11;
 
 import com.williameze.api.models.ModelObject;
@@ -41,19 +38,18 @@ public class ModelBase
 	GL11.glDisable(GL11.GL_CULL_FACE);
 	GL11.glEnable(GL11.GL_BLEND);
 	GL11.glBlendFunc(GL11.GL_SRC_ALPHA, GL11.GL_ONE_MINUS_SRC_ALPHA);
-	doRenderParameters(obj, f);
-	doRenderComponents(obj, f);
+	preRender(obj, f);
+	renderComponents(obj, f);
 	GL11.glEnable(GL11.GL_CULL_FACE);
 	GL11.glEnable(GL11.GL_TEXTURE_2D);
 	GL11.glPopMatrix();
     }
 
-    public void doRenderParameters(Object obj, float f)
+    public void preRender(Object obj, float f)
     {
-	// GL11.glScaled(1 / 16D, 1 / 16D, 1 / 16D);
     }
 
-    public void doRenderComponents(Object obj, float f)
+    public void renderComponents(Object obj, float f)
     {
 	renderList(obj, f, components);
     }
@@ -69,18 +65,18 @@ public class ModelBase
     public void renderComponent(Object obj, float f, ModelObject o)
     {
 	GL11.glPushMatrix();
-	onComponentPreRender(obj, f, o);
+	componentPreRender(obj, f, o);
 	o.render();
-	onComponentPostRender(obj, f, o);
+	componentPostRender(obj, f, o);
 	GL11.glPopMatrix();
     }
 
-    public void onComponentPreRender(Object obj, float f, ModelObject o)
+    public void componentPreRender(Object obj, float f, ModelObject o)
     {
 
     }
 
-    public void onComponentPostRender(Object obj, float f, ModelObject o)
+    public void componentPostRender(Object obj, float f, ModelObject o)
     {
 
     }

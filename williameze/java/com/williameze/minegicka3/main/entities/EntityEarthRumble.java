@@ -144,7 +144,7 @@ public class EntityEarthRumble extends Entity implements IEntityAdditionalSpawnD
 
     public int interval()
     {
-	return 20;
+	return 8;
     }
 
     public int maxTick()

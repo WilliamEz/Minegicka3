@@ -43,9 +43,9 @@ public class ModelCraftStation extends ModelBase
     }
 
     @Override
-    public void onComponentPreRender(Object obj, float f, ModelObject o)
+    public void componentPreRender(Object obj, float f, ModelObject o)
     {
-	super.onComponentPreRender(obj, f, o);
+	super.componentPreRender(obj, f, o);
 	if (o == mid)
 	{
 	    GL11.glTranslated(mid.orgX, mid.orgY, mid.orgZ);

@@ -61,7 +61,7 @@ public class EventsHandler implements IEventListener
     @SubscribeEvent
     public void onWorldUnload(WorldEvent.Unload event)
     {
-	Values.onWorldUnload();
+	Values.onWorldUnload(event.world);
 	if (!event.world.isRemote)
 	{
 	    try

@@ -14,11 +14,13 @@ import org.lwjgl.opengl.GL11;
 
 import com.williameze.api.math.Vector;
 import com.williameze.api.models.Box;
+import com.williameze.minegicka3.main.Element;
 import com.williameze.minegicka3.main.entities.EntityEarthRumble;
 
 public class RenderEntityEarthRumble extends Render
 {
     public RenderBlocks rb;
+    Box box = Box.create(new Vector(0.5, 0.5, 0.5), 0.5);
 
     protected void bindEntityTexture(Entity par1Entity)
     {
@@ -47,14 +49,14 @@ public class RenderEntityEarthRumble extends Render
 
     public void doTheRender(EntityEarthRumble rum, float partialTick)
     {
-	GL11.glTranslated(-(rum.prevPosX + (rum.posX - rum.prevPosX) * partialTick), -(rum.prevPosY + (rum.posY - rum.prevPosY)
-		* partialTick), -(rum.prevPosZ + (rum.posZ - rum.prevPosZ) * partialTick));
+	GL11.glTranslated(-(rum.prevPosX + (rum.posX - rum.prevPosX) * partialTick), -(rum.prevPosY + (rum.posY - rum.prevPosY) * partialTick),
+		-(rum.prevPosZ + (rum.posZ - rum.prevPosZ) * partialTick));
 	World world = rum.worldObj;
 	double ticked = rum.ticksExisted + partialTick;
 	int intervalElapsed = (int) Math.floor(ticked / rum.interval());
 	double currentMaxRange = intervalElapsed * rum.interval() / (double) rum.maxTick() * rum.maxRange();
 	double currentMaxRangeSqr = currentMaxRange * currentMaxRange;
-	double tickForEachBump = 8;
+	double tickForEachBump = 5;
 
 	int minX = (int) Math.floor(rum.posX - currentMaxRange);
 	int minY = (int) Math.floor(rum.posY - rum.height / 2);
@@ -72,8 +74,7 @@ public class RenderEntityEarthRumble extends Render
 		    if (!world.isAirBlock(x, y, z) && !world.getBlock(x, y + 1, z).isOpaqueCube() && distSqr <= currentMaxRangeSqr)
 		    {
 			double dist = Math.sqrt(distSqr);
-			int bumpedWhen = (int) Math.ceil((dist / rum.maxRange()) / (rum.interval() / (double) rum.maxTick()))
-				* rum.interval();
+			int bumpedWhen = (int) Math.ceil((dist / rum.maxRange()) / (rum.interval() / (double) rum.maxTick())) * rum.interval();
 			double timeElapsedSinceBump = ticked - bumpedWhen;
 			if (timeElapsedSinceBump <= tickForEachBump)
 			{
@@ -81,14 +82,15 @@ public class RenderEntityEarthRumble extends Render
 			    if (bumpRate > 1) bumpRate = 2 - bumpRate;
 			    GL11.glPushMatrix();
 			    GL11.glTranslated(x, y + bumpRate, z);
-			    Box box = Box.create(new Vector(0.5, 0.5, 0.5), 0.5);
-			    Color c = rum.getSpell().elements.get((x / 4 + y / 4 + z / 4) % rum.getSpell().countElements()).getColor();
+			    Color c = Element.Earth.getColor();
+			    int index = (x / 4 + y / 4 + z / 4) % rum.getSpell().elements.size();
+			    if (index < rum.getSpell().elements.size()) c = rum.getSpell().elements.get(index).getColor();
 			    box.setColor(c.getRGB(), 180);
 			    box.render();
 			    GL11.glPopMatrix();
 			    world.spawnParticle(
-				    "blockcrack_" + Block.getIdFromBlock(world.getBlock(x, y, z)) + "_" + world.getBlockMetadata(x, y, z),
-				    x, y + 1, z, 0, 0.2, 0);
+				    "blockcrack_" + Block.getIdFromBlock(world.getBlock(x, y, z)) + "_" + world.getBlockMetadata(x, y, z), x, y + 1,
+				    z, 0, 0.2, 0);
 			}
 		    }
 		}

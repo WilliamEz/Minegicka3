@@ -6,8 +6,8 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Set;
+import java.util.UUID;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -69,7 +69,7 @@ public class PlayersData
 	while (ite.hasNext())
 	{
 	    PlayerData data = ite.next();
-	    String name = data.playerName;
+	    String name = data.playerUUID.toString();
 	    if (name != null && data != null && data.dimensionID == world.provider.dimensionId)
 	    {
 		tag.setString(name, data.dataToString());

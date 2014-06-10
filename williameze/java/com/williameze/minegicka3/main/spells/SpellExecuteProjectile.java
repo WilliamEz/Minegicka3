@@ -37,10 +37,9 @@ public class SpellExecuteProjectile extends SpellExecute
 		    int max = s.countElements() * s.countElements() * 2 + 4;
 		    double range = s.countElements() * 4 + 4;
 		    double hrange = Math.sqrt(s.countElements());
-		    List<EntityLivingBase> list = caster.worldObj.selectEntitiesWithinAABB(
-			    EntityLivingBase.class,
-			    AxisAlignedBB.getBoundingBox(caster.posX - range, caster.posY - hrange, caster.posZ - range, caster.posX
-				    + range, caster.posY + hrange, caster.posZ + range), new ESelectorDefault(s));
+		    List<EntityLivingBase> list = caster.worldObj.selectEntitiesWithinAABB(EntityLivingBase.class, AxisAlignedBB.getBoundingBox(
+			    caster.posX - range, caster.posY - hrange, caster.posZ - range, caster.posX + range, caster.posY + hrange, caster.posZ
+				    + range), new ESelectorDefault(s));
 		    for (int a = 0; a < max; a++)
 		    {
 			double posX = caster.posX + (rnd.nextDouble() - 0.5) * 2 * range;
@@ -123,8 +122,8 @@ public class SpellExecuteProjectile extends SpellExecute
 			else pc.color = Element.Ice.getColor();
 		    }
 		    else pc.color = Element.Earth.getColor();
-		    pc.setPosition(midX + (rnd.nextDouble() - 0.5) * 2 * dif, midY + (rnd.nextDouble() - 0.5) * 2 * dif,
-			    midZ + (rnd.nextDouble() - 0.5) * 2 * dif);
+		    pc.setPosition(midX + (rnd.nextDouble() - 0.5) * 2 * dif, midY + (rnd.nextDouble() - 0.5) * 2 * dif, midZ
+			    + (rnd.nextDouble() - 0.5) * 2 * dif);
 		    pc.destination = new Vector(midX, midY, midZ);
 		    pc.pullToDest = 0.01;
 		    pc.alpha = charged;
@@ -149,8 +148,8 @@ public class SpellExecuteProjectile extends SpellExecute
 		EntityBoulder bld = new EntityBoulder(caster.worldObj);
 		bld.setSpell(s);
 		double further = Math.sqrt(bld.width * bld.width / 4 + bld.height * bld.height / 4);
-		bld.setPosition(caster.posX + look.x * further, caster.posY + caster.getEyeHeight() - 0.2 + look.y * further, caster.posZ
-			+ look.z * further);
+		bld.setPosition(caster.posX + look.x * further, caster.posY + caster.getEyeHeight() - 0.2 + look.y * further, caster.posZ + look.z
+			* further);
 		double charged = s.additionalData.getDouble("Projectile charged") * s.getPower() * Math.pow(s.countElements(), 0.4) + 1;
 		bld.motionX = look.x * 1.5 * charged;
 		bld.motionY = look.y * 1.5 * charged;

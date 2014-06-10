@@ -73,49 +73,45 @@ public class FOStar extends FlatOpposing
 	pointing.rotateAroundZ(initialRotation);
 	if (edgeOnly)
 	{
-	    GL11.glBegin(GL11.GL_LINE_LOOP);
+	    begin(GL11.GL_LINE_LOOP);
 	    for (int a = 0; a < cuts; a++)
 	    {
 		if (a % 2 == 0)
 		{
-		    GL11.glColor4d(color.getRed() / 255D, color.getGreen() / 255D, color.getBlue() / 255D, color.getAlpha() / 255D);
-		    GL11.glVertex3d(pointing.x * innerRadius, pointing.y * innerRadius, 0);
+		    glSetColor(color);
+		    addVertex(pointing.multiply(innerRadius));
 		}
 		else
 		{
-		    GL11.glColor4d(outerColor.getRed() / 255D, outerColor.getGreen() / 255D, outerColor.getBlue() / 255D,
-			    outerColor.getAlpha() / 255D);
-		    GL11.glVertex3d(pointing.x * outerRadius, pointing.y * outerRadius, 0);
+		    glSetColor(outerColor);
+		    addVertex(pointing.multiply(outerRadius));
 		}
 		pointing.rotateAroundZ(Math.PI * 2 / cuts);
 	    }
-	    GL11.glEnd();
+	    end();
 	}
 	else
 	{
-	    GL11.glBegin(GL11.GL_QUAD_STRIP);
-	    for (int a = 0; a < cuts+1; a++)
+	    begin(GL11.GL_QUAD_STRIP);
+	    for (int a = 0; a < cuts + 1; a++)
 	    {
 		if (a % 2 == 0)
 		{
-		    GL11.glColor4d(color.getRed() / 255D, color.getGreen() / 255D, color.getBlue() / 255D, color.getAlpha() / 255D);
-		    GL11.glVertex3d(pointing.x * innerRadius, pointing.y * innerRadius, 0);
-		    GL11.glColor4d(centerColor.getRed() / 255D, centerColor.getGreen() / 255D, centerColor.getBlue() / 255D,
-			    centerColor.getAlpha() / 255D);
-		    GL11.glVertex3d(0, 0, 0);
+		    glSetColor(color);
+		    addVertex(pointing.x * innerRadius, pointing.y * innerRadius, 0);
+		    glSetColor(centerColor);
+		    addVertex(0, 0, 0);
 		}
 		else
 		{
-		    GL11.glColor4d(outerColor.getRed() / 255D, outerColor.getGreen() / 255D, outerColor.getBlue() / 255D,
-			    outerColor.getAlpha() / 255D);
-		    GL11.glVertex3d(pointing.x * outerRadius, pointing.y * outerRadius, 0);
-		    GL11.glColor4d(centerColor.getRed() / 255D, centerColor.getGreen() / 255D, centerColor.getBlue() / 255D,
-			    centerColor.getAlpha() / 255D);
-		    GL11.glVertex3d(0, 0, 0);
+		    glSetColor(color);
+		    addVertex(pointing.x * outerRadius, pointing.y * outerRadius, 0);
+		    glSetColor(centerColor);
+		    addVertex(0, 0, 0);
 		}
 		pointing.rotateAroundZ(Math.PI * 2 / cuts);
 	    }
-	    GL11.glEnd();
+	    end();
 	}
     }
 

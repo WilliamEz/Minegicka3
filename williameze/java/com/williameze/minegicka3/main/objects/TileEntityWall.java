@@ -79,7 +79,7 @@ public class TileEntityWall extends TileEntity
 	if (b != ModBase.wallBlock) return true;
 
 	TileEntityWall wall = (TileEntityWall) worldObj.getTileEntity(xCoord, yCoord - 1, zCoord);
-	return !wall.getSpell().equals(getSpell());
+	return getSpell() == null || wall == null || wall.getSpell() == null || !wall.getSpell().equals(getSpell());
     }
 
     public int instanceWallHeight()
@@ -117,8 +117,8 @@ public class TileEntityWall extends TileEntity
 	}
 	else
 	{
-	    List<EntityLivingBase> l = worldObj.getEntitiesWithinAABB(EntityLivingBase.class, getBlockType()
-		    .getCollisionBoundingBoxFromPool(worldObj, xCoord, yCoord, zCoord).expand(0.15, 0.15, 0.15));
+	    List<EntityLivingBase> l = worldObj.getEntitiesWithinAABB(EntityLivingBase.class,
+		    getBlockType().getCollisionBoundingBoxFromPool(worldObj, xCoord, yCoord, zCoord).expand(0.15, 0.15, 0.15));
 	    for (EntityLivingBase e : l)
 	    {
 		entityCollide(e);
@@ -143,18 +143,21 @@ public class TileEntityWall extends TileEntity
 	{
 	    for (int a = 0; a < 1 + rnd.nextInt(2); a++)
 	    {
-		FXESimpleParticle pa = new FXESimpleParticle(worldObj);
-		pa.setPosition(xCoord + rnd.nextDouble(), yCoord + rnd.nextDouble(), zCoord + rnd.nextDouble());
-		pa.renderType = 0;
-		pa.noClip = true;
-		pa.motionX = (rnd.nextDouble() - 0.5) * 0.3;
-		pa.motionY = (rnd.nextDouble() - 0.5) * 0.3;
-		pa.motionZ = (rnd.nextDouble() - 0.5) * 0.3;
-		pa.friction = 0.99;
-		pa.color = getSpell().elements.get((hashCode() + a) % getSpell().countElements()).getColor();
-		pa.alpha = 0.8;
-		pa.life = pa.maxLife = 60;
-		worldObj.spawnEntityInWorld(pa);
+		if (rnd.nextInt(6) == 0)
+		{
+		    FXESimpleParticle pa = new FXESimpleParticle(worldObj);
+		    pa.setPosition(xCoord + rnd.nextDouble(), yCoord + rnd.nextDouble(), zCoord + rnd.nextDouble());
+		    pa.renderType = 0;
+		    pa.noClip = true;
+		    pa.motionX = (rnd.nextDouble() - 0.5) * 0.3;
+		    pa.motionY = (rnd.nextDouble() - 0.5) * 0.3;
+		    pa.motionZ = (rnd.nextDouble() - 0.5) * 0.3;
+		    pa.friction = 0.99;
+		    pa.color = getSpell().elements.get((hashCode() + a) % getSpell().countElements()).getColor();
+		    pa.alpha = 0.8;
+		    pa.life = pa.maxLife = 60;
+		    worldObj.spawnEntityInWorld(pa);
+		}
 	    }
 	}
     }
@@ -175,9 +178,12 @@ public class TileEntityWall extends TileEntity
 
     public void entityCollide(Entity e)
     {
-	if (getSpell().countElements() > getSpell().countElements(Element.Earth))
+	if (e != null && getSpell() != null)
 	{
-	    getSpell().damageEntity(e, (int) ((double) 80 / getSpell().getAtkSpeed()));
+	    if (getSpell().countElements() > getSpell().countElements(Element.Earth))
+	    {
+		getSpell().damageEntity(e, (int) ((double) 80 / getSpell().getAtkSpeed()));
+	    }
 	}
     }
 

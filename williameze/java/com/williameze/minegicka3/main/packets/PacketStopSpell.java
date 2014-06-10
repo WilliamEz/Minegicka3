@@ -1,16 +1,16 @@
 package com.williameze.minegicka3.main.packets;
 
 import io.netty.buffer.ByteBuf;
-import io.netty.channel.ChannelHandlerContext;
 
 import java.io.IOException;
 
-import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 
 import com.williameze.minegicka3.ModBase;
 import com.williameze.minegicka3.main.spells.Spell;
+
+import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
 public class PacketStopSpell extends Packet
 {
@@ -26,7 +26,7 @@ public class PacketStopSpell extends Packet
     }
 
     @Override
-    public void encodeInto(ChannelHandlerContext ctx, ByteBuf buffer)
+    public void encodeInto(ByteBuf buffer)
     {
 	NBTTagCompound tag = spell.writeToNBT();
 	try
@@ -42,7 +42,7 @@ public class PacketStopSpell extends Packet
     }
 
     @Override
-    public void decodeInto(ChannelHandlerContext ctx, ByteBuf buffer)
+    public void decodeFrom(ByteBuf buffer)
     {
 	byte[] b = new byte[buffer.readInt()];
 	buffer.readBytes(b);
@@ -58,13 +58,13 @@ public class PacketStopSpell extends Packet
     }
 
     @Override
-    public void handleClientSide(EntityPlayer player)
+    public void handleClientSide(Object ctx)
     {
 	ModBase.proxy.getCoreClient().spellTriggerReceived(spell, false);
     }
 
     @Override
-    public void handleServerSide(EntityPlayer player)
+    public void handleServerSide(Object ctx)
     {
 	ModBase.proxy.getCoreServer().spellTriggerReceived(spell, false);
     }

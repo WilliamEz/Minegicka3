@@ -100,13 +100,13 @@ public class Sphere extends ModelObject
     {
 	GL11.glPushMatrix();
 	GL11.glTranslated(orgX, orgY, orgZ);
-	GL11.glBegin(GL11.GL_TRIANGLES);
+	begin(GL11.GL_TRIANGLES);
 	glSetColor();
 	for (Triangle t : distortedFaces)
 	{
 	    t.addTriangleToGL();
 	}
-	GL11.glEnd();
+	end();
 	glResetColor();
 	GL11.glPopMatrix();
     }

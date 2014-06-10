@@ -69,18 +69,18 @@ public class ModelStaff
 
     public void render(ItemStack staff)
     {
-	doRenderParameters(staff);
+	preRender(staff);
     }
 
-    public void doRenderParameters(ItemStack staff)
+    public void preRender(ItemStack staff)
     {
 	GL11.glPushMatrix();
 	GL11.glScaled(1 / 16D, 1 / 16D, 1 / 16D);
-	doRenderComponents(staff);
+	renderComponents(staff);
 	GL11.glPopMatrix();
     }
 
-    public void doRenderComponents(ItemStack staff)
+    public void renderComponents(ItemStack staff)
     {
 	renderList(staff, components);
     }
@@ -89,18 +89,18 @@ public class ModelStaff
     {
 	for (ModelObject o : l)
 	{
-	    onComponentPreRender(staff, o);
+	    componentPreRender(staff, o);
 	    o.render();
-	    onComponentPostRender(staff, o);
+	    componentPostRender(staff, o);
 	}
     }
 
-    public void onComponentPreRender(ItemStack staff, ModelObject o)
+    public void componentPreRender(ItemStack staff, ModelObject o)
     {
 
     }
 
-    public void onComponentPostRender(ItemStack staff, ModelObject o)
+    public void componentPostRender(ItemStack staff, ModelObject o)
     {
 
     }

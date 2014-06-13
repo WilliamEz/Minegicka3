@@ -13,14 +13,14 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 
 import com.williameze.minegicka3.ModBase;
-import com.williameze.minegicka3.main.entities.EntityEarthRumble;
-import com.williameze.minegicka3.main.entities.EntityLightning;
-import com.williameze.minegicka3.main.entities.EntityMine;
-import com.williameze.minegicka3.main.entities.EntityStorm;
-import com.williameze.minegicka3.main.entities.EntityVortex;
 import com.williameze.minegicka3.main.entities.IEntityNullifiable;
-import com.williameze.minegicka3.main.objects.BlockShield;
-import com.williameze.minegicka3.main.objects.BlockWall;
+import com.williameze.minegicka3.main.entities.magic.EntityEarthRumble;
+import com.williameze.minegicka3.main.entities.magic.EntityLightning;
+import com.williameze.minegicka3.main.entities.magic.EntityMine;
+import com.williameze.minegicka3.main.entities.magic.EntityStorm;
+import com.williameze.minegicka3.main.entities.magic.EntityVortex;
+import com.williameze.minegicka3.main.objects.blocks.BlockShield;
+import com.williameze.minegicka3.main.objects.blocks.BlockWall;
 
 public class MagickExtinguish extends Magick
 {

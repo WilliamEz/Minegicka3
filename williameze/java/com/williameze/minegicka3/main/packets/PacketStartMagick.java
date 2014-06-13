@@ -15,7 +15,7 @@ import com.williameze.minegicka3.main.magicks.Magick;
 
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
-public class PacketStartMagick extends Packet
+public class PacketStartMagick extends Packet<PacketStartMagick>
 {
     public Magick magick;
     public int magickID;

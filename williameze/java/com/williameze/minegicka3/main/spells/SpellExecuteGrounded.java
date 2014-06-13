@@ -12,10 +12,10 @@ import com.williameze.api.lib.FuncHelper;
 import com.williameze.api.math.Vector;
 import com.williameze.minegicka3.ModBase;
 import com.williameze.minegicka3.main.Element;
-import com.williameze.minegicka3.main.entities.EntityMine;
-import com.williameze.minegicka3.main.entities.EntityStorm;
-import com.williameze.minegicka3.main.objects.TileEntityShield;
-import com.williameze.minegicka3.main.objects.TileEntityWall;
+import com.williameze.minegicka3.main.entities.magic.EntityMine;
+import com.williameze.minegicka3.main.entities.magic.EntityStorm;
+import com.williameze.minegicka3.main.objects.blocks.TileEntityShield;
+import com.williameze.minegicka3.main.objects.blocks.TileEntityWall;
 import com.williameze.minegicka3.main.spells.Spell.CastType;
 import com.williameze.minegicka3.main.spells.Spell.SpellType;
 
@@ -68,7 +68,7 @@ public class SpellExecuteGrounded extends SpellExecute
 				    {
 					Vector v = new Vector(x + 0.5, y + 0.5, z + 0.5).subtract(center);
 					double angle = v.getAngleBetween(look);
-					inAngle = angle <= Math.PI / 3D;
+					inAngle = angle <= Math.PI / 3.5D;
 				    }
 				    if (inAngle)
 				    {

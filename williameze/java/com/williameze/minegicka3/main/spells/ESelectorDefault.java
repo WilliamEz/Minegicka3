@@ -4,9 +4,9 @@ import net.minecraft.command.IEntitySelector;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 
-import com.williameze.minegicka3.main.entities.EntityIcicle;
-import com.williameze.minegicka3.main.entities.EntityLightning;
-import com.williameze.minegicka3.main.entities.EntitySpray;
+import com.williameze.minegicka3.main.entities.magic.EntityIcicle;
+import com.williameze.minegicka3.main.entities.magic.EntityLightning;
+import com.williameze.minegicka3.main.entities.magic.EntitySpray;
 
 public class ESelectorDefault implements IEntitySelector
 {
@@ -28,7 +28,7 @@ public class ESelectorDefault implements IEntitySelector
 	if (var1 instanceof EntitySpray && ((EntitySpray) var1).getSpell().equals(spell)) return false;
 	if (var1 instanceof EntityLightning && ((EntityLightning) var1).spell.equals(spell)) return false;
 	if (var1 instanceof EntityPlayer && ((EntityPlayer) var1).capabilities.disableDamage) return false;
-	if (var1 instanceof EntityPlayer && spell.getCaster() instanceof EntityPlayer || forceNonPVP && var1 instanceof EntityPlayer) return false;
+	if (var1 instanceof EntityPlayer && spell.getCaster() instanceof EntityPlayer && forceNonPVP) return false;
 	if (var1 == spell.getCaster()) return false;
 	return true;
     }

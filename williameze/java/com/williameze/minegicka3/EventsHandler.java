@@ -6,19 +6,23 @@ import java.util.Random;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.item.EntityItem;
+import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.world.WorldEvent;
 
+import com.williameze.minegicka3.core.PlayerData;
 import com.williameze.minegicka3.core.PlayersData;
 import com.williameze.minegicka3.main.Values;
 
+import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.eventhandler.Event;
 import cpw.mods.fml.common.eventhandler.IEventListener;
 import cpw.mods.fml.common.eventhandler.SubscribeEvent;
 import cpw.mods.fml.common.gameevent.PlayerEvent;
+import cpw.mods.fml.relauncher.Side;
 
 public class EventsHandler implements IEventListener
 {
@@ -28,7 +32,7 @@ public class EventsHandler implements IEventListener
 	if (!event.world.isRemote)
 	{
 	    ModBase.proxy.getCoreServer().worldsSpellsList.put(event.world, new ArrayList());
-	    
+
 	    PlayersData psd = new PlayersData(event.world);
 	    try
 	    {
@@ -85,6 +89,40 @@ public class EventsHandler implements IEventListener
 	    Values.worldEntitiesUUIDMap.put(w, new HashMap());
 	}
 	Values.worldEntitiesUUIDMap.get(w).put(e.getPersistentID(), e);
+	if (e instanceof EntityPlayer)
+	{
+	    EntityPlayer p = (EntityPlayer) e;
+	    PlayerData data = null;
+	    if (w.isRemote && p == ModBase.proxy.getClientPlayer() && PlayersData.clientPlayerData != null)
+	    {
+		PlayersData.clientPlayerData.dimensionID = w.provider.dimensionId;
+	    }
+	    for (World world : PlayersData.worldsPlayersDataMap.keySet())
+	    {
+		if (world.provider.dimensionId != w.provider.dimensionId && world.isRemote == w.isRemote)
+		{
+		    PlayersData worldPd = PlayersData.getWorldPlayersData(world);
+		    PlayerData pd = worldPd.getPlayerData(p.getGameProfile().getName());
+		    if (pd != null)
+		    {
+			data = PlayerData.stringToData(pd.dataToString());
+			worldPd.removePlayerData(pd);
+		    }
+		}
+	    }
+	    if (data != null)
+	    {
+		data.dimensionID = w.provider.dimensionId;
+		if (FMLCommonHandler.instance().getEffectiveSide() == Side.SERVER)
+		{
+		    PlayersData.addPlayerDataToServer(data);
+		}
+		else
+		{
+		    PlayersData.addPlayerDataToClient(data);
+		}
+	    }
+	}
     }
 
     @SubscribeEvent
@@ -98,8 +136,8 @@ public class EventsHandler implements IEventListener
     {
 	if (!event.entityLiving.worldObj.isRemote && new Random().nextInt(300) == 0)
 	{
-	    EntityItem ei = new EntityItem(event.entityLiving.worldObj, event.entityLiving.posX, event.entityLiving.posY,
-		    event.entityLiving.posZ, new ItemStack(ModBase.thingy));
+	    EntityItem ei = new EntityItem(event.entityLiving.worldObj, event.entityLiving.posX, event.entityLiving.posY, event.entityLiving.posZ,
+		    new ItemStack(ModBase.thingy));
 	    ei.delayBeforeCanPickup = 100;
 	    event.drops.add(ei);
 	}

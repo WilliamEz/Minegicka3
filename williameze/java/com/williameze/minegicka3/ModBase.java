@@ -13,36 +13,43 @@ import net.minecraft.item.ItemStack;
 import com.williameze.minegicka3.core.CoreBridge;
 import com.williameze.minegicka3.main.ClickCraft;
 import com.williameze.minegicka3.main.Element;
-import com.williameze.minegicka3.main.entities.EntityBeam;
-import com.williameze.minegicka3.main.entities.EntityBeamArea;
-import com.williameze.minegicka3.main.entities.EntityBoulder;
-import com.williameze.minegicka3.main.entities.EntityEarthRumble;
-import com.williameze.minegicka3.main.entities.EntityHomingLightning;
-import com.williameze.minegicka3.main.entities.EntityIceShard;
-import com.williameze.minegicka3.main.entities.EntityIcicle;
-import com.williameze.minegicka3.main.entities.EntityLightning;
-import com.williameze.minegicka3.main.entities.EntityMine;
-import com.williameze.minegicka3.main.entities.EntitySprayCold;
-import com.williameze.minegicka3.main.entities.EntitySprayFire;
-import com.williameze.minegicka3.main.entities.EntitySpraySteam;
-import com.williameze.minegicka3.main.entities.EntitySprayWater;
-import com.williameze.minegicka3.main.entities.EntityStorm;
-import com.williameze.minegicka3.main.entities.EntityVortex;
-import com.williameze.minegicka3.main.entities.FXEProjectileCharge;
-import com.williameze.minegicka3.main.entities.FXESimpleParticle;
+import com.williameze.minegicka3.main.entities.fx.FXEProjectileCharge;
+import com.williameze.minegicka3.main.entities.fx.FXESimpleParticle;
+import com.williameze.minegicka3.main.entities.magic.EntityBeam;
+import com.williameze.minegicka3.main.entities.magic.EntityBeamArea;
+import com.williameze.minegicka3.main.entities.magic.EntityBoulder;
+import com.williameze.minegicka3.main.entities.magic.EntityEarthRumble;
+import com.williameze.minegicka3.main.entities.magic.EntityHomingLightning;
+import com.williameze.minegicka3.main.entities.magic.EntityIceShard;
+import com.williameze.minegicka3.main.entities.magic.EntityIcicle;
+import com.williameze.minegicka3.main.entities.magic.EntityLightning;
+import com.williameze.minegicka3.main.entities.magic.EntityMine;
+import com.williameze.minegicka3.main.entities.magic.EntitySprayCold;
+import com.williameze.minegicka3.main.entities.magic.EntitySprayFire;
+import com.williameze.minegicka3.main.entities.magic.EntitySpraySteam;
+import com.williameze.minegicka3.main.entities.magic.EntitySprayWater;
+import com.williameze.minegicka3.main.entities.magic.EntityStorm;
+import com.williameze.minegicka3.main.entities.magic.EntityVortex;
 import com.williameze.minegicka3.main.magicks.Magicks;
-import com.williameze.minegicka3.main.objects.BlockCraftStation;
-import com.williameze.minegicka3.main.objects.BlockShield;
-import com.williameze.minegicka3.main.objects.BlockWall;
-import com.williameze.minegicka3.main.objects.ItemEssence;
-import com.williameze.minegicka3.main.objects.ItemHat;
-import com.williameze.minegicka3.main.objects.ItemMagicApple;
-import com.williameze.minegicka3.main.objects.ItemMagicCookie;
-import com.williameze.minegicka3.main.objects.ItemMagickTablet;
-import com.williameze.minegicka3.main.objects.ItemStaff;
-import com.williameze.minegicka3.main.objects.TileEntityCraftStation;
-import com.williameze.minegicka3.main.objects.TileEntityShield;
-import com.williameze.minegicka3.main.objects.TileEntityWall;
+import com.williameze.minegicka3.main.objects.blocks.BlockCraftStation;
+import com.williameze.minegicka3.main.objects.blocks.BlockShield;
+import com.williameze.minegicka3.main.objects.blocks.BlockWall;
+import com.williameze.minegicka3.main.objects.blocks.TileEntityCraftStation;
+import com.williameze.minegicka3.main.objects.blocks.TileEntityShield;
+import com.williameze.minegicka3.main.objects.blocks.TileEntityWall;
+import com.williameze.minegicka3.main.objects.items.ItemEssence;
+import com.williameze.minegicka3.main.objects.items.ItemHat;
+import com.williameze.minegicka3.main.objects.items.ItemHatOfImmunity;
+import com.williameze.minegicka3.main.objects.items.ItemHatOfRisk;
+import com.williameze.minegicka3.main.objects.items.ItemMagicApple;
+import com.williameze.minegicka3.main.objects.items.ItemMagicCookie;
+import com.williameze.minegicka3.main.objects.items.ItemMagickTablet;
+import com.williameze.minegicka3.main.objects.items.ItemStaff;
+import com.williameze.minegicka3.main.objects.items.ItemStaffTelekinesis;
+import com.williameze.minegicka3.main.objects.items.ItemStaffBlessing;
+import com.williameze.minegicka3.main.objects.items.ItemStaffManipulation;
+import com.williameze.minegicka3.main.objects.items.ItemStaffDestruction;
+import com.williameze.minegicka3.main.objects.items.ItemStaffHemmy;
 import com.williameze.minegicka3.main.packets.PacketHandler;
 
 import cpw.mods.fml.common.Mod;
@@ -63,7 +70,7 @@ public class ModBase
     public static final String PACKAGE = "com.williameze.minegicka3";
     public static final String MODNAME = "Minegicka III";
     public static final String MODID = "minegicka3";
-    public static final String VERSION = "0.1.0.3";
+    public static final String VERSION = "0.1.1.0";
 
     @Instance("minegicka3")
     public static ModBase instance;
@@ -115,8 +122,8 @@ public class ModBase
     public static Item essenceArcane, essenceCold, essenceEarth, essenceFire, essenceIce, essenceLife, essenceLightning, essenceShield, essenceSteam,
 	    essenceWater;
     public static Item magickTablet;
-    public static Item staff, staffGrand, staffSuper, hemmyStaff;
-    public static Item hat;
+    public static Item staff, staffGrand, staffSuper, hemmyStaff, staffBlessing, staffDestruction, staffTelekinesis, staffManipulation;
+    public static Item hat, hatImmunity, hatRisk;
 
     public void initObjects()
     {
@@ -158,9 +165,15 @@ public class ModBase
 	staff = new ItemStaff().setUnlocalizedName(themodid + "Staff");
 	staffGrand = new ItemStaff().setBaseStats(2, 2, 0.5, 1.5).setUnlocalizedName(themodid + "StaffGrand");
 	staffSuper = new ItemStaff().setBaseStats(4, 4, 0.25, 2).setUnlocalizedName(themodid + "StaffSuper");
-	hemmyStaff = new ItemStaff().setBaseStats(7, 7, 0.07, 7).setUnlocalizedName(themodid + "HemmyStaff");
+	hemmyStaff = new ItemStaffHemmy().setUnlocalizedName(themodid + "HemmyStaff");
+	staffBlessing = new ItemStaffBlessing().setUnlocalizedName(themodid + "StaffBlessing");
+	staffDestruction = new ItemStaffDestruction().setUnlocalizedName(themodid + "StaffDestruction");
+	staffTelekinesis = new ItemStaffTelekinesis().setUnlocalizedName(themodid + "StaffTelekinesis");
+	staffManipulation = new ItemStaffManipulation().setUnlocalizedName(themodid + "StaffManipulation");
 
 	hat = new ItemHat().setUnlocalizedName(themodid + "Hat");
+	hatImmunity = new ItemHatOfImmunity().setUnlocalizedName(themodid + "HatOfImmunity");
+	hatRisk = new ItemHatOfRisk().setUnlocalizedName(themodid + "HatOfRisk");
 
 	magickTablet = new ItemMagickTablet().setUnlocalizedName(themodid + "MagickTablet").setCreativeTab(modCreativeTab);
     }
@@ -205,8 +218,14 @@ public class ModBase
 	GameRegistry.registerItem(staffGrand, themodid + "StaffGrand");
 	GameRegistry.registerItem(staffSuper, themodid + "StaffSuper");
 	GameRegistry.registerItem(hemmyStaff, themodid + "HemmyStaff");
+	GameRegistry.registerItem(staffBlessing, themodid + "StaffBlessing");
+	GameRegistry.registerItem(staffDestruction, themodid + "StaffDestruction");
+	GameRegistry.registerItem(staffTelekinesis, themodid + "StaffTelekinesis");
+	GameRegistry.registerItem(staffManipulation, themodid + "StaffManipulation");
 
 	GameRegistry.registerItem(hat, themodid + "Hat");
+	GameRegistry.registerItem(hatImmunity, themodid + "HatOfImmunity");
+	GameRegistry.registerItem(hatRisk, themodid + "HatOfRisk");
     }
 
     public void registerRecipes()

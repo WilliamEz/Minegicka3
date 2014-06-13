@@ -9,7 +9,7 @@ import com.williameze.minegicka3.core.PlayersData;
 
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
-public class PacketPlayerMana extends Packet
+public class PacketPlayerMana extends Packet<PacketPlayerMana>
 {
     public PlayerData p;
     public double mana;

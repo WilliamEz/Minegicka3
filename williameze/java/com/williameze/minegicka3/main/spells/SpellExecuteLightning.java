@@ -6,8 +6,8 @@ import java.util.Map;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 
-import com.williameze.minegicka3.main.entities.EntityLightning;
-import com.williameze.minegicka3.main.entities.EntityStorm;
+import com.williameze.minegicka3.main.entities.magic.EntityLightning;
+import com.williameze.minegicka3.main.entities.magic.EntityStorm;
 import com.williameze.minegicka3.main.spells.Spell.CastType;
 
 public class SpellExecuteLightning extends SpellExecute

@@ -11,7 +11,7 @@ import com.williameze.minegicka3.core.PlayersData;
 
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
-public class PacketPlayerUnlockAll extends Packet
+public class PacketPlayerUnlockAll extends Packet<PacketPlayerUnlockAll>
 {
     public String playerName;
     public int dim;

@@ -22,8 +22,8 @@ import org.apache.commons.lang3.ArrayUtils;
 
 import com.williameze.minegicka3.ModBase;
 import com.williameze.minegicka3.main.magicks.Magick;
-import com.williameze.minegicka3.main.objects.ItemMagickTablet;
-import com.williameze.minegicka3.main.objects.ItemStaff;
+import com.williameze.minegicka3.main.objects.items.ItemMagickTablet;
+import com.williameze.minegicka3.main.objects.items.ItemStaff;
 import com.williameze.minegicka3.main.packets.PacketPlayerClickCraft;
 
 public class ClickCraft
@@ -88,6 +88,15 @@ public class ClickCraft
 		ModBase.thingyGood });
 	registerClickCraftObject(catStaff, new ItemStack(ModBase.staffSuper), new Object[] { ModBase.stick, 2, ModBase.stickSuper, 3,
 		ModBase.thingySuper, new ItemStack(Items.dye, 3, 1) });
+	registerClickCraftObject(catStaff, new ItemStack(ModBase.staffBlessing), new Object[] { ModBase.staff, ModBase.essenceLife, 2,
+		Items.glass_bottle, Items.fermented_spider_eye, 2, Items.magma_cream, Items.blaze_powder, Items.ghast_tear, Items.redstone, 8,
+		Items.glowstone_dust, 8, Items.speckled_melon, Items.golden_carrot, Items.sugar, 4, new ItemStack(Items.fish, 1, 3) });
+	registerClickCraftObject(catStaff, new ItemStack(ModBase.staffDestruction), new Object[] { ModBase.staff, ModBase.essenceArcane,
+		ModBase.essenceFire, ModBase.essenceEarth, Items.gunpowder, 8, Items.flint_and_steel, Items.blaze_powder, 2 });
+	registerClickCraftObject(catStaff, new ItemStack(ModBase.staffTelekinesis), new Object[] { ModBase.staff, ModBase.essenceSteam, Items.arrow,
+		16, Items.feather, 16, Blocks.sticky_piston });
+	registerClickCraftObject(catStaff, new ItemStack(ModBase.staffManipulation), new Object[] { ModBase.staff, ModBase.essenceArcane,
+		ModBase.essenceLife, Items.golden_carrot, Items.fermented_spider_eye, 2, Items.redstone, 2, Items.rotten_flesh, 4 });
     }
 
     public static void magicksRecipe()
@@ -105,6 +114,8 @@ public class ClickCraft
     public static void hatsRecipe()
     {
 	registerClickCraftObject(catHat, new ItemStack(ModBase.hat), new Object[] { Items.leather, 8, Items.dye, ModBase.thingy });
+	registerClickCraftObject(catHat, new ItemStack(ModBase.hatRisk), new Object[] { ModBase.hat, ModBase.essenceLife,
+		new ItemStack(Items.dye, 3, 1) });
     }
 
     public static List<Entry<ItemStack, Integer>> getRecipe(ItemStack is)

@@ -3,7 +3,7 @@ package com.williameze.minegicka3.main.spells;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
 
-import com.williameze.minegicka3.main.entities.EntityMine;
+import com.williameze.minegicka3.main.entities.magic.EntityMine;
 
 public class ESelectorBeamArea extends ESelectorDefault
 {

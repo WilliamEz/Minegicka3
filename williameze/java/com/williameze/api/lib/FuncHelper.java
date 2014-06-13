@@ -18,12 +18,11 @@ import com.williameze.api.math.IntVector;
 import com.williameze.api.math.Line;
 import com.williameze.api.math.Plane;
 import com.williameze.api.math.Vector;
-import com.williameze.api.selectors.BlockSelector;
+import com.williameze.api.selectors.BSelector;
 
 public class FuncHelper
 {
-    public static HitObject rayTrace(World world, Vector start, Vector end, BlockSelector blockSelector, IEntitySelector selector,
-	    List<Entity> excluding)
+    public static HitObject rayTrace(World world, Vector start, Vector end, BSelector blockSelector, IEntitySelector selector, List excluding)
     {
 	Vector path = end.subtract(start);
 	if (path.lengthSqrVector() > 68)
@@ -73,10 +72,9 @@ public class FuncHelper
 		}
 	    }
 	}
-	List<Entity> entities = world.selectEntitiesWithinAABB(
-		Entity.class,
-		AxisAlignedBB.getBoundingBox(Math.min(start.x, end.x), Math.min(start.y, end.y), Math.min(start.z, end.z),
-			Math.max(start.x, end.x), Math.max(start.y, end.y), Math.max(start.z, end.z)), selector);
+	List<Entity> entities = world.selectEntitiesWithinAABB(Entity.class, AxisAlignedBB.getBoundingBox(Math.min(start.x, end.x),
+		Math.min(start.y, end.y), Math.min(start.z, end.z), Math.max(start.x, end.x), Math.max(start.y, end.y), Math.max(start.z, end.z)),
+		selector);
 	if (excluding != null) entities.removeAll(excluding);
 	for (Entity e : entities)
 	{
@@ -145,8 +143,7 @@ public class FuncHelper
 	return hit;
     }
 
-    public static List<Entity> getEntitiesWithinBoundingBoxMovement(World world, AxisAlignedBB aabb0, Vector motion, Class clazz,
-	    IEntitySelector ies)
+    public static List<Entity> getEntitiesWithinBoundingBoxMovement(World world, AxisAlignedBB aabb0, Vector motion, Class clazz, IEntitySelector ies)
     {
 	List<Entity> l = new ArrayList();
 
@@ -332,8 +329,8 @@ public class FuncHelper
 
     public static boolean isVectorWithinBound(Vector tar, Vector b1, Vector b2)
     {
-	return tar.x >= Math.min(b1.x, b2.x) && tar.x <= Math.max(b1.x, b2.x) && tar.y >= Math.min(b1.y, b2.y)
-		&& tar.y <= Math.max(b1.y, b2.y) && tar.z >= Math.min(b1.z, b2.z) && tar.z <= Math.max(b1.z, b2.z);
+	return tar.x >= Math.min(b1.x, b2.x) && tar.x <= Math.max(b1.x, b2.x) && tar.y >= Math.min(b1.y, b2.y) && tar.y <= Math.max(b1.y, b2.y)
+		&& tar.z >= Math.min(b1.z, b2.z) && tar.z <= Math.max(b1.z, b2.z);
     }
 
     public static Vector vectorToEntity(Entity e1, Entity e2)
@@ -350,8 +347,8 @@ public class FuncHelper
     {
 	AxisAlignedBB aabb1 = e1.getBoundingBox();
 	if (aabb1 == null) aabb1 = e1.boundingBox;
-	if (aabb1 == null) aabb1 = AxisAlignedBB.getBoundingBox(e1.posX - e1.width / 2, e1.posY, e1.posZ + e1.width / 2, e1.posX + e1.width
-		/ 2, e1.posY + e1.height, e1.posZ + e1.width / 2);
+	if (aabb1 == null) aabb1 = AxisAlignedBB.getBoundingBox(e1.posX - e1.width / 2, e1.posY, e1.posZ + e1.width / 2, e1.posX + e1.width / 2,
+		e1.posY + e1.height, e1.posZ + e1.width / 2);
 
 	return new Vector((aabb1.maxX + aabb1.minX) / 2, (aabb1.maxY + aabb1.minY) / 2, (aabb1.maxZ + aabb1.minZ) / 2);
     }

@@ -2,12 +2,13 @@ package com.williameze.minegicka3.core;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.entity.player.EntityPlayer;
@@ -29,6 +30,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 public class PlayersData
 {
     public static Map<World, PlayersData> worldsPlayersDataMap = new HashMap();
+    public static List<PlayerData> unallocatedPlayerDatas = new ArrayList();
     public static PlayerData clientPlayerData;
     static
     {
@@ -151,6 +153,19 @@ public class PlayersData
 	    return pd;
 	}
     }
+    
+    public void removePlayerData(PlayerData pd)
+    {
+	PlayerData pd1 = getPlayerData(pd.playerName);
+	if (pd1 != null)
+	{
+	    allPlayersData.remove(pd1);
+	}
+	else
+	{
+	    allPlayersData.remove(pd);
+	}
+    }
 
     public static PlayerData getPlayerData_static(EntityPlayer p)
     {
@@ -240,7 +255,7 @@ public class PlayersData
 	if (w.provider.dimensionId == pd.dimensionID)
 	{
 	    PlayerData pd1 = getWorldPlayersData(w).addOrModifyPlayerData(pd);
-	    if (Minecraft.getMinecraft().thePlayer.getGameProfile().getName().equals(pd.playerName))
+	    if (Minecraft.getMinecraft().thePlayer.getGameProfile().getName().equals(pd1.playerName))
 	    {
 		clientPlayerData = pd1;
 	    }

@@ -39,7 +39,6 @@ public class MagickExplosion extends Magick
     {
 	if (caster != null && caster.getLookVec() != null)
 	{
-	    Random rnd = new Random();
 	    Vector look = new Vector(caster.getLookVec());
 	    double[] props = getStaffMainProperties(additionalData);
 	    double range = 12 * props[0];

@@ -40,20 +40,21 @@ public class MagickTeleport extends Magick
 	    Random rnd = new Random();
 	    Vector look = new Vector(caster.getLookVec());
 	    double[] props = getStaffMainProperties(additionalData);
-	    double range = 12 * props[0];
+	    double range = 6 * (props[0] + 1);
 	    Vector start = new Vector(caster.posX, caster.posY + caster.getEyeHeight(), caster.posZ);
-	    HitObject hit = FuncHelper.rayTrace(world, start, start.add(look.multiply(range)), null, null, Arrays.asList(caster));
+	    //HitObject hit = FuncHelper.rayTrace(world, start, start.add(look.multiply(range)), null, null, Arrays.asList(caster));
+	    Vector end = start.add(look.multiply(range));
 
 	    for (int a = 0; a < 40; a++)
 	    {
-		world.spawnParticle("smoke", caster.posX, caster.posY + caster.getEyeHeight() / 2, caster.posZ,
-			(rnd.nextDouble() - 0.5) * 0.3, (rnd.nextDouble() - 0.5) * 0.3, (rnd.nextDouble() - 0.5) * 0.3);
+		world.spawnParticle("smoke", caster.posX, caster.posY + caster.getEyeHeight() / 2, caster.posZ, (rnd.nextDouble() - 0.5) * 0.3,
+			(rnd.nextDouble() - 0.5) * 0.3, (rnd.nextDouble() - 0.5) * 0.3);
 	    }
-	    caster.setPosition(hit.hitPosition.x, hit.hitPosition.y, hit.hitPosition.z);
+	    caster.setPosition(end.x, end.y, end.z);
 	    for (int a = 0; a < 40; a++)
 	    {
-		world.spawnParticle("cloud", hit.hitPosition.x, hit.hitPosition.y + caster.getEyeHeight(), hit.hitPosition.z,
-			(rnd.nextDouble() - 0.5) * 0.3, (rnd.nextDouble() - 0.5) * 0.3, (rnd.nextDouble() - 0.5) * 0.3);
+		world.spawnParticle("cloud", end.x, end.y + caster.getEyeHeight(), end.z, (rnd.nextDouble() - 0.5) * 0.3,
+			(rnd.nextDouble() - 0.5) * 0.3, (rnd.nextDouble() - 0.5) * 0.3);
 	    }
 	}
     }

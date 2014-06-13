@@ -14,7 +14,7 @@ import net.minecraft.world.World;
 
 import com.williameze.api.lib.FuncHelper;
 import com.williameze.minegicka3.ModBase;
-import com.williameze.minegicka3.main.entities.EntityVortex;
+import com.williameze.minegicka3.main.entities.magic.EntityVortex;
 
 public class MagickVortex extends Magick
 {

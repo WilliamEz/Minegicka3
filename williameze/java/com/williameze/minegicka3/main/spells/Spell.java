@@ -23,6 +23,7 @@ import net.minecraft.entity.monster.EntityPigZombie;
 import net.minecraft.entity.monster.EntitySnowman;
 import net.minecraft.entity.passive.EntityPig;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.potion.Potion;
@@ -38,7 +39,11 @@ import com.williameze.minegicka3.core.PlayerData;
 import com.williameze.minegicka3.core.PlayersData;
 import com.williameze.minegicka3.main.Element;
 import com.williameze.minegicka3.main.SpellDamageModifier;
-import com.williameze.minegicka3.main.objects.ItemStaff;
+import com.williameze.minegicka3.main.objects.items.ItemHatOfImmunity;
+import com.williameze.minegicka3.main.objects.items.ItemHatOfRisk;
+import com.williameze.minegicka3.main.objects.items.ItemStaff;
+
+import cpw.mods.fml.common.FMLCommonHandler;
 
 public class Spell
 {
@@ -227,6 +232,33 @@ public class Spell
 	}
     }
 
+    public SpellDamageModifier getEntityResistance(Entity e)
+    {
+	SpellDamageModifier mod = new SpellDamageModifier();
+	if (e instanceof EntityPlayer)
+	{
+	    EntityPlayer p = (EntityPlayer) e;
+	    ItemStack hatIS = p.inventory.armorItemInSlot(0);
+	    if (hatIS != null && hatIS.getItem() != null)
+	    {
+		Item hat = hatIS.getItem();
+		if (hat instanceof ItemHatOfImmunity)
+		{
+		    mod = new SpellDamageModifier(0);
+		}
+		else if (hat instanceof ItemHatOfRisk)
+		{
+		    mod.multiply(new SpellDamageModifier(2).setModifiers("3l"));
+		}
+	    }
+	}
+	if (e.isImmuneToFire())
+	{
+	    mod.setModifiers("0f");
+	}
+	return mod;
+    }
+
     public void damageEntity(Entity e, int cooldownTime)
     {
 	damageEntity(e, cooldownTime, SpellDamageModifier.defau);
@@ -234,7 +266,6 @@ public class Spell
 
     public void damageEntity(Entity e, int cooldownTime, SpellDamageModifier mod)
     {
-	if (e.worldObj.isRemote) return;
 	int countWater = countElement(Element.Water);
 	int countLife = countElement(Element.Life);
 	int countCold = countElement(Element.Cold);
@@ -245,19 +276,8 @@ public class Spell
 	int countFire = countElement(Element.Fire);
 	int countIce = countElement(Element.Ice);
 	int countEarth = countElement(Element.Earth);
-	System.out.println(countCold);
 
 	boolean isEntityWet = e.isWet() || countWater + countSteam > 0;
-	if (isEntityWet) e.extinguish();
-	if (!isEntityWet && countFire > 0) e.setFire(countFire * 3);
-	if (e instanceof EntityLivingBase)
-	{
-	    EntityLivingBase be = (EntityLivingBase) e;
-	    if (countCold > 0) be.addPotionEffect(new PotionEffect(Potion.moveSlowdown.getId(), 20 * countCold, countCold));
-	    if (countCold + countWater + countSteam > 0) be.addPotionEffect(new PotionEffect(Potion.fireResistance.getId(),
-		    (countCold + countWater + countSteam) * 20, countCold + countWater + countSteam));
-	    if (countLife > 0) ((EntityLivingBase) e).removePotionEffect(Potion.poison.getId());
-	}
 
 	double waterDamage = 0.0 * countWater;
 	double fireDamage = 0.6 * countFire;
@@ -297,10 +317,8 @@ public class Spell
 	    lifeHeal /= 2;
 	}
 	if (isEntityWet) lightningDamage *= 2;
-	if (e.isImmuneToFire())
-	{
-	    fireDamage = 0;
-	}
+
+	mod.multiply(getEntityResistance(e));
 
 	waterDamage *= mod.waterMod;
 	fireDamage *= mod.fireMod;
@@ -319,35 +337,68 @@ public class Spell
 	    arcaneDamage = f;
 	}
 
-	if (!recentlyAffected.containsKey(e))
+	if (!e.worldObj.isRemote)
 	{
-	    float totalDamage = (float) (waterDamage + fireDamage + arcaneDamage + lightningDamage + earthDamage + iceDamage + coldDamage + steamDamage);
-	    totalDamage *= getPower();
-	    if (totalDamage > 0)
+	    if (countFire > 0) e.setFire(countFire * 3);
+	    if (isEntityWet) e.extinguish();
+	    if (e instanceof EntityLivingBase)
 	    {
-		DamageSource source = getCaster() instanceof EntityLivingBase ? DamageSource.causeMobDamage((EntityLivingBase) getCaster())
-			: DamageSource.magic;
-		if (e instanceof EntityDragon)
+		EntityLivingBase be = (EntityLivingBase) e;
+		if (countCold > 0) be.addPotionEffect(new PotionEffect(Potion.moveSlowdown.getId(), 20 * countCold, countCold - 1));
+		if (countCold + countWater + countSteam > 0) be.addPotionEffect(new PotionEffect(Potion.fireResistance.getId(), (countCold
+			+ countWater + countSteam) * 20, countCold + countWater + countSteam));
+		if (countLife > 0) ((EntityLivingBase) e).removePotionEffect(Potion.poison.getId());
+	    }
+
+	    if (!recentlyAffected.containsKey(e))
+	    {
+		float totalDamage = (float) (waterDamage + fireDamage + arcaneDamage + lightningDamage + earthDamage + iceDamage + coldDamage + steamDamage);
+		totalDamage *= getPower();
+		if (totalDamage > 0)
 		{
-		    EntityDragon dr = (EntityDragon) e;
-		    dr.attackEntityFromPart(dr.dragonPartHead, source, totalDamage);
+		    DamageSource source = getCaster() instanceof EntityLivingBase ? DamageSource.causeMobDamage((EntityLivingBase) getCaster())
+			    : DamageSource.magic;
+		    if (e instanceof EntityDragon)
+		    {
+			EntityDragon dr = (EntityDragon) e;
+			dr.attackEntityFromPart(dr.dragonPartHead, source, totalDamage);
+		    }
+		    else e.attackEntityFrom(source, totalDamage);
 		}
-		else e.attackEntityFrom(source, totalDamage);
+		if (lifeHeal > 0 && e instanceof EntityLivingBase)
+		{
+		    ((EntityLivingBase) e).heal((float) lifeHeal);
+		}
+		if (e instanceof EntityCreeper && lightningDamage >= 3.2 && rnd.nextInt(4) == 0)
+		{
+		    e.getDataWatcher().updateObject(17, Byte.valueOf((byte) 1));
+		}
+		if (e instanceof EntityPig && lightningDamage >= 3.8 && rnd.nextInt(4) == 0)
+		{
+		    e.onStruckByLightning(new EntityLightningBolt(e.worldObj, e.posX, e.posY, e.posZ));
+		}
+		if (cooldownTime > 0) recentlyAffected.put(e, (int) (cooldownTime / getAtkSpeed()));
 	    }
-	    if (lifeHeal > 0 && e instanceof EntityLivingBase)
-	    {
-		((EntityLivingBase) e).heal((float) lifeHeal);
-	    }
-	    if (e instanceof EntityCreeper && lightningDamage >= 3.2 && rnd.nextInt(4) == 0)
-	    {
-		e.getDataWatcher().updateObject(17, Byte.valueOf((byte) 1));
-	    }
-	    if (e instanceof EntityPig && lightningDamage >= 3.8 && rnd.nextInt(4) == 0)
-	    {
-		e.onStruckByLightning(new EntityLightningBolt(e.worldObj, e.posX, e.posY, e.posZ));
-	    }
-	    if (cooldownTime > 0) recentlyAffected.put(e, (int) (cooldownTime / getAtkSpeed()));
 	}
+	else
+	{
+	    if (!recentlyAffected.containsKey(e))
+	    {
+		if (lifeHeal > 0 && e instanceof EntityLivingBase)
+		{
+		    e.worldObj.spawnParticle("heart", e.posX, e.posY + e.getEyeHeight(), e.posZ, 0, 1, 0);
+		}
+		if (cooldownTime > 0) recentlyAffected.put(e, (int) (cooldownTime / getAtkSpeed()));
+	    }
+	}
+    }
+
+    public static double consumeMana(Entity caster, double m, boolean reallyConsume, boolean mustHaveMoreMana, int showChatMessage)
+    {
+	Spell.none.setCaster(caster);
+	double d = Spell.none.consumeMana(m, reallyConsume, mustHaveMoreMana, showChatMessage);
+	Spell.none.setCaster(null);
+	return d;
     }
 
     public double consumeMana(double m, boolean reallyConsume, boolean mustHaveMoreMana, int showChatMessage)
@@ -386,14 +437,14 @@ public class Spell
 		    }
 		    else if (showChatMessage == 2)
 		    {
-			p.addChatMessage(new ChatComponentText("Requires " + (int) (Math.round(m * 10) / 10) + " mana.").setChatStyle(new ChatStyle()
-				.setItalic(true).setColor(EnumChatFormatting.RED)));
+			p.addChatMessage(new ChatComponentText("That requires " + (int) (Math.round(m * 10) / 10) + " mana.")
+				.setChatStyle(new ChatStyle().setItalic(true).setColor(EnumChatFormatting.RED)));
 		    }
 		    else if (showChatMessage == 3)
 		    {
-			p.addChatMessage(new ChatComponentText("Requires " + (int) (Math.round(m * 10) / 10) + " mana. Shame you only have "
-				+ (int) (Math.round(pd.mana * 10) / 10) + " mana.").setChatStyle(new ChatStyle().setItalic(true).setColor(
-				EnumChatFormatting.RED)));
+			p.addChatMessage(new ChatComponentText("That requires " + (int) (Math.round(m * 10) / 10)
+				+ " mana. It's a shame you only have " + (int) (Math.round(pd.mana * 10) / 10) + " mana.")
+				.setChatStyle(new ChatStyle().setItalic(true).setColor(EnumChatFormatting.RED)));
 		    }
 		}
 	    }
@@ -405,7 +456,9 @@ public class Spell
 
     public NBTTagCompound getStaffTag()
     {
-	return (NBTTagCompound) additionalData.getTag("Staff");
+	NBTTagCompound tag = additionalData == null ? null : (NBTTagCompound) additionalData.getTag("Staff");
+	if (tag == null) tag = ((ItemStaff) ModBase.staff).getDefaultStaffTag();
+	return tag;
     }
 
     public double getManaConsumeRate()

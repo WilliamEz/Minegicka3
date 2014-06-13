@@ -20,6 +20,7 @@ public abstract class Values
     public static GuiPosition gui_Position = GuiPosition.BOTTOM_RIGHT;
 
     /** Colors **/
+    public static Color white = new Color(255, 255, 255);
     public static Color yellow = new Color(255, 255, 100);
     public static Color cyan = new Color(29, 177, 255);
     public static Color purple = new Color(197, 0, 204);

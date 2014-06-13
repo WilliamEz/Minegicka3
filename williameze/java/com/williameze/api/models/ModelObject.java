@@ -71,8 +71,7 @@ public abstract class ModelObject
 
     public void glSetColor(Color c)
     {
-	// GL11.glColor4ub((byte) c.getRed(), (byte) c.getGreen(), (byte)
-	// c.getBlue(), (byte) c.getAlpha());
+	//GL11.glColor4ub((byte) c.getRed(), (byte) c.getGreen(), (byte) c.getBlue(), (byte) c.getAlpha());
 	tess.setColorRGBA(c.getRed(), c.getGreen(), c.getBlue(), c.getAlpha());
     }
 

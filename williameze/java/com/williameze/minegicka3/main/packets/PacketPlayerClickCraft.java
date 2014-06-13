@@ -15,7 +15,7 @@ import com.williameze.minegicka3.main.ClickCraft;
 
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
-public class PacketPlayerClickCraft extends Packet
+public class PacketPlayerClickCraft extends Packet<PacketPlayerClickCraft>
 {
     public EntityPlayer crafter;
     public String playerName;

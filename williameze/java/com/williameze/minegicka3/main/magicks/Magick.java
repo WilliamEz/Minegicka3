@@ -22,7 +22,7 @@ import com.williameze.api.lib.FuncHelper;
 import com.williameze.minegicka3.ModBase;
 import com.williameze.minegicka3.main.Element;
 import com.williameze.minegicka3.main.Values;
-import com.williameze.minegicka3.main.objects.ItemStaff;
+import com.williameze.minegicka3.main.objects.items.ItemStaff;
 import com.williameze.minegicka3.main.packets.PacketStartMagick;
 import com.williameze.minegicka3.main.spells.Spell;
 
@@ -183,8 +183,7 @@ public abstract class Magick
     }
 
     /**
-     * 1st is power, 2nd is atkspeed, 3rd is consume rate, 4th is mana
-     * recovering rate
+     * 1st is power, 2nd is atkspeed, 3rd is consume rate, 4th is mana recovering rate
      **/
     public double[] getStaffMainProperties(NBTTagCompound additionalData)
     {
@@ -201,11 +200,11 @@ public abstract class Magick
     {
 	caster = getPossibleCaster(world, x, y, z, caster);
 
-	Spell.none.setCaster(caster);
+	//Spell.none.setCaster(caster);
 	double[] props = getStaffMainProperties(additionalData);
 	double manaCost = getBaseManaCost() * props[2];
-	Spell.none.consumeMana(manaCost, true, true, 0);
-	Spell.none.setCaster(null);
+	Spell.consumeMana(caster, manaCost, true, true, 0);
+	//Spell.none.setCaster(null);
 	doTheMagick(world, x, y, z, caster, additionalData);
     }
 

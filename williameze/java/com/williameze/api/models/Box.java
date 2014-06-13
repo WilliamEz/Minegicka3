@@ -20,10 +20,20 @@ public class Box extends ModelObject
 
     public static Box create(Vector mid, double xhalf, double yhalf, double zhalf)
     {
-	return create(mid.x - xhalf, mid.y - yhalf, mid.z - zhalf, mid.x + xhalf, mid.y + yhalf, mid.z + zhalf);
+	return create(mid.x - xhalf, mid.y - yhalf, mid.z - zhalf, mid.x + xhalf, mid.y + yhalf, mid.z + zhalf, 0);
+    }
+
+    public static Box create(Vector mid, double xhalf, double yhalf, double zhalf, double yRotation)
+    {
+	return create(mid.x - xhalf, mid.y - yhalf, mid.z - zhalf, mid.x + xhalf, mid.y + yhalf, mid.z + zhalf, yRotation);
     }
 
     public static Box create(double minx, double miny, double minz, double maxx, double maxy, double maxz)
+    {
+	return create(minx, miny, minz, maxx, maxy, maxz, 0);
+    }
+
+    public static Box create(double minx, double miny, double minz, double maxx, double maxy, double maxz, double yRotation)
     {
 	Vector v01 = new Vector(minx, maxy, minz);
 	Vector v02 = new Vector(minx, maxy, maxz);
@@ -33,6 +43,18 @@ public class Box extends ModelObject
 	Vector v12 = new Vector(minx, miny, maxz);
 	Vector v13 = new Vector(maxx, miny, maxz);
 	Vector v14 = new Vector(maxx, miny, minz);
+	if (yRotation != 0)
+	{
+	    Vector med = Vector.median(v01, v02, v03, v04, v11, v12, v13, v14);
+	    v01 = med.add(v01.subtract(med).rotateAround(Vector.unitY, yRotation));
+	    v02 = med.add(v02.subtract(med).rotateAround(Vector.unitY, yRotation));
+	    v03 = med.add(v03.subtract(med).rotateAround(Vector.unitY, yRotation));
+	    v04 = med.add(v04.subtract(med).rotateAround(Vector.unitY, yRotation));
+	    v11 = med.add(v11.subtract(med).rotateAround(Vector.unitY, yRotation));
+	    v12 = med.add(v12.subtract(med).rotateAround(Vector.unitY, yRotation));
+	    v13 = med.add(v13.subtract(med).rotateAround(Vector.unitY, yRotation));
+	    v14 = med.add(v14.subtract(med).rotateAround(Vector.unitY, yRotation));
+	}
 	return new Box(v01, v02, v03, v04, v11, v12, v13, v14);
     }
 

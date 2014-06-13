@@ -10,11 +10,11 @@ import net.minecraft.util.AxisAlignedBB;
 
 import com.williameze.api.math.Vector;
 import com.williameze.minegicka3.main.Element;
-import com.williameze.minegicka3.main.entities.EntityBoulder;
-import com.williameze.minegicka3.main.entities.EntityEarthRumble;
-import com.williameze.minegicka3.main.entities.EntityIceShard;
-import com.williameze.minegicka3.main.entities.EntityIcicle;
-import com.williameze.minegicka3.main.entities.FXEProjectileCharge;
+import com.williameze.minegicka3.main.entities.fx.FXEProjectileCharge;
+import com.williameze.minegicka3.main.entities.magic.EntityBoulder;
+import com.williameze.minegicka3.main.entities.magic.EntityEarthRumble;
+import com.williameze.minegicka3.main.entities.magic.EntityIceShard;
+import com.williameze.minegicka3.main.entities.magic.EntityIcicle;
 import com.williameze.minegicka3.main.spells.Spell.CastType;
 
 public class SpellExecuteProjectile extends SpellExecute

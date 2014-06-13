@@ -4,8 +4,8 @@ import org.lwjgl.opengl.GL11;
 
 import com.williameze.minegicka3.ModBase;
 import com.williameze.minegicka3.main.Values;
-import com.williameze.minegicka3.main.models.ModelCraftStation;
-import com.williameze.minegicka3.main.objects.TileEntityCraftStation;
+import com.williameze.minegicka3.main.models.object.ModelCraftStation;
+import com.williameze.minegicka3.main.objects.blocks.TileEntityCraftStation;
 
 import net.minecraft.block.Block;
 import net.minecraft.client.renderer.ItemRenderer;

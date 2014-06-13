@@ -12,14 +12,14 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 
 import com.williameze.minegicka3.ModBase;
-import com.williameze.minegicka3.main.entities.EntityEarthRumble;
-import com.williameze.minegicka3.main.entities.EntityLightning;
-import com.williameze.minegicka3.main.entities.EntityMine;
-import com.williameze.minegicka3.main.entities.EntityStorm;
-import com.williameze.minegicka3.main.entities.EntityVortex;
 import com.williameze.minegicka3.main.entities.IEntityNullifiable;
-import com.williameze.minegicka3.main.objects.BlockShield;
-import com.williameze.minegicka3.main.objects.BlockWall;
+import com.williameze.minegicka3.main.entities.magic.EntityEarthRumble;
+import com.williameze.minegicka3.main.entities.magic.EntityLightning;
+import com.williameze.minegicka3.main.entities.magic.EntityMine;
+import com.williameze.minegicka3.main.entities.magic.EntityStorm;
+import com.williameze.minegicka3.main.entities.magic.EntityVortex;
+import com.williameze.minegicka3.main.objects.blocks.BlockShield;
+import com.williameze.minegicka3.main.objects.blocks.BlockWall;
 
 public class MagickNullify extends Magick
 {
@@ -32,7 +32,7 @@ public class MagickNullify extends Magick
     @Override
     public Object[] getAdditionalCraftClickTabletMaterials()
     {
-	return new Object[] { ModBase.thingy, 4 };
+	return new Object[] { ModBase.thingy, 2 };
     }
 
     @Override
@@ -46,8 +46,7 @@ public class MagickNullify extends Magick
     {
 	double[] props = getStaffMainProperties(additionalData);
 	double radius = 12 * Math.min(props[0], 8);
-	List<Entity> l = world.getEntitiesWithinAABB(Entity.class,
-		AxisAlignedBB.getBoundingBox(x, y, z, x, y, z).expand(radius, radius, radius));
+	List<Entity> l = world.getEntitiesWithinAABB(Entity.class, AxisAlignedBB.getBoundingBox(x, y, z, x, y, z).expand(radius, radius, radius));
 	if (!l.isEmpty())
 	{
 	    for (int a = 0; a < l.size(); a++)
@@ -56,10 +55,6 @@ public class MagickNullify extends Magick
 		if (e instanceof IEntityNullifiable)
 		{
 		    e.setDead();
-		}
-		if (e instanceof EntityLivingBase)
-		{
-		    ((EntityLivingBase) e).clearActivePotions();
 		}
 	    }
 	}

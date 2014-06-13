@@ -12,7 +12,7 @@ import com.williameze.minegicka3.main.spells.Spell;
 
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
-public class PacketStartSpell extends Packet
+public class PacketStartSpell extends Packet<PacketStartSpell>
 {
     public Spell spell;
     

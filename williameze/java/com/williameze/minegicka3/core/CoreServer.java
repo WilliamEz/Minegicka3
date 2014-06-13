@@ -14,7 +14,7 @@ import net.minecraft.world.World;
 
 import com.williameze.minegicka3.ModBase;
 import com.williameze.minegicka3.main.Values;
-import com.williameze.minegicka3.main.objects.ItemStaff;
+import com.williameze.minegicka3.main.objects.items.ItemStaff;
 import com.williameze.minegicka3.main.packets.PacketPlayerMana;
 import com.williameze.minegicka3.main.packets.PacketStartSpell;
 import com.williameze.minegicka3.main.packets.PacketStopSpell;

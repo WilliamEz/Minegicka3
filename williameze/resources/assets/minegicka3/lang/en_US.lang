@@ -1,7 +1,7 @@
 key.categories.minegicka3=Minegicka 3
 itemGroup.Minegicka 3=Minegicka 3
 
-tile.minegicka3-CraftStation.name=Magical Craft Station
+tile.minegicka3-CraftStation.name=Magical Crafting Station
 
 item.minegicka3-Thingy.name=Magical Thing of Nothingness
 item.minegicka3-ThingyGood.name=Magical Thing of Something-ness
@@ -30,9 +30,15 @@ item.minegicka3-MagickTablet.name=Tablet
 item.minegicka3-Staff.name=Staff
 item.minegicka3-StaffGrand.name=Grand Staff
 item.minegicka3-StaffSuper.name=Super Staff
-item.minegicka3-HemmyStaff.name=Hemmy's Staff of Mighty
+item.minegicka3-HemmyStaff.name=Hemmy's Might
+item.minegicka3-StaffBlessing.name=Blessing Staff
+item.minegicka3-StaffDestruction.name=Destruction Staff
+item.minegicka3-StaffTelekinesis.name=Telekinesis Staff
+item.minegicka3-StaffManipulation.name=Manipulation Staff
 
 item.minegicka3-Hat.name=Wizard Hat
+item.minegicka3-HatOfImmunity.name=Hat of Immunity
+item.minegicka3-HatOfRisk.name=Hat of Risk
 
 mgk3.string.Categories=Categories
 mgk3.string.Craft=Craft

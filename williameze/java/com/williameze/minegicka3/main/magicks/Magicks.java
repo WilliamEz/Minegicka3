@@ -10,6 +10,13 @@ public class Magicks
     public static Magick vortex = new MagickVortex();
     public static Magick homingLightning = new MagickHomingLightning();
     public static Magick extinguish = new MagickExtinguish();
+    public static Magick depotion = new MagickDepotion();
+    public static Magick featherFall = new MagickFeatherFall();
+    public static Magick freezeMotion = new MagickFreezeMotion();
+    public static Magick groundSlam = new MagickGroundSlam();
+    public static Magick snow = new MagickSnow();
+    public static Magick thaw = new MagickThaw();
+    public static Magick waterShock = new MagickWaterShock();
 
     public static void load()
     {

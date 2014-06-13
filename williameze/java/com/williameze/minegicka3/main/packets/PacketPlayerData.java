@@ -10,19 +10,16 @@ import com.williameze.minegicka3.core.PlayersData;
 
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
-public class PacketPlayerData extends Packet
+public class PacketPlayerData extends Packet<PacketPlayerData>
 {
-    public static int count = 0;
     public PlayerData p;
 
     public PacketPlayerData()
     {
-	count++;
     }
 
     public PacketPlayerData(PlayerData pd)
     {
-	count++;
 	p = pd;
     }
 

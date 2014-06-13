@@ -11,7 +11,7 @@ import net.minecraft.item.ItemStack;
 
 import com.williameze.minegicka3.main.Element;
 import com.williameze.minegicka3.main.magicks.Magick;
-import com.williameze.minegicka3.main.objects.ItemStaff;
+import com.williameze.minegicka3.main.objects.items.ItemStaff;
 
 public class PlayerData
 {
@@ -163,7 +163,6 @@ public class PlayerData
 
     public static PlayerData stringToData(String s)
     {
-	System.out.println(s);
 	PlayerData pd = new PlayerData();
 	pd.dataFromString(s);
 	return pd;

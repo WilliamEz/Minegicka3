@@ -14,6 +14,7 @@ import cpw.mods.fml.relauncher.SideOnly;
 @SideOnly(Side.CLIENT)
 public class Cylinder extends ModelObject
 {
+    public boolean renderCaps = true;
     public Vector center1;
     public Vector center2;
     public Vector face1Normal;
@@ -37,8 +38,7 @@ public class Cylinder extends ModelObject
      * @param cuts
      *            amounts of side faces
      * @param type
-     *            0: normal, 1: slanted against Y, 2: slanted against X, 3:
-     *            slanted against Z
+     *            0: normal, 1: slanted against Y, 2: slanted against X, 3: slanted against Z
      * @return
      */
     public static Cylinder create(Vector cen1, Vector cen2, double radius1, double radius2, int cuts, int type)
@@ -57,13 +57,12 @@ public class Cylinder extends ModelObject
 	}
 	else
 	{
-	    return new Cylinder(cen1, cen2, cen2.subtract(cen1.add(cen2).multiply(0.5)), cen1.subtract(cen1.add(cen2).multiply(
-		    0.5)), radius1, radius2, cuts);
+	    return new Cylinder(cen1, cen2, cen2.subtract(cen1.add(cen2).multiply(0.5)), cen1.subtract(cen1.add(cen2).multiply(0.5)), radius1,
+		    radius2, cuts);
 	}
     }
 
-    public Cylinder(Vector from, Vector to, Vector fromPlaneNormal, Vector toPlaneNormal, double radiusFrom, double radiusTo,
-	    int cuts)
+    public Cylinder(Vector from, Vector to, Vector fromPlaneNormal, Vector toPlaneNormal, double radiusFrom, double radiusTo, int cuts)
     {
 	this.center1 = from;
 	this.center2 = to;
@@ -93,8 +92,7 @@ public class Cylinder extends ModelObject
 	}
 	else
 	{
-	    axis = face1Normal.crossProduct(!(face1Normal.y == 0 && face1Normal.z == 0) ? face1Normal.add(1, 0, 0) : face1Normal
-		    .add(0, 0, 1));
+	    axis = face1Normal.crossProduct(!(face1Normal.y == 0 && face1Normal.z == 0) ? face1Normal.add(1, 0, 0) : face1Normal.add(0, 0, 1));
 	    axis = axis.rotateAround(face1Normal, Math.PI / 4);
 	}
 	Vector face1Circling = face1Normal.rotateAround(axis, Math.PI / 2).normalize().multiply(radius1);
@@ -131,30 +129,39 @@ public class Cylinder extends ModelObject
 	return this;
     }
 
+    public Cylinder setRenderCaps(boolean b)
+    {
+	renderCaps = b;
+	return this;
+    }
+    
     @Override
     public void render()
     {
 	GL11.glPushMatrix();
 
-	begin(GL11.GL_POLYGON);
-	glSetColor();
-	GL11.glNormal3d(face1.get(0).x, face1.get(0).y, face1.get(0).z);
-	for (int a = 1; a < face1.size(); a++)
+	if (renderCaps)
 	{
-	    addVertex(face1.get(a));
+	    begin(GL11.GL_POLYGON);
+	    glSetColor();
+	    GL11.glNormal3d(face1.get(0).x, face1.get(0).y, face1.get(0).z);
+	    for (int a = 1; a < face1.size(); a++)
+	    {
+		addVertex(face1.get(a));
+	    }
+	    end();
+	    glResetColor();
+	    
+	    begin(GL11.GL_POLYGON);
+	    glSetColor();
+	    GL11.glNormal3d(face2.get(0).x, face2.get(0).y, face2.get(0).z);
+	    for (int a = 1; a < face2.size(); a++)
+	    {
+		addVertex(face2.get(a));
+	    }
+	    end();
+	    glResetColor();
 	}
-	end();
-	glResetColor();
-
-	begin(GL11.GL_POLYGON);
-	glSetColor();
-	GL11.glNormal3d(face2.get(0).x, face2.get(0).y, face2.get(0).z);
-	for (int a = 1; a < face2.size(); a++)
-	{
-	    addVertex(face2.get(a));
-	}
-	end();
-	glResetColor();
 
 	begin(GL11.GL_QUADS);
 	glSetColor();

@@ -5,12 +5,12 @@ import net.minecraft.entity.Entity;
 import com.williameze.api.math.Plane;
 import com.williameze.api.math.Vector;
 import com.williameze.minegicka3.main.Element;
-import com.williameze.minegicka3.main.entities.EntitySpray;
-import com.williameze.minegicka3.main.entities.EntitySprayCold;
-import com.williameze.minegicka3.main.entities.EntitySprayFire;
-import com.williameze.minegicka3.main.entities.EntitySpraySteam;
-import com.williameze.minegicka3.main.entities.EntitySprayWater;
-import com.williameze.minegicka3.main.entities.EntityStorm;
+import com.williameze.minegicka3.main.entities.magic.EntitySpray;
+import com.williameze.minegicka3.main.entities.magic.EntitySprayCold;
+import com.williameze.minegicka3.main.entities.magic.EntitySprayFire;
+import com.williameze.minegicka3.main.entities.magic.EntitySpraySteam;
+import com.williameze.minegicka3.main.entities.magic.EntitySprayWater;
+import com.williameze.minegicka3.main.entities.magic.EntityStorm;
 import com.williameze.minegicka3.main.spells.Spell.CastType;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -37,7 +37,7 @@ public class SpellExecuteSpray extends SpellExecute
 	    int count = s.countElements();
 	    double power = Math.pow(count, 0.3) * Math.min(s.getPower(), 7) * 1.25D;
 	    double consume = Math.pow(count, 1.2) * s.getManaConsumeRate() * 1.5D;
-	    int loop = client ? 2 : 1;
+	    int loop = client ? 0 : 2;
 
 	    Vector dir = new Vector(caster.getLookVec());
 	    if (s.castType == CastType.Area)
@@ -54,7 +54,7 @@ public class SpellExecuteSpray extends SpellExecute
 		consume *= 1.5;
 	    }
 
-	    loop = (int) (loop * Math.pow(s.getPower(), 1));
+	    loop = (int) (loop * Math.pow(s.getPower(), 0.5));
 
 	    double consumeRate = consumeMana(s, consume, true, false, 0);
 	    power *= consumeRate;
@@ -70,7 +70,8 @@ public class SpellExecuteSpray extends SpellExecute
 	    {
 		for (Element e : s.elements)
 		{
-		    if (client && rnd.nextInt(4 * count * (isFromStorm ? 2 : 1)) <= 6 || !client && rnd.nextInt(10 * (isFromStorm ? 2 : 1)) == 0)
+		    if (client && rnd.nextInt(4 * count * (isFromStorm ? 2 : 1)) <= 6 || !client
+			    && rnd.nextInt(2 * count * (isFromStorm ? 2 : 1)) <= 6)
 		    {
 			shootSpray(s, e, pos, dir, power, 0.5, client);
 		    }

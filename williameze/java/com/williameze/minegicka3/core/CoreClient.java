@@ -26,7 +26,7 @@ import com.williameze.minegicka3.ModKeybinding;
 import com.williameze.minegicka3.main.Element;
 import com.williameze.minegicka3.main.Values;
 import com.williameze.minegicka3.main.magicks.Magick;
-import com.williameze.minegicka3.main.objects.ItemStaff;
+import com.williameze.minegicka3.main.objects.items.ItemStaff;
 import com.williameze.minegicka3.main.packets.PacketStartSpell;
 import com.williameze.minegicka3.main.packets.PacketStopSpell;
 import com.williameze.minegicka3.main.spells.Spell;
@@ -119,8 +119,8 @@ public class CoreClient
 	{
 	    if (currentClientCastingSpell == null)
 	    {
-		Spell s = new Spell(queuedElements, w.provider.dimensionId, p.getPersistentID(), p.getGameProfile().getName(), currentClientSpellCastType,
-			Spell.createAdditionalInfo(p));
+		Spell s = new Spell(queuedElements, w.provider.dimensionId, p.getPersistentID(), p.getGameProfile().getName(),
+			currentClientSpellCastType, Spell.createAdditionalInfo(p));
 		currentClientCastingSpell = s;
 		ModBase.packetPipeline.sendToServer(new PacketStartSpell(s));
 	    }
@@ -154,11 +154,13 @@ public class CoreClient
 
     public void onClientTick(ClientTickEvent event)
     {
-
 	for (KeyBinding mkb : ModKeybinding.elementKeys)
 	{
-	    if (mkb.isPressed() && isWizardnessApplicable() && currentClientCastingSpell == null) playerQueueElement(ModKeybinding.keyToElementMap
-		    .get(mkb));
+	    if (mkb.isPressed() && isWizardnessApplicable() && currentClientCastingSpell == null
+		    && ModBase.proxy.getClientPlayer().getItemInUse() == null)
+	    {
+		playerQueueElement(ModKeybinding.keyToElementMap.get(mkb));
+	    }
 	}
 
 	if (ModKeybinding.keyClear.isPressed() && currentClientCastingSpell == null)

@@ -27,9 +27,9 @@ public class Plane
     {
 	double e = Math.E;
 	if (tang.x == 0 && tang.y == 0 && tang.z == 0) return new Vector(0, 0, 0);
-	if (tang.y == 0 && tang.z == 0) return new Vector(free / tang.x, e, e);
-	if (tang.x == 0 && tang.z == 0) return new Vector(e, free / tang.y, e);
-	if (tang.x == 0 && tang.y == 0) return new Vector(e, e, free / tang.z);
+	if (tang.y == 0 && tang.z == 0) return new Vector(-free / tang.x, e, e);
+	if (tang.x == 0 && tang.z == 0) return new Vector(e, -free / tang.y, e);
+	if (tang.x == 0 && tang.y == 0) return new Vector(e, e, -free / tang.z);
 	if (tang.y == 0) return getPointLackX(e, e);
 	if (tang.x == 0) return getPointLackY(e, e);
 	if (tang.z == 0) return getPointLackY(e, e);
@@ -38,17 +38,17 @@ public class Plane
 
     public Vector getPointLackX(double y, double z)
     {
-	return new Vector((free - tang.y * y - tang.z * z) / tang.x, y, z);
+	return new Vector((-free - tang.y * y - tang.z * z) / tang.x, y, z);
     }
 
     public Vector getPointLackY(double x, double z)
     {
-	return new Vector(x, (free - tang.x * x - tang.z * z) / tang.y, z);
+	return new Vector(x, (-free - tang.x * x - tang.z * z) / tang.y, z);
     }
 
     public Vector getPointLackZ(double x, double y)
     {
-	return new Vector(x, y, (free - tang.x * x - tang.y * y) / tang.z);
+	return new Vector(x, y, (-free - tang.x * x - tang.y * y) / tang.z);
     }
 
     public Vector intersectWith(Line l)

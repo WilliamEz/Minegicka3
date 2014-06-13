@@ -11,7 +11,7 @@ import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 
 import com.williameze.minegicka3.ModBase;
-import com.williameze.minegicka3.main.entities.EntityHomingLightning;
+import com.williameze.minegicka3.main.entities.magic.EntityHomingLightning;
 
 public class MagickHomingLightning extends Magick
 {

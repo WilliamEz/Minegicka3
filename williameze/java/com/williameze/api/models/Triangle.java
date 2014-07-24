@@ -11,6 +11,7 @@ import com.williameze.api.math.Vector;
 public class Triangle extends ModelObject
 {
     public Vector v1, v2, v3;
+    public Vector tv1, tv2, tv3;
     public Vector normal;
     public double currentScale = 1;
 
@@ -110,14 +111,18 @@ public class Triangle extends ModelObject
 
     public void addTriangleToGL()
     {
+	boolean texturize = tv1 != null && tv2 != null && tv3 != null;
 	setNormal(normal);
+	if (texturize) addTextureUV(tv1.x, tv1.y);
 	addVertex(v1);
+	if (texturize) addTextureUV(tv2.x, tv2.y);
 	addVertex(v2);
+	if (texturize) addTextureUV(tv3.x, tv3.y);
 	addVertex(v3);
     }
 
     @Override
-    public void render()
+    public void doRender()
     {
 	GL11.glPushMatrix();
 	begin(GL11.GL_TRIANGLES);

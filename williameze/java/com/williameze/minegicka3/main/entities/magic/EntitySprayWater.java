@@ -40,7 +40,7 @@ public class EntitySprayWater extends EntitySpray
     public void affectEntity(Entity e)
     {
 	super.affectEntity(e);
-	double power = Math.pow(Math.min(getSpell().getPower(), 8), 0.6) / e.width / e.width / e.height;
+	double power = 0.3 / e.width / e.width / e.height;
 	e.motionX += motionX * power;
 	e.motionY += motionY * power;
 	e.motionZ += motionZ * power;

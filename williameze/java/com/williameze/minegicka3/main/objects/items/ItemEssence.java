@@ -11,8 +11,8 @@ import net.minecraft.util.IIcon;
 import net.minecraft.world.World;
 
 import com.williameze.minegicka3.ModBase;
-import com.williameze.minegicka3.core.PlayersData;
-import com.williameze.minegicka3.main.Element;
+import com.williameze.minegicka3.functional.PlayersData;
+import com.williameze.minegicka3.mechanics.Element;
 
 public class ItemEssence extends Item
 {
@@ -28,17 +28,7 @@ public class ItemEssence extends Item
 
     public String getUnlockingColor()
     {
-	if (unlocking == Element.Arcane) return EnumChatFormatting.DARK_RED + "";
-	else if (unlocking == Element.Cold) return EnumChatFormatting.WHITE + "";
-	else if (unlocking == Element.Earth) return EnumChatFormatting.GOLD + "";
-	else if (unlocking == Element.Fire) return EnumChatFormatting.RED + "";
-	else if (unlocking == Element.Ice) return EnumChatFormatting.AQUA + "";
-	else if (unlocking == Element.Life) return EnumChatFormatting.GREEN + "";
-	else if (unlocking == Element.Lightning) return EnumChatFormatting.LIGHT_PURPLE + "";
-	else if (unlocking == Element.Shield) return EnumChatFormatting.YELLOW + "";
-	else if (unlocking == Element.Steam) return EnumChatFormatting.DARK_GRAY + "";
-	else if (unlocking == Element.Water) return EnumChatFormatting.BLUE + "";
-	else return "";
+	return unlocking.getTextColor();
     }
 
     @Override

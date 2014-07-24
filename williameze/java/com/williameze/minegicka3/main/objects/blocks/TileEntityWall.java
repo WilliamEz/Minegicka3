@@ -18,9 +18,9 @@ import net.minecraft.tileentity.TileEntity;
 import net.minecraft.util.AxisAlignedBB;
 
 import com.williameze.minegicka3.ModBase;
-import com.williameze.minegicka3.main.Element;
 import com.williameze.minegicka3.main.entities.fx.FXESimpleParticle;
-import com.williameze.minegicka3.main.spells.Spell;
+import com.williameze.minegicka3.mechanics.Element;
+import com.williameze.minegicka3.mechanics.spells.Spell;
 
 public class TileEntityWall extends TileEntity
 {

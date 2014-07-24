@@ -18,6 +18,7 @@ public class Ring extends ModelObject
 
     public Ring(Vector cent, Vector nor, double inner, double outer, int loop)
     {
+	pivot = cent.copy();
 	center = cent;
 	normal = nor;
 	innerRadius = inner;
@@ -41,9 +42,10 @@ public class Ring extends ModelObject
     }
 
     @Override
-    public void render()
+    public void doRender()
     {
 	GL11.glPushMatrix();
+	GL11.glDisable(GL11.GL_CULL_FACE);
 	begin(GL11.GL_QUAD_STRIP);
 	glSetColor();
 	setNormal(normal);
@@ -53,6 +55,7 @@ public class Ring extends ModelObject
 	}
 	end();
 	glResetColor();
+	GL11.glEnable(GL11.GL_CULL_FACE);
 	GL11.glPopMatrix();
     }
 

@@ -23,8 +23,8 @@ import com.williameze.api.lib.FuncHelper;
 import com.williameze.api.math.IntVector;
 import com.williameze.api.math.Vector;
 import com.williameze.minegicka3.main.Values;
-import com.williameze.minegicka3.main.spells.ESelectorDefault;
-import com.williameze.minegicka3.main.spells.Spell;
+import com.williameze.minegicka3.mechanics.spells.ESelectorDefault;
+import com.williameze.minegicka3.mechanics.spells.Spell;
 
 import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 

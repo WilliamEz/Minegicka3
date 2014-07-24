@@ -10,6 +10,7 @@ import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;
 import net.minecraft.init.Blocks;
 import net.minecraft.nbt.CompressedStreamTools;
+import net.minecraft.nbt.NBTSizeTracker;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
@@ -19,10 +20,10 @@ import com.williameze.api.lib.FuncHelper;
 import com.williameze.api.math.Vector;
 import com.williameze.api.selectors.BSelectorSolid;
 import com.williameze.minegicka3.ModBase;
-import com.williameze.minegicka3.main.Element;
 import com.williameze.minegicka3.main.Values;
-import com.williameze.minegicka3.main.spells.ESelectorDefault;
-import com.williameze.minegicka3.main.spells.Spell;
+import com.williameze.minegicka3.mechanics.Element;
+import com.williameze.minegicka3.mechanics.spells.ESelectorDefault;
+import com.williameze.minegicka3.mechanics.spells.Spell;
 
 import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 
@@ -248,32 +249,13 @@ public class EntityBeam extends Entity implements IEntityAdditionalSpawnData
     @Override
     public void writeSpawnData(ByteBuf buffer)
     {
-	try
-	{
-	    byte[] b = CompressedStreamTools.compress(spell.writeToNBT());
-	    buffer.writeInt(b.length);
-	    buffer.writeBytes(b);
-	}
-	catch (IOException e)
-	{
-	    e.printStackTrace();
-	}
+	FuncHelper.writeNBTToByteBuf(buffer, spell.writeToNBT());
     }
 
     @Override
     public void readSpawnData(ByteBuf additionalData)
     {
-	try
-	{
-	    byte[] b = new byte[additionalData.readInt()];
-	    additionalData.readBytes(b);
-	    NBTTagCompound tag = CompressedStreamTools.decompress(b);
-	    spell = Spell.createFromNBT(tag);
-	}
-	catch (IOException e)
-	{
-	    e.printStackTrace();
-	}
+	spell = Spell.createFromNBT(FuncHelper.readNBTFromByteBuf(additionalData));
     }
 
 }

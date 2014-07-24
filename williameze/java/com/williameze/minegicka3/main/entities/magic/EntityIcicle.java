@@ -8,6 +8,7 @@ import java.util.List;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.EntityLivingBase;
+import net.minecraft.entity.IProjectile;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
@@ -16,12 +17,13 @@ import net.minecraft.world.World;
 import com.williameze.api.lib.FuncHelper;
 import com.williameze.api.math.Vector;
 import com.williameze.minegicka3.main.Values;
-import com.williameze.minegicka3.main.spells.ESelectorDefault;
-import com.williameze.minegicka3.main.spells.Spell;
+import com.williameze.minegicka3.main.entities.IEntityNullifiable;
+import com.williameze.minegicka3.mechanics.spells.ESelectorDefault;
+import com.williameze.minegicka3.mechanics.spells.Spell;
 
 import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 
-public class EntityIcicle extends Entity implements IEntityAdditionalSpawnData
+public class EntityIcicle extends Entity implements IEntityAdditionalSpawnData, IProjectile, IEntityNullifiable
 {
     public Spell spell = Spell.none;
     public double gravity;
@@ -50,7 +52,7 @@ public class EntityIcicle extends Entity implements IEntityAdditionalSpawnData
     {
 	return false;
     }
-    
+
     @Override
     public boolean isInRangeToRenderDist(double par1)
     {
@@ -116,8 +118,8 @@ public class EntityIcicle extends Entity implements IEntityAdditionalSpawnData
 
 	if (!isDead)
 	{
-	    List<Entity> entities = FuncHelper.getEntitiesWithinBoundingBoxMovement(worldObj, boundingBox, new Vector(motionX, motionY, motionZ), EntityLivingBase.class,
-		    new ESelectorDefault(getSpell()));
+	    List<Entity> entities = FuncHelper.getEntitiesWithinBoundingBoxMovement(worldObj, boundingBox, new Vector(motionX, motionY, motionZ),
+		    EntityLivingBase.class, new ESelectorDefault(getSpell()));
 	    entities.remove(spell.getCaster());
 	    Entity e = FuncHelper.getEntityClosestTo(posX, posY, posZ, entities);
 	    collideWithEntity(e);
@@ -166,31 +168,17 @@ public class EntityIcicle extends Entity implements IEntityAdditionalSpawnData
     @Override
     public void writeSpawnData(ByteBuf buffer)
     {
-	try
-	{
-	    byte[] b = CompressedStreamTools.compress(spell.writeToNBT());
-	    buffer.writeInt(b.length);
-	    buffer.writeBytes(b);
-	}
-	catch (IOException e)
-	{
-	    e.printStackTrace();
-	}
+	FuncHelper.writeNBTToByteBuf(buffer, spell.writeToNBT());
     }
 
     @Override
     public void readSpawnData(ByteBuf additionalData)
     {
-	try
-	{
-	    byte[] b = new byte[additionalData.readInt()];
-	    additionalData.readBytes(b);
-	    NBTTagCompound tag = CompressedStreamTools.decompress(b);
-	    setSpell(Spell.createFromNBT(tag));
-	}
-	catch (IOException e)
-	{
-	    e.printStackTrace();
-	}
+	setSpell(Spell.createFromNBT(FuncHelper.readNBTFromByteBuf(additionalData)));
+    }
+
+    @Override
+    public void setThrowableHeading(double var1, double var3, double var5, float var7, float var8)
+    {
     }
 }

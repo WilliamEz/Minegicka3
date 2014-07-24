@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.lwjgl.opengl.GL11;
 
+import com.williameze.api.math.Plane;
 import com.williameze.api.math.Vector;
 
 import cpw.mods.fml.relauncher.Side;
@@ -45,20 +46,22 @@ public class Cylinder extends ModelObject
     {
 	if (type == 1)
 	{
-	    return new Cylinder(cen1, cen2, new Vector(0, 1, 0), new Vector(0, -1, 0), radius1, radius2, cuts);
+	    return new Cylinder(cen1, cen2, new Vector(0, cen1.y > cen2.y ? 1 : -1, 0), new Vector(0, cen1.y > cen2.y ? -1 : 1, 0), radius1, radius2,
+		    cuts);
 	}
 	else if (type == 2)
 	{
-	    return new Cylinder(cen1, cen2, new Vector(1, 0, 0), new Vector(-1, 0, 0), radius1, radius2, cuts);
+	    return new Cylinder(cen1, cen2, new Vector(cen1.x > cen2.x ? 1 : -1, 0, 0), new Vector(cen1.x > cen2.x ? -1 : 1, 0, 0), radius1, radius2,
+		    cuts);
 	}
 	else if (type == 3)
 	{
-	    return new Cylinder(cen1, cen2, new Vector(0, 0, 1), new Vector(0, 0, -1), radius1, radius2, cuts);
+	    return new Cylinder(cen1, cen2, new Vector(0, 0, cen1.z > cen2.z ? 1 : -1), new Vector(0, 0, cen1.z > cen2.z ? -1 : 1), radius1, radius2,
+		    cuts);
 	}
 	else
 	{
-	    return new Cylinder(cen1, cen2, cen2.subtract(cen1.add(cen2).multiply(0.5)), cen1.subtract(cen1.add(cen2).multiply(0.5)), radius1,
-		    radius2, cuts);
+	    return new Cylinder(cen1, cen2, cen1.subtract(cen2), cen2.subtract(cen1), radius1, radius2, cuts);
 	}
     }
 
@@ -72,7 +75,7 @@ public class Cylinder extends ModelObject
 	this.radius2 = radiusTo;
 	this.cuts = cuts;
 	makeCylinder();
-	untwist();
+	//untwist();
     }
 
     public Cylinder makeCylinder()
@@ -82,8 +85,6 @@ public class Cylinder extends ModelObject
 	sideQuads = new ArrayList();
 	face1Normal = face1Normal.normalize();
 	face2Normal = face2Normal.normalize();
-	face1.add(face1Normal);
-	face2.add(face2Normal);
 
 	Vector axis = face1Normal.crossProduct(face2Normal);
 	if (!axis.isZeroVector())
@@ -92,26 +93,34 @@ public class Cylinder extends ModelObject
 	}
 	else
 	{
-	    axis = face1Normal.crossProduct(!(face1Normal.y == 0 && face1Normal.z == 0) ? face1Normal.add(1, 0, 0) : face1Normal.add(0, 0, 1));
-	    axis = axis.rotateAround(face1Normal, Math.PI / 4);
+	    Plane p = new Plane(face1Normal.copy(), 0);
+	    axis = p.getAssurancePoint().normalize();
 	}
 	Vector face1Circling = face1Normal.rotateAround(axis, Math.PI / 2).normalize().multiply(radius1);
 	Vector face2Circling = face2Normal.rotateAround(axis, -Math.PI / 2).normalize().multiply(radius2);
 	for (int a = 0; a < cuts; a++)
 	{
-
-	    Vector v1 = center2.add(face2Circling);
-	    Vector v2 = center1.add(face1Circling);
-	    face1Circling = face1Circling.rotateAround(face1Normal, Math.PI * 2D / cuts);
+	    Vector v1 = center1.add(face1Circling);
+	    Vector v2 = center2.add(face2Circling);
+	    face1Circling = face1Circling.rotateAround(face1Normal, -Math.PI * 2D / cuts);
 	    face2Circling = face2Circling.rotateAround(face2Normal, -Math.PI * 2D / cuts);
-	    Vector v3 = center1.add(face1Circling);
-	    Vector v4 = center2.add(face2Circling);
-
-	    face2.add(v1);
-	    face1.add(v2);
-
-	    Vector normalGuide = Vector.median(v1, v2, v3, v4).subtract(center1.add(center2).multiply(0.5));
-	    sideQuads.add(new Quad(v1, v2, v3, v4, normalGuide, true));
+	    face1.add(v1);
+	    face2.add(v2);
+	}
+	int maxIndex = face1.size() - 1;
+	for (int a = 0; a <= maxIndex; a++)
+	{
+	    int a1 = a;
+	    int a2 = a1 == 0 ? 0 : maxIndex + 1 - a1;
+	    int a3 = a + 1;
+	    if (a3 > maxIndex) a3 = 0;
+	    int a4 = a3 == 0 ? 0 : maxIndex + 1 - a3;
+	    Vector v1 = face1.get(a1);
+	    Vector v2 = face2.get(a2);
+	    Vector v3 = face1.get(a3);
+	    Vector v4 = face2.get(a4);
+	    Vector normalGuide = Vector.median(v1, v2, v4, v3).subtract(center1.add(center2).multiply(0.5));
+	    sideQuads.add(new Quad(v1, v2, v4, v3, normalGuide, true));
 	}
 	return this;
     }
@@ -134,9 +143,9 @@ public class Cylinder extends ModelObject
 	renderCaps = b;
 	return this;
     }
-    
+
     @Override
-    public void render()
+    public void doRender()
     {
 	GL11.glPushMatrix();
 
@@ -144,18 +153,18 @@ public class Cylinder extends ModelObject
 	{
 	    begin(GL11.GL_POLYGON);
 	    glSetColor();
-	    GL11.glNormal3d(face1.get(0).x, face1.get(0).y, face1.get(0).z);
-	    for (int a = 1; a < face1.size(); a++)
+	    GL11.glNormal3d(face1Normal.x, face1Normal.y, face1Normal.z);
+	    for (int a = 0; a < face1.size(); a++)
 	    {
 		addVertex(face1.get(a));
 	    }
 	    end();
 	    glResetColor();
-	    
+
 	    begin(GL11.GL_POLYGON);
 	    glSetColor();
-	    GL11.glNormal3d(face2.get(0).x, face2.get(0).y, face2.get(0).z);
-	    for (int a = 1; a < face2.size(); a++)
+	    GL11.glNormal3d(face2Normal.x, face2Normal.y, face2Normal.z);
+	    for (int a = 0; a < face2.size(); a++)
 	    {
 		addVertex(face2.get(a));
 	    }

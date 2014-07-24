@@ -9,9 +9,10 @@ import net.minecraft.server.MinecraftServer;
 import net.minecraft.world.World;
 import net.minecraftforge.common.MinecraftForge;
 
-import com.williameze.minegicka3.core.CoreBridge;
-import com.williameze.minegicka3.core.CoreClient;
-import com.williameze.minegicka3.core.CoreServer;
+import com.williameze.minegicka3.functional.CoreBridge;
+import com.williameze.minegicka3.functional.CoreClient;
+import com.williameze.minegicka3.functional.CoreServer;
+import com.williameze.minegicka3.main.worldgen.WorldGen;
 
 import cpw.mods.fml.common.FMLCommonHandler;
 import cpw.mods.fml.common.network.IGuiHandler;
@@ -25,7 +26,6 @@ public class CommonProxy implements IGuiHandler
 	FMLCommonHandler.instance().bus().register(new EventsHandler());
 	MinecraftForge.EVENT_BUS.register(new TickHandler());
 	MinecraftForge.EVENT_BUS.register(new EventsHandler());
-	// MinecraftForge.EVENT_BUS.register(CoreBridge.client);
     }
 
     public void sidedOnlyLoad()
@@ -46,7 +46,7 @@ public class CommonProxy implements IGuiHandler
     {
 	return null;
     }
-    
+
     public World getWorldForDimension(int dim)
     {
 	return FMLCommonHandler.instance().getMinecraftServerInstance().worldServerForDimension(dim);

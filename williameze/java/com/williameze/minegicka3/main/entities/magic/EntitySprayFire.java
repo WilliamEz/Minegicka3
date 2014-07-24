@@ -8,7 +8,7 @@ import net.minecraft.init.Blocks;
 import net.minecraft.world.World;
 import net.minecraftforge.common.util.ForgeDirection;
 
-import com.williameze.minegicka3.main.spells.Spell;
+import com.williameze.minegicka3.mechanics.spells.Spell;
 
 public class EntitySprayFire extends EntitySpray
 {

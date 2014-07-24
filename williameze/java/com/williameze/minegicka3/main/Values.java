@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.UUID;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.nbt.NBTSizeTracker;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.world.World;
 
@@ -27,6 +28,7 @@ public abstract class Values
     public static Color red = new Color(200, 0, 0);
 
     /** Values **/
+    public static NBTSizeTracker nbtSizeTracker = new NBTSizeTracker(Long.MAX_VALUE);
     public static int clientTicked = 0;
     public static double renderDistance = 32;
     public static double spellUpdateRange = 64;
@@ -46,6 +48,8 @@ public abstract class Values
     /** Classes **/
     public static class ResourceLocationCustom extends ResourceLocation
     {
+	public double imgWidth, imgHeight;
+
 	public ResourceLocationCustom(String s)
 	{
 	    super(ModBase.MODID, "textures/" + s);

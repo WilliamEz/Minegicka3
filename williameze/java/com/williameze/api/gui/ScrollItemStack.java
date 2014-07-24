@@ -10,33 +10,42 @@ import com.williameze.api.math.Vector;
 public class ScrollItemStack extends ScrollObject
 {
     public ItemStack is;
+    public int invIndex;
 
-    public ScrollItemStack(PanelScrollList panel, ItemStack is, double occupyHeight)
+    public ScrollItemStack(PanelScrollVertical panel, ItemStack is, double h)
     {
-	this(panel, is, occupyHeight, 16D);
+	this(panel, is, h, panel.panelWidth, 16D);
     }
 
-    public ScrollItemStack(PanelScrollList panel, ItemStack is, double occupyHeight, double stackDrawSize)
+    public ScrollItemStack(PanelScrollHorizontal panel, ItemStack is, double w)
     {
-	this(panel, is, occupyHeight, true, true, stackDrawSize);
+	this(panel, is, panel.panelHeight, w, 16D);
     }
 
-    public ScrollItemStack(PanelScrollList panel, ItemStack is, double occupyHeight, boolean xCentered, boolean yCentered,
-	    double stackDrawSize)
+    public ScrollItemStack(Panel panel, ItemStack is, double h, double w)
     {
-	this(panel, is, occupyHeight, new Vector(xCentered ? panel.panelWidth / 2 : stackDrawSize / 2, yCentered ? occupyHeight / 2
-		: stackDrawSize / 2, 0), stackDrawSize);
+	this(panel, is, h, w, 16D);
     }
 
-    public ScrollItemStack(PanelScrollList panel, ItemStack is, double occupyHeight, Vector stackCenter, double stackDrawSize)
+    public ScrollItemStack(Panel panel, ItemStack is, double h, double w, double stackDrawSize)
     {
-	this(panel, is, occupyHeight, new Vector(stackCenter.x - stackDrawSize / 2, stackCenter.y - stackDrawSize / 2, stackCenter.z),
-		new Vector(stackCenter.x + stackDrawSize / 2, stackCenter.y + stackDrawSize / 2, stackCenter.z));
+	this(panel, is, h, w, true, true, stackDrawSize);
     }
 
-    public ScrollItemStack(PanelScrollList panel, ItemStack is, double occupyHeight, Vector stackDrawV1, Vector stackDrawV2)
+    public ScrollItemStack(Panel panel, ItemStack is, double h, double w, boolean xCentered, boolean yCentered, double stackDrawSize)
     {
-	super(panel, occupyHeight);
+	this(panel, is, h, w, new Vector(xCentered ? w / 2 : stackDrawSize / 2, yCentered ? h / 2 : stackDrawSize / 2, 0), stackDrawSize);
+    }
+
+    public ScrollItemStack(Panel panel, ItemStack is, double h, double w, Vector stackCenter, double stackDrawSize)
+    {
+	this(panel, is, h, w, new Vector(stackCenter.x - stackDrawSize / 2, stackCenter.y - stackDrawSize / 2, stackCenter.z), new Vector(
+		stackCenter.x + stackDrawSize / 2, stackCenter.y + stackDrawSize / 2, stackCenter.z));
+    }
+
+    public ScrollItemStack(Panel panel, ItemStack is, double h, double w, Vector stackDrawV1, Vector stackDrawV2)
+    {
+	super(panel, w, h);
 	localObjectMinX = Math.min(stackDrawV1.x, stackDrawV2.x);
 	localObjectMinY = Math.min(stackDrawV1.y, stackDrawV2.y);
 	localObjectMaxX = Math.max(stackDrawV1.x, stackDrawV2.x);

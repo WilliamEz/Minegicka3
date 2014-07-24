@@ -2,7 +2,7 @@ package com.williameze.minegicka3.main.entities.magic;
 
 import java.awt.Color;
 
-import com.williameze.minegicka3.main.spells.Spell;
+import com.williameze.minegicka3.mechanics.spells.Spell;
 
 import net.minecraft.block.material.Material;
 import net.minecraft.entity.Entity;

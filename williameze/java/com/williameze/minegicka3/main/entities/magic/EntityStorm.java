@@ -12,12 +12,13 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.Vec3;
 import net.minecraft.world.World;
 
+import com.williameze.api.lib.FuncHelper;
 import com.williameze.api.math.Vector;
 import com.williameze.minegicka3.ModBase;
 import com.williameze.minegicka3.main.Values;
 import com.williameze.minegicka3.main.entities.IEntityNullifiable;
-import com.williameze.minegicka3.main.spells.Spell;
-import com.williameze.minegicka3.main.spells.Spell.SpellType;
+import com.williameze.minegicka3.mechanics.spells.Spell;
+import com.williameze.minegicka3.mechanics.spells.Spell.SpellType;
 
 import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 
@@ -113,16 +114,14 @@ public class EntityStorm extends Entity implements IEntityAdditionalSpawnData, I
     @Override
     public void writeSpawnData(ByteBuf buffer)
     {
+	FuncHelper.writeNBTToByteBuf(buffer, spell.writeToNBT());
 	try
 	{
 	    buffer.writeInt(maxTick);
-	    byte[] b = CompressedStreamTools.compress(spell.writeToNBT());
-	    buffer.writeInt(b.length);
-	    buffer.writeBytes(b);
 	    buffer.writeLong(entityUniqueID.getMostSignificantBits());
 	    buffer.writeLong(entityUniqueID.getLeastSignificantBits());
 	}
-	catch (IOException e)
+	catch (Exception e)
 	{
 	    e.printStackTrace();
 	}
@@ -131,16 +130,13 @@ public class EntityStorm extends Entity implements IEntityAdditionalSpawnData, I
     @Override
     public void readSpawnData(ByteBuf additionalData)
     {
+	spell = Spell.createFromNBT(FuncHelper.readNBTFromByteBuf(additionalData));
 	try
 	{
 	    maxTick = additionalData.readInt();
-	    byte[] b = new byte[additionalData.readInt()];
-	    additionalData.readBytes(b);
-	    NBTTagCompound tag = CompressedStreamTools.decompress(b);
-	    spell = Spell.createFromNBT(tag);
 	    entityUniqueID = new UUID(additionalData.readLong(), additionalData.readLong());
 	}
-	catch (IOException e)
+	catch (Exception e)
 	{
 	    e.printStackTrace();
 	}

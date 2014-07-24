@@ -13,12 +13,8 @@ import net.minecraft.network.NetHandlerPlayServer;
 import com.williameze.minegicka3.ModBase;
 
 import cpw.mods.fml.common.network.FMLEmbeddedChannel;
-import cpw.mods.fml.common.network.FMLIndexedMessageToMessageCodec;
-import cpw.mods.fml.common.network.FMLOutboundHandler;
 import cpw.mods.fml.common.network.NetworkRegistry;
 import cpw.mods.fml.common.network.NetworkRegistry.TargetPoint;
-import cpw.mods.fml.common.network.simpleimpl.IMessage;
-import cpw.mods.fml.common.network.simpleimpl.IMessageHandler;
 import cpw.mods.fml.common.network.simpleimpl.SimpleNetworkWrapper;
 import cpw.mods.fml.relauncher.Side;
 
@@ -62,6 +58,10 @@ public class PacketHandler// extends FMLIndexedMessageToMessageCodec<Packet>
 	networkWrapper.registerMessage(PacketPlayerUnlockAll.class, PacketPlayerUnlockAll.class, discriminator, Side.SERVER);
 	discriminator++;
 	networkWrapper.registerMessage(PacketActiveStaff.class, PacketActiveStaff.class, discriminator, Side.SERVER);
+	discriminator++;
+	networkWrapper.registerMessage(PacketClientUnlockMagick.class, PacketClientUnlockMagick.class, discriminator, Side.SERVER);
+	discriminator++;
+	networkWrapper.registerMessage(PacketEnchantStaff.class, PacketEnchantStaff.class, discriminator, Side.SERVER);
 	discriminator++;
     }
 

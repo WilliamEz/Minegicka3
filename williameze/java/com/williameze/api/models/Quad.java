@@ -12,6 +12,7 @@ import net.minecraft.client.shader.TesselatorVertexState;
 public class Quad extends ModelObject
 {
     public Vector v1, v2, v3, v4;
+    public Vector tv1, tv2, tv3, tv4;
     public Vector normal;
     public double currentScale = 1;
 
@@ -156,24 +157,34 @@ public class Quad extends ModelObject
 
     public void addQuadToGL()
     {
+	boolean texturize = tv1 != null && tv2 != null && tv3 != null && tv4 != null;
 	setNormal(normal);
+	if (texturize) addTextureUV(tv1.x, tv1.y);
 	addVertex(v1);
+	if (texturize) addTextureUV(tv2.x, tv2.y);
 	addVertex(v2);
+	if (texturize) addTextureUV(tv3.x, tv3.y);
 	addVertex(v3);
+	if (texturize) addTextureUV(tv4.x, tv4.y);
 	addVertex(v4);
     }
 
     public void addReverseQuadToGL()
     {
+	boolean texturize = tv1 != null && tv2 != null && tv3 != null && tv4 != null;
 	setNormal(normal);
+	if (texturize) addTextureUV(tv1.x, tv1.y);
 	addVertex(v1);
+	if (texturize) addTextureUV(tv4.x, tv4.y);
 	addVertex(v4);
+	if (texturize) addTextureUV(tv3.x, tv3.y);
 	addVertex(v3);
+	if (texturize) addTextureUV(tv2.x, tv2.y);
 	addVertex(v2);
     }
 
     @Override
-    public void render()
+    public void doRender()
     {
 	GL11.glPushMatrix();
 	begin(GL11.GL_QUADS);

@@ -5,16 +5,20 @@ import java.util.HashMap;
 import java.util.Random;
 
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.item.EntityItem;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.potion.PotionEffect;
+import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 import net.minecraftforge.event.entity.EntityJoinWorldEvent;
+import net.minecraftforge.event.entity.EntityStruckByLightningEvent;
 import net.minecraftforge.event.entity.living.LivingDropsEvent;
 import net.minecraftforge.event.world.WorldEvent;
 
-import com.williameze.minegicka3.core.PlayerData;
-import com.williameze.minegicka3.core.PlayersData;
+import com.williameze.minegicka3.functional.PlayerData;
+import com.williameze.minegicka3.functional.PlayersData;
 import com.williameze.minegicka3.main.Values;
 
 import cpw.mods.fml.common.FMLCommonHandler;
@@ -140,6 +144,21 @@ public class EventsHandler implements IEventListener
 		    new ItemStack(ModBase.thingy));
 	    ei.delayBeforeCanPickup = 100;
 	    event.drops.add(ei);
+	}
+    }
+
+    @SubscribeEvent
+    public void onEntityStruckByLightning(EntityStruckByLightningEvent event)
+    {
+	if (event.entity instanceof EntityLivingBase)
+	{
+	    PotionEffect pe = ((EntityLivingBase) event.entity).getActivePotionEffect(ModBase.lightningResistance);
+	    if (pe != null)
+	    {
+		event.setCanceled(true);
+		event.entity.attackEntityFrom(DamageSource.inFire, 5 / (pe.getAmplifier() + 1));
+		event.entity.setFire(8 / (pe.getAmplifier() + 1));
+	    }
 	}
     }
 

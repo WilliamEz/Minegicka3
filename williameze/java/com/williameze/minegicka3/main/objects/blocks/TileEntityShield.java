@@ -15,7 +15,7 @@ import net.minecraft.tileentity.TileEntity;
 
 import com.williameze.api.lib.NoiseGen1D;
 import com.williameze.api.math.Vector;
-import com.williameze.minegicka3.main.spells.Spell;
+import com.williameze.minegicka3.mechanics.spells.Spell;
 
 public class TileEntityShield extends TileEntity
 {
@@ -60,7 +60,8 @@ public class TileEntityShield extends TileEntity
     public void setSpell(Spell s)
     {
 	spell = s;
-	life = Math.max((int) (200D * spell.getPower()), life);
+	life = Math.max((int) (200D * spell.getPower() * spell.getDamageModifier().shieldMod), life);
+	if (life <= 0) life = 40;
     }
 
     public void blockClicked(EntityPlayer p)

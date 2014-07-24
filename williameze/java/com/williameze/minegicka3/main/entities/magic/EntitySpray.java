@@ -22,8 +22,8 @@ import com.williameze.api.lib.FuncHelper;
 import com.williameze.api.math.IntVector;
 import com.williameze.api.math.Vector;
 import com.williameze.minegicka3.main.Values;
-import com.williameze.minegicka3.main.spells.ESelectorDefault;
-import com.williameze.minegicka3.main.spells.Spell;
+import com.williameze.minegicka3.mechanics.spells.ESelectorDefault;
+import com.williameze.minegicka3.mechanics.spells.Spell;
 
 import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 
@@ -91,9 +91,7 @@ public class EntitySpray extends Entity implements IEntityAdditionalSpawnData
     @Override
     public AxisAlignedBB getCollisionBox(Entity e)
     {
-	if (e instanceof EntitySpray && spell.equals(((EntitySpray) e).spell)) return null;
-	return boundingBox;
-	// return null;
+	return null;
     }
 
     @Override
@@ -149,8 +147,8 @@ public class EntitySpray extends Entity implements IEntityAdditionalSpawnData
 		}
 	    }
 
-	    List<Entity> entities = FuncHelper.getEntitiesWithinBoundingBoxMovement(worldObj, boundingBox, new Vector(motionX, motionY, motionZ), EntityLivingBase.class,
-		    new ESelectorDefault(getSpell()));
+	    List<Entity> entities = FuncHelper.getEntitiesWithinBoundingBoxMovement(worldObj, boundingBox, new Vector(motionX, motionY, motionZ),
+		    EntityLivingBase.class, new ESelectorDefault(getSpell()));
 	    entities.remove(spell.getCaster());
 	    for (Entity e : entities)
 	    {
@@ -268,7 +266,7 @@ public class EntitySpray extends Entity implements IEntityAdditionalSpawnData
     {
 	return false;
     }
-    
+
     @Override
     protected void readEntityFromNBT(NBTTagCompound var1)
     {
@@ -283,17 +281,15 @@ public class EntitySpray extends Entity implements IEntityAdditionalSpawnData
     @Override
     public void writeSpawnData(ByteBuf buffer)
     {
+	FuncHelper.writeNBTToByteBuf(buffer, spell.writeToNBT());
 	try
 	{
-	    byte[] b = CompressedStreamTools.compress(spell.writeToNBT());
-	    buffer.writeInt(b.length);
-	    buffer.writeBytes(b);
 	    buffer.writeDouble(spiralCore.x);
 	    buffer.writeDouble(spiralCore.y);
 	    buffer.writeDouble(spiralCore.z);
 	    buffer.writeBoolean(server);
 	}
-	catch (IOException e)
+	catch (Exception e)
 	{
 	    e.printStackTrace();
 	}
@@ -302,16 +298,13 @@ public class EntitySpray extends Entity implements IEntityAdditionalSpawnData
     @Override
     public void readSpawnData(ByteBuf additionalData)
     {
+	spell = Spell.createFromNBT(FuncHelper.readNBTFromByteBuf(additionalData));
 	try
 	{
-	    byte[] b = new byte[additionalData.readInt()];
-	    additionalData.readBytes(b);
-	    NBTTagCompound tag = CompressedStreamTools.decompress(b);
-	    spell = Spell.createFromNBT(tag);
 	    spiralCore = new Vector(additionalData.readDouble(), additionalData.readDouble(), additionalData.readDouble());
 	    server = additionalData.readBoolean();
 	}
-	catch (IOException e)
+	catch (Exception e)
 	{
 	    e.printStackTrace();
 	}

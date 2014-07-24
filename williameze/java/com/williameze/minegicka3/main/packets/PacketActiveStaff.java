@@ -9,12 +9,14 @@ import net.minecraft.entity.EntityLivingBase;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
+import net.minecraft.nbt.NBTSizeTracker;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
 import com.williameze.minegicka3.ModBase;
-import com.williameze.minegicka3.core.CoreBridge;
-import com.williameze.minegicka3.main.objects.items.ItemStaff;
+import com.williameze.minegicka3.functional.CoreBridge;
+import com.williameze.minegicka3.main.Values;
+import com.williameze.minegicka3.main.objects.items.Staff;
 
 public class PacketActiveStaff extends Packet<PacketActiveStaff>
 {
@@ -74,7 +76,7 @@ public class PacketActiveStaff extends Packet<PacketActiveStaff>
 	    casterName = name;
 	    b = new byte[buffer.readInt()];
 	    buffer.readBytes(b);
-	    NBTTagCompound tag = CompressedStreamTools.decompress(b);
+	    NBTTagCompound tag = CompressedStreamTools.func_152457_a(b, Values.nbtSizeTracker);
 	    is = ItemStack.loadItemStackFromNBT(tag);
 	}
 	catch (Exception e)
@@ -93,9 +95,9 @@ public class PacketActiveStaff extends Packet<PacketActiveStaff>
     {
 	World world = ModBase.proxy.getWorldForDimension(dimensionID);
 	Entity e = CoreBridge.instance().getEntityFromArgs(casterUUID, dimensionID, casterName, true, false, true);
-	if (e instanceof EntityLivingBase && is != null && is.getItem() instanceof ItemStaff)
+	if (e instanceof EntityLivingBase && is != null && is.getItem() instanceof Staff)
 	{
-	    ((ItemStaff) is.getItem()).activeAbility(world, (EntityLivingBase) e, is);
+	    ((Staff) is.getItem()).activeAbility(world, (EntityLivingBase) e, is);
 	}
     }
 }

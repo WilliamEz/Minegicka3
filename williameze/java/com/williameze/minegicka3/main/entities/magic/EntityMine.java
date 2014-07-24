@@ -13,10 +13,11 @@ import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 
+import com.williameze.api.lib.FuncHelper;
 import com.williameze.minegicka3.main.Values;
 import com.williameze.minegicka3.main.entities.IEntityNullifiable;
-import com.williameze.minegicka3.main.spells.Spell;
-import com.williameze.minegicka3.main.spells.Spell.CastType;
+import com.williameze.minegicka3.mechanics.spells.Spell;
+import com.williameze.minegicka3.mechanics.spells.Spell.CastType;
 
 import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 
@@ -134,15 +135,13 @@ public class EntityMine extends Entity implements IEntityAdditionalSpawnData, IE
     @Override
     public void writeSpawnData(ByteBuf buffer)
     {
+	FuncHelper.writeNBTToByteBuf(buffer, spell.writeToNBT());
 	try
 	{
-	    byte[] b = CompressedStreamTools.compress(spell.writeToNBT());
-	    buffer.writeInt(b.length);
-	    buffer.writeBytes(b);
 	    buffer.writeLong(entityUniqueID.getMostSignificantBits());
 	    buffer.writeLong(entityUniqueID.getLeastSignificantBits());
 	}
-	catch (IOException e)
+	catch (Exception e)
 	{
 	    e.printStackTrace();
 	}
@@ -151,15 +150,12 @@ public class EntityMine extends Entity implements IEntityAdditionalSpawnData, IE
     @Override
     public void readSpawnData(ByteBuf additionalData)
     {
+	spell = Spell.createFromNBT(FuncHelper.readNBTFromByteBuf(additionalData));
 	try
 	{
-	    byte[] b = new byte[additionalData.readInt()];
-	    additionalData.readBytes(b);
-	    NBTTagCompound tag = CompressedStreamTools.decompress(b);
-	    spell = Spell.createFromNBT(tag);
 	    entityUniqueID = new UUID(additionalData.readLong(), additionalData.readLong());
 	}
-	catch (IOException e)
+	catch (Exception e)
 	{
 	    e.printStackTrace();
 	}

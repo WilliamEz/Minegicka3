@@ -94,7 +94,7 @@ public class CylinderConjunc extends ModelObject
     }
 
     @Override
-    public void render()
+    public void doRender()
     {
 	for (Cylinder seg : segments)
 	{

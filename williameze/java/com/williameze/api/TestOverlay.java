@@ -12,7 +12,7 @@ import com.williameze.api.lib.NoiseGen1D;
 import com.williameze.api.lib.NoiseGen2D;
 import com.williameze.minegicka3.ModBase;
 import com.williameze.minegicka3.main.Values;
-import com.williameze.minegicka3.main.models.entity.ModelEntityBoulder;
+import com.williameze.minegicka3.main.entities.magic.model.ModelEntityBoulder;
 
 import cpw.mods.fml.relauncher.Side;
 import cpw.mods.fml.relauncher.SideOnly;
@@ -29,7 +29,7 @@ public class TestOverlay
     public static void render()
     {
 	Minecraft mc = Minecraft.getMinecraft();
-	ScaledResolution scaledResolution = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
+	ScaledResolution scaledResolution = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
 	int width = scaledResolution.getScaledWidth();
 	int height = scaledResolution.getScaledHeight();
 	DrawHelper.drawRect(0, 0, width, height, 1, 1, 1, 1);
@@ -40,7 +40,7 @@ public class TestOverlay
     public static void renderTestNoiseGen1D()
     {
 	Minecraft mc = Minecraft.getMinecraft();
-	ScaledResolution scaledResolution = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
+	ScaledResolution scaledResolution = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
 	int width = scaledResolution.getScaledWidth();
 	int height = scaledResolution.getScaledHeight();
 
@@ -117,7 +117,7 @@ public class TestOverlay
     public static void renderTestNoiseGen2D()
     {
 	Minecraft mc = Minecraft.getMinecraft();
-	ScaledResolution scaledResolution = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
+	ScaledResolution scaledResolution = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
 	int width = scaledResolution.getScaledWidth();
 	int height = scaledResolution.getScaledHeight();
 

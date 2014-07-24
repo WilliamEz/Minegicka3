@@ -1,26 +1,34 @@
 package com.williameze.api.lib;
 
+import java.awt.image.BufferedImage;
+import java.io.IOException;
+import java.io.InputStream;
 import java.nio.FloatBuffer;
-import java.util.List;
+
+import javax.imageio.ImageIO;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.FontRenderer;
 import net.minecraft.client.renderer.GLAllocation;
-import net.minecraft.client.renderer.OpenGlHelper;
 import net.minecraft.client.renderer.RenderHelper;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.client.renderer.entity.RenderItem;
 import net.minecraft.client.renderer.texture.TextureManager;
+import net.minecraft.client.resources.IResource;
+import net.minecraft.client.resources.IResourceManager;
 import net.minecraft.item.ItemStack;
-import net.minecraft.util.EnumChatFormatting;
+import net.minecraft.util.ResourceLocation;
 
 import org.lwjgl.opengl.GL11;
-import org.lwjgl.opengl.GL12;
 
 import com.williameze.api.math.Vector;
-import com.williameze.minegicka3.main.Element;
 import com.williameze.minegicka3.main.Values;
+import com.williameze.minegicka3.mechanics.Element;
 
+import cpw.mods.fml.relauncher.Side;
+import cpw.mods.fml.relauncher.SideOnly;
+
+@SideOnly(Side.CLIENT)
 public class DrawHelper
 {
     public static Minecraft mc = Minecraft.getMinecraft();
@@ -119,8 +127,7 @@ public class DrawHelper
 
 	Tessellator tess = Tessellator.instance;
 	tess.startDrawingQuads();
-	tessAddQuad(tess, x + w / 2 - actualW / 2, y + h / 2 - actualH / 2, x + w / 2 + actualW / 2, y + h / 2 + actualH / 2, tu1, tv1,
-		tu2, tv2);
+	tessAddQuad(tess, x + w / 2 - actualW / 2, y + h / 2 - actualH / 2, x + w / 2 + actualW / 2, y + h / 2 + actualH / 2, tu1, tv1, tu2, tv2);
 	tess.draw();
     }
 
@@ -128,8 +135,8 @@ public class DrawHelper
     {
 	if (fontRenderer == null) fontRenderer = mc.fontRenderer;
 	GL11.glPushMatrix();
-        GL11.glEnable(GL11.GL_NORMALIZE);
-        RenderHelper.enableGUIStandardItemLighting();
+	GL11.glEnable(GL11.GL_NORMALIZE);
+	RenderHelper.enableGUIStandardItemLighting();
 	GL11.glColor3f(1F, 1F, 1F);
 	itemRender.zLevel = 200.0F;
 	FontRenderer font = fontRenderer;
@@ -137,8 +144,27 @@ public class DrawHelper
 	itemRender.renderItemAndEffectIntoGUI(fontRenderer, mc.getTextureManager(), is, x, y);
 	itemRender.renderItemOverlayIntoGUI(fontRenderer, mc.getTextureManager(), is, x, y, stackSize);
 	itemRender.zLevel = 0.0F;
-        RenderHelper.disableStandardItemLighting();
+	RenderHelper.disableStandardItemLighting();
 	GL11.glPopMatrix();
+    }
+
+    public static int[] getTextureDimensions(ResourceLocation res)
+    {
+	int[] d = new int[2];
+	IResourceManager resourceManager = Minecraft.getMinecraft().getResourceManager();
+	InputStream inputstream = null;
+	try
+	{
+	    IResource iresource = resourceManager.getResource(res);
+	    inputstream = iresource.getInputStream();
+	    BufferedImage bufferedimage = ImageIO.read(inputstream);
+	    d = new int[] { bufferedimage.getWidth(), bufferedimage.getHeight() };
+	}
+	catch (IOException e)
+	{
+	    e.printStackTrace();
+	}
+	return d;
     }
 
     public static void blurTexture(boolean b)
@@ -158,37 +184,27 @@ public class DrawHelper
 
     public static void enableLighting(float intensity)
     {
-	GL11.glPushMatrix();
-	GL11.glEnable(GL11.GL_LIGHTING);
-	GL11.glEnable(GL11.GL_LIGHT0);
-	GL11.glEnable(GL11.GL_LIGHT1);
-	GL11.glEnable(GL11.GL_COLOR_MATERIAL);
-	GL11.glColorMaterial(GL11.GL_FRONT_AND_BACK, GL11.GL_AMBIENT_AND_DIFFUSE);
-	float f = 0.3F * intensity;
-	float f1 = 0.25F * intensity;
-	float f2 = 0.1F * intensity;
-	GL11.glLight(GL11.GL_LIGHT0, GL11.GL_POSITION, setColorBuffer(lighting1.x, lighting1.y, lighting1.z, 0.0D));
-	GL11.glLight(GL11.GL_LIGHT0, GL11.GL_DIFFUSE, setColorBuffer(f1, f1, f1, 1.0F));
-	GL11.glLight(GL11.GL_LIGHT0, GL11.GL_AMBIENT, setColorBuffer(0.0F, 0.0F, 0.0F, 1.0F));
-	GL11.glLight(GL11.GL_LIGHT0, GL11.GL_SPECULAR, setColorBuffer(f2, f2, f2, 1.0F));
-	GL11.glLight(GL11.GL_LIGHT1, GL11.GL_POSITION, setColorBuffer(lighting2.x, lighting2.y, lighting2.z, 0.0D));
-	GL11.glLight(GL11.GL_LIGHT1, GL11.GL_DIFFUSE, setColorBuffer(f1, f1, f1, 1.0F));
-	GL11.glLight(GL11.GL_LIGHT1, GL11.GL_AMBIENT, setColorBuffer(0.0F, 0.0F, 0.0F, 1.0F));
-	GL11.glLight(GL11.GL_LIGHT1, GL11.GL_SPECULAR, setColorBuffer(f2, f2, f2, 1.0F));
-	GL11.glShadeModel(GL11.GL_SMOOTH);
-	GL11.glLightModel(GL11.GL_LIGHT_MODEL_AMBIENT, setColorBuffer(f, f, f, 1.0F));
-	GL11.glPopMatrix();
+	RenderHelper.enableStandardItemLighting();
+	/**
+	 * GL11.glPushMatrix(); GL11.glEnable(GL11.GL_LIGHTING); GL11.glEnable(GL11.GL_LIGHT0); GL11.glEnable(GL11.GL_LIGHT1);
+	 * GL11.glEnable(GL11.GL_COLOR_MATERIAL); GL11.glColorMaterial(GL11.GL_FRONT_AND_BACK, GL11.GL_AMBIENT_AND_DIFFUSE); float f = 0.3F *
+	 * intensity; float f1 = 0.25F * intensity; float f2 = 0.1F * intensity; GL11.glLight(GL11.GL_LIGHT0, GL11.GL_POSITION,
+	 * setColorBuffer(lighting1.x, lighting1.y, lighting1.z, 0.0D)); GL11.glLight(GL11.GL_LIGHT0, GL11.GL_DIFFUSE, setColorBuffer(f1, f1, f1,
+	 * 1.0F)); GL11.glLight(GL11.GL_LIGHT0, GL11.GL_AMBIENT, setColorBuffer(0.0F, 0.0F, 0.0F, 1.0F)); GL11.glLight(GL11.GL_LIGHT0,
+	 * GL11.GL_SPECULAR, setColorBuffer(f2, f2, f2, 1.0F)); GL11.glLight(GL11.GL_LIGHT1, GL11.GL_POSITION, setColorBuffer(lighting2.x,
+	 * lighting2.y, lighting2.z, 0.0D)); GL11.glLight(GL11.GL_LIGHT1, GL11.GL_DIFFUSE, setColorBuffer(f1, f1, f1, 1.0F));
+	 * GL11.glLight(GL11.GL_LIGHT1, GL11.GL_AMBIENT, setColorBuffer(0.0F, 0.0F, 0.0F, 1.0F)); GL11.glLight(GL11.GL_LIGHT1, GL11.GL_SPECULAR,
+	 * setColorBuffer(f2, f2, f2, 1.0F)); GL11.glShadeModel(GL11.GL_SMOOTH); GL11.glLightModel(GL11.GL_LIGHT_MODEL_AMBIENT, setColorBuffer(f, f,
+	 * f, 1.0F)); GL11.glPopMatrix();
+	 **/
     }
 
     public static void disableLighting()
     {
-	
-	GL11.glDisable(GL11.GL_LIGHTING);
-	GL11.glDisable(GL11.GL_LIGHT0);
-	GL11.glDisable(GL11.GL_LIGHT1);
-	GL11.glDisable(GL11.GL_COLOR_MATERIAL);
-	RenderHelper.enableStandardItemLighting();
-	
+	/**
+	 * GL11.glDisable(GL11.GL_LIGHTING); GL11.glDisable(GL11.GL_LIGHT0); GL11.glDisable(GL11.GL_LIGHT1); GL11.glDisable(GL11.GL_COLOR_MATERIAL);
+	 * RenderHelper.enableStandardItemLighting();
+	 **/
 	RenderHelper.disableStandardItemLighting();
     }
 

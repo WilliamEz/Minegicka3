@@ -8,7 +8,7 @@ import com.williameze.api.TestOverlay;
 import com.williameze.api.math.Line;
 import com.williameze.api.math.Plane;
 import com.williameze.api.math.Vector;
-import com.williameze.minegicka3.core.CoreBridge;
+import com.williameze.minegicka3.functional.CoreBridge;
 import com.williameze.minegicka3.main.Values;
 
 import cpw.mods.fml.common.eventhandler.Event;

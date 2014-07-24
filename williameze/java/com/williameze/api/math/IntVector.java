@@ -1,6 +1,7 @@
 package com.williameze.api.math;
 
 import net.minecraft.util.Vec3;
+import net.minecraft.util.Vec3Pool;
 
 public class IntVector
 {
@@ -26,21 +27,21 @@ public class IntVector
 	double x = 0;
 	double y = 0;
 	double z = 0;
-	for(int a=0 ; a<vs.length ; a++)
+	for (int a = 0; a < vs.length; a++)
 	{
-	    x+=vs[a].x;
-	    y+=vs[a].y;
-	    z+=vs[a].z;
+	    x += vs[a].x;
+	    y += vs[a].y;
+	    z += vs[a].z;
 	}
-	x/=vs.length;
-	y/=vs.length;
-	z/=vs.length;
+	x /= vs.length;
+	y /= vs.length;
+	z /= vs.length;
 	return new IntVector(x, y, z);
     }
 
     public IntVector(double i, double j, double k)
     {
-	this((int)i, (int)j, (int)k);
+	this((int) i, (int) j, (int) k);
     }
 
     public IntVector(int i, int j, int k)
@@ -63,7 +64,7 @@ public class IntVector
 
     public IntVector multiply(double d)
     {
-	return new IntVector(x*d, y*d, z*d);
+	return new IntVector(x * d, y * d, z * d);
     }
 
     /**
@@ -72,11 +73,12 @@ public class IntVector
     public IntVector normalize()
     {
 	double d0 = Math.sqrt(x * x + y * y + z * z);
-	return isZeroVector() ? new IntVector(0,0,0) : new IntVector(x / d0, y / d0, z / d0);
+	return isZeroVector() ? new IntVector(0, 0, 0) : new IntVector(x / d0, y / d0, z / d0);
     }
-    
+
     /**
      * Get angle between vector, frmo 0 -> pi
+     * 
      * @param v
      * @return
      */
@@ -91,8 +93,7 @@ public class IntVector
     }
 
     /**
-     * Returns a new vector with the result of this vector x the specified
-     * vector.
+     * Returns a new vector with the result of this vector x the specified vector.
      */
     public IntVector crossProduct(IntVector v)
     {
@@ -101,12 +102,11 @@ public class IntVector
 
     public IntVector add(double i, double j, double k)
     {
-	return new IntVector(x+i, y+j, z+k);
+	return new IntVector(x + i, y + j, z + k);
     }
 
     /**
-     * Adds the specified x,y,z vector components to this vector and returns the
-     * resulting vector. Does not change this vector.
+     * Adds the specified x,y,z vector components to this vector and returns the resulting vector. Does not change this vector.
      */
     public IntVector add(IntVector v)
     {
@@ -114,12 +114,11 @@ public class IntVector
     }
 
     /**
-     * Returns a new vector with the result of this vector minus the specified
-     * vector
+     * Returns a new vector with the result of this vector minus the specified vector
      */
     public IntVector subtract(IntVector v)
     {
-	if(v==null) v = new IntVector(0,0,0);
+	if (v == null) v = new IntVector(0, 0, 0);
 	return new IntVector(x - v.x, y - v.y, z - v.z);
     }
 
@@ -235,6 +234,6 @@ public class IntVector
 
     public Vec3 vec3()
     {
-	return Vec3.fakePool.getVecFromPool(x, y, z);
+	return Vec3.createVectorHelper(x, y, z);
     }
 }

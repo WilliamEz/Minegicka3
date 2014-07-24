@@ -42,7 +42,7 @@ public abstract class DirectionalPanel extends ModelObject
     }
 
     @Override
-    public void render()
+    public void doRender()
     {
 	double xRot = Math.acos(opposeDirection.normalize().y) / Math.PI * 180 - 90;
 
@@ -113,6 +113,7 @@ public abstract class DirectionalPanel extends ModelObject
     {
 	glSetColor(v.color);
 	setNormal(v.normal);
+	if (v.texture != null) addTextureUV(v.texture.x, v.texture.y);
 	addVertex(v.position);
     }
 

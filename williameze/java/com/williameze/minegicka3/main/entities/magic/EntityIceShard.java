@@ -12,12 +12,13 @@ import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.world.World;
 
+import com.williameze.api.lib.FuncHelper;
 import com.williameze.minegicka3.main.Values;
-import com.williameze.minegicka3.main.spells.Spell;
+import com.williameze.minegicka3.mechanics.spells.Spell;
 
 import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 
-public class EntityIceShard extends Entity implements IEntityAdditionalSpawnData, IProjectile
+public class EntityIceShard extends Entity implements IEntityAdditionalSpawnData
 {
     public Spell spell = Spell.none;
     public int maxTick;
@@ -74,52 +75,33 @@ public class EntityIceShard extends Entity implements IEntityAdditionalSpawnData
     }
 
     @Override
-    protected void readEntityFromNBT(NBTTagCompound var1)
+    public boolean writeToNBTOptional(NBTTagCompound p_70039_1_)
     {
-	setDead();
+	return false;
     }
 
     @Override
-    protected void writeEntityToNBT(NBTTagCompound var1)
+    protected void readEntityFromNBT(NBTTagCompound p_70037_1_)
+    {
+    }
+
+    @Override
+    protected void writeEntityToNBT(NBTTagCompound p_70014_1_)
     {
     }
 
     @Override
     public void writeSpawnData(ByteBuf buffer)
     {
-	try
-	{
-	    byte[] b = CompressedStreamTools.compress(spell.writeToNBT());
-	    buffer.writeInt(b.length);
-	    buffer.writeBytes(b);
-	    buffer.writeInt(maxTick);
-	}
-	catch (IOException e)
-	{
-	    e.printStackTrace();
-	}
+	FuncHelper.writeNBTToByteBuf(buffer, spell.writeToNBT());
+	buffer.writeInt(maxTick);
     }
 
     @Override
     public void readSpawnData(ByteBuf additionalData)
     {
-	try
-	{
-	    byte[] b = new byte[additionalData.readInt()];
-	    additionalData.readBytes(b);
-	    NBTTagCompound tag = CompressedStreamTools.decompress(b);
-	    spell = Spell.createFromNBT(tag);
-	    maxTick = additionalData.readInt();
-	}
-	catch (IOException e)
-	{
-	    e.printStackTrace();
-	}
-    }
-
-    @Override
-    public void setThrowableHeading(double var1, double var3, double var5, float var7, float var8)
-    {
+	spell = Spell.createFromNBT(FuncHelper.readNBTFromByteBuf(additionalData));
+	maxTick = additionalData.readInt();
     }
 
 }

@@ -5,11 +5,11 @@ import java.util.List;
 
 public interface IGuiHasScrollPanel
 {
-    public List<PanelScrollList> panels = new ArrayList();
+    public List<Panel> panels = new ArrayList();
 
     public void panelObjClickedFeedback(ScrollObject obj);
 
     public void panelObjHoverFeedback(ScrollObject obj);
     
-    public boolean drawPanelBackground(PanelScrollList panel);
+    public boolean drawPanelBackground(Panel panel);
 }

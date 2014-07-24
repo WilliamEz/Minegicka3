@@ -9,8 +9,8 @@ import net.minecraft.item.ItemStack;
 import net.minecraft.world.World;
 
 import com.williameze.minegicka3.ModBase;
-import com.williameze.minegicka3.core.PlayerData;
-import com.williameze.minegicka3.core.PlayersData;
+import com.williameze.minegicka3.functional.PlayerData;
+import com.williameze.minegicka3.functional.PlayersData;
 
 public class ItemMagicApple extends ItemFood
 {

@@ -2,8 +2,8 @@ package com.williameze.minegicka3;
 
 import net.minecraftforge.client.event.RenderGameOverlayEvent;
 
-import com.williameze.minegicka3.core.CoreBridge;
-import com.williameze.minegicka3.core.PlayersData;
+import com.williameze.minegicka3.functional.CoreBridge;
+import com.williameze.minegicka3.functional.PlayersData;
 
 import cpw.mods.fml.common.eventhandler.Event;
 import cpw.mods.fml.common.eventhandler.IEventListener;

@@ -7,4 +7,10 @@ public class TileEntityCraftStation extends TileEntity
     public TileEntityCraftStation()
     {
     }
+
+    @Override
+    public boolean canUpdate()
+    {
+	return false;
+    }
 }

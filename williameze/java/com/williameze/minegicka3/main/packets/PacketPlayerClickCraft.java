@@ -1,38 +1,34 @@
 package com.williameze.minegicka3.main.packets;
 
 import io.netty.buffer.ByteBuf;
-
-import java.util.UUID;
-
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 
-import com.williameze.minegicka3.core.CoreBridge;
-import com.williameze.minegicka3.main.ClickCraft;
-
-import cpw.mods.fml.common.network.simpleimpl.MessageContext;
+import com.williameze.minegicka3.functional.CoreBridge;
+import com.williameze.minegicka3.mechanics.ClickCraft;
+import com.williameze.minegicka3.mechanics.CraftEntry;
 
 public class PacketPlayerClickCraft extends Packet<PacketPlayerClickCraft>
 {
     public EntityPlayer crafter;
     public String playerName;
     public int dimension;
-    public ItemStack toCraft;
+    public int toCraft;
     public int repeat;
 
     public PacketPlayerClickCraft()
     {
     }
 
-    public PacketPlayerClickCraft(EntityPlayer p, ItemStack is, int rp)
+    public PacketPlayerClickCraft(EntityPlayer p, CraftEntry entry, int rp)
     {
 	crafter = p;
 	playerName = p.getGameProfile().getName();
 	dimension = p.worldObj.provider.dimensionId;
-	toCraft = is;
+	toCraft = entry.id;
 	repeat = rp;
     }
 
@@ -41,13 +37,10 @@ public class PacketPlayerClickCraft extends Packet<PacketPlayerClickCraft>
     {
 	try
 	{
-	    byte[] b = playerName.getBytes();
-	    buffer.writeInt(b.length);
-	    buffer.writeBytes(b);
 	    buffer.writeInt(dimension);
+	    buffer.writeInt(toCraft);
 	    buffer.writeInt(repeat);
-	    NBTTagCompound isTag = toCraft.writeToNBT(new NBTTagCompound());
-	    b = CompressedStreamTools.compress(isTag);
+	    byte[] b = playerName.getBytes();
 	    buffer.writeInt(b.length);
 	    buffer.writeBytes(b);
 	}
@@ -62,15 +55,12 @@ public class PacketPlayerClickCraft extends Packet<PacketPlayerClickCraft>
     {
 	try
 	{
+	    dimension = buffer.readInt();
+	    toCraft = buffer.readInt();
+	    repeat = buffer.readInt();
 	    byte[] b = new byte[buffer.readInt()];
 	    buffer.readBytes(b);
 	    playerName = new String(b);
-	    dimension = buffer.readInt();
-	    repeat = buffer.readInt();
-	    b = new byte[buffer.readInt()];
-	    buffer.readBytes(b);
-	    NBTTagCompound isTag = CompressedStreamTools.decompress(b);
-	    toCraft = ItemStack.loadItemStackFromNBT(isTag);
 	}
 	catch (Exception e)
 	{

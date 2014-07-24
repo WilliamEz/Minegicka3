@@ -43,6 +43,11 @@ public class Vector
 	return new Vector(x, y, z);
     }
 
+    public Vector(double i, double j)
+    {
+	this(i, j, 0);
+    }
+
     public Vector(double i, double j, double k)
     {
 	x = i;
@@ -104,6 +109,21 @@ public class Vector
 	return Math.atan2(crossProduct(v).lengthVector(), dotProduct(v));
     }
 
+    public Vector rotateWithLimit(Vector target, double maxRadian)
+    {
+	double angle = getAngleBetween(target);
+	if (Math.abs(angle) < maxRadian)
+	{
+	    return target.copy();
+	}
+	else
+	{
+	    Vector v = copy();
+	    v = v.rotateAround(target.crossProduct(v), maxRadian * (angle > 0 ? 1 : -1));
+	    return v;
+	}
+    }
+
     public double dotProduct(Vector v)
     {
 	return x * v.x + y * v.y + z * v.z;
@@ -126,8 +146,7 @@ public class Vector
     }
 
     /**
-     * Returns a new vector with the result of this vector x the specified
-     * vector.
+     * Returns a new vector with the result of this vector x the specified vector.
      */
     public Vector crossProduct(Vector v)
     {
@@ -140,8 +159,7 @@ public class Vector
     }
 
     /**
-     * Adds the specified x,y,z vector components to this vector and returns the
-     * resulting vector. Does not change this vector.
+     * Adds the specified x,y,z vector components to this vector and returns the resulting vector. Does not change this vector.
      */
     public Vector add(Vector v)
     {
@@ -149,8 +167,7 @@ public class Vector
     }
 
     /**
-     * Returns a new vector with the result of this vector minus the specified
-     * vector
+     * Returns a new vector with the result of this vector minus the specified vector
      */
     public Vector subtract(Vector v)
     {
@@ -275,6 +292,6 @@ public class Vector
 
     public Vec3 vec3()
     {
-	return Vec3.fakePool.getVecFromPool(x, y, z);
+	return Vec3.createVectorHelper(x, y, z);
     }
 }

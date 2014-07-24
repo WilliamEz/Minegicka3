@@ -4,8 +4,8 @@ import io.netty.buffer.ByteBuf;
 
 import java.util.UUID;
 
-import com.williameze.minegicka3.core.PlayerData;
-import com.williameze.minegicka3.core.PlayersData;
+import com.williameze.minegicka3.functional.PlayerData;
+import com.williameze.minegicka3.functional.PlayersData;
 
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 

@@ -25,13 +25,13 @@ import com.williameze.api.lib.FuncHelper;
 import com.williameze.api.math.MathHelper;
 import com.williameze.api.math.Vector;
 import com.williameze.minegicka3.ModBase;
-import com.williameze.minegicka3.main.Element;
-import com.williameze.minegicka3.main.SpellDamageModifier;
 import com.williameze.minegicka3.main.Values;
 import com.williameze.minegicka3.main.entities.IEntityNullifiable;
-import com.williameze.minegicka3.main.spells.ESelectorDefault;
-import com.williameze.minegicka3.main.spells.Spell;
-import com.williameze.minegicka3.main.spells.Spell.CastType;
+import com.williameze.minegicka3.mechanics.Element;
+import com.williameze.minegicka3.mechanics.SpellDamageModifier;
+import com.williameze.minegicka3.mechanics.spells.ESelectorDefault;
+import com.williameze.minegicka3.mechanics.spells.Spell;
+import com.williameze.minegicka3.mechanics.spells.Spell.CastType;
 
 import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 
@@ -167,33 +167,14 @@ public class EntityEarthRumble extends Entity implements IEntityAdditionalSpawnD
     @Override
     public void writeSpawnData(ByteBuf buffer)
     {
-	try
-	{
-	    byte[] b = CompressedStreamTools.compress(spell.writeToNBT());
-	    buffer.writeInt(b.length);
-	    buffer.writeBytes(b);
-	}
-	catch (IOException e)
-	{
-	    e.printStackTrace();
-	}
+	FuncHelper.writeNBTToByteBuf(buffer, spell.writeToNBT());
     }
 
     @Override
     public void readSpawnData(ByteBuf additionalData)
     {
-	try
-	{
-	    byte[] b = new byte[additionalData.readInt()];
-	    additionalData.readBytes(b);
-	    NBTTagCompound tag = CompressedStreamTools.decompress(b);
-	    spell = Spell.createFromNBT(tag);
-	    setSpell(spell);
-	}
-	catch (IOException e)
-	{
-	    e.printStackTrace();
-	}
+	spell = Spell.createFromNBT(FuncHelper.readNBTFromByteBuf(additionalData));
+	setSpell(spell);
     }
 
 }

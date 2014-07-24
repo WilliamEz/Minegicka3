@@ -12,6 +12,7 @@ import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.item.ItemStack;
+import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
 import net.minecraft.util.StatCollector;
 
@@ -19,26 +20,29 @@ import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.GL11;
 
 import com.williameze.api.gui.IGuiHasScrollPanel;
-import com.williameze.api.gui.PanelScrollList;
+import com.williameze.api.gui.Panel;
+import com.williameze.api.gui.PanelScrollVertical;
 import com.williameze.api.gui.ScrollItemStack;
 import com.williameze.api.gui.ScrollObject;
 import com.williameze.api.gui.ScrollString;
 import com.williameze.api.lib.DrawHelper;
-import com.williameze.minegicka3.main.ClickCraft;
 import com.williameze.minegicka3.main.Values.ResourceLocationCustom;
+import com.williameze.minegicka3.mechanics.ClickCraft;
+import com.williameze.minegicka3.mechanics.CraftEntry;
 
 public class GuiCraftStation extends GuiScreen implements IGuiHasScrollPanel
 {
     public static ResourceLocation guiImg = new ResourceLocationCustom("drawables/guiCraftStation.png");
     static double guiImgW = 321.75;
-    static double guiImgH = 165;
+    static double guiImgH = 202.5;
 
     public EntityPlayer user;
-    public PanelScrollList catPanel;
-    public PanelScrollList itemsPanel;
-    public PanelScrollList recipePanel;
-    public ItemStack hoveringOver;
-    public ItemStack selected;
+    public PanelScrollVertical catPanel;
+    public PanelScrollVertical itemsPanel;
+    public PanelScrollVertical recipePanel;
+    public CraftEntry hoveringEntry;
+    public CraftEntry selectedEntry;
+    public ItemStack hoveringItemStack;
     public int craftable;
     public GuiTextField craftAmountTextField;
 
@@ -58,9 +62,9 @@ public class GuiCraftStation extends GuiScreen implements IGuiHasScrollPanel
     {
 	super.initGui();
 	panels.clear();
-	catPanel = new PanelScrollList(this, mc.displayWidth / 2D, mc.displayHeight / 2D, -150, -66, 60, 140, 3).setSeparatorColor(
+	catPanel = new PanelScrollVertical(this, mc.displayWidth / 2D, mc.displayHeight / 2D, -150, -66, 60, 140, 3).setSeparatorColor(
 		new Color(255, 255, 255)).setSelectedColor(new Color(0, 220, 0, 150));
-	for (String cat : ClickCraft.categorizedClickCraftRecipes.keySet())
+	for (String cat : ClickCraft.categorizedRecipes.keySet())
 	{
 	    ScrollString acat = new ScrollString(catPanel, cat, 20);
 	    acat.yMarginBG = 1;
@@ -70,10 +74,10 @@ public class GuiCraftStation extends GuiScreen implements IGuiHasScrollPanel
 	    acat.scaleDownToFit = true;
 	    catPanel.addObject(acat);
 	}
-	itemsPanel = new PanelScrollList(this, mc.displayWidth / 2D, mc.displayHeight / 2D, -80, -66, 30, 140, 3).setSeparatorColor(
+	itemsPanel = new PanelScrollVertical(this, mc.displayWidth / 2D, mc.displayHeight / 2D, -80, -66, 30, 140, 3).setSeparatorColor(
 		new Color(255, 255, 255)).setSelectedColor(new Color(0, 220, 0, 150));
-	recipePanel = new PanelScrollList(this, mc.displayWidth / 2D, mc.displayHeight / 2D, -40, -66, 120, 140, 3)
-		.setSeparatorColor(new Color(255, 255, 255));
+	recipePanel = new PanelScrollVertical(this, mc.displayWidth / 2D, mc.displayHeight / 2D, -40, -66, 120, 140, 3).setSeparatorColor(new Color(255,
+		255, 255));
 
 	panels.add(catPanel);
 	panels.add(itemsPanel);
@@ -85,8 +89,7 @@ public class GuiCraftStation extends GuiScreen implements IGuiHasScrollPanel
 
 	buttonList.clear();
 	buttonList.add(new GuiButton(0, width / 2 + 85, height / 2 - 45, 70, 20, StatCollector.translateToLocal("mgk3.string.Craft")));
-	buttonList
-		.add(new GuiButton(1, width / 2 + 85, height / 2 + 50, 70, 20, StatCollector.translateToLocal("mgk3.string.Craft Batch")));
+	buttonList.add(new GuiButton(1, width / 2 + 85, height / 2 + 50, 70, 20, StatCollector.translateToLocal("mgk3.string.Craft Batch")));
     }
 
     @Override
@@ -105,23 +108,24 @@ public class GuiCraftStation extends GuiScreen implements IGuiHasScrollPanel
     @Override
     public void panelObjHoverFeedback(ScrollObject obj)
     {
-	if (obj instanceof ScrollItemStack) hoveringOver = ((ScrollItemStack) obj).is;
+	if (obj instanceof ScrollCraftEntry) hoveringEntry = ((ScrollCraftEntry) obj).craftEntry;
+	if (obj instanceof ScrollItemStack) hoveringItemStack = ((ScrollItemStack) obj).is;
     }
 
     public void setItemsPanelCategory(ScrollObject obj)
     {
 	if (obj instanceof ScrollString)
 	{
-	    selected = null;
+	    selectedEntry = null;
 	    recipePanel.clearObjects();
 	    itemsPanel.clearObjects();
 	    String s = ((ScrollString) obj).display;
-	    Map<ItemStack, List<Entry<ItemStack, Integer>>> map = ClickCraft.categorizedClickCraftRecipes.get(s);
+	    Map<Integer, CraftEntry> map = ClickCraft.categorizedRecipes.get(s);
 	    if (map != null)
 	    {
-		for (ItemStack is : map.keySet())
+		for (Entry<Integer, CraftEntry> entry : map.entrySet())
 		{
-		    ScrollObject scrl = new ScrollItemStack(itemsPanel, is, 20);
+		    ScrollObject scrl = new ScrollCraftEntry(itemsPanel, entry.getValue(), 20);
 		    scrl.yMarginBG = 1;
 		    scrl.xMarginBG = 4;
 		    itemsPanel.addObject(scrl);
@@ -132,20 +136,21 @@ public class GuiCraftStation extends GuiScreen implements IGuiHasScrollPanel
 
     public void setRecipePanelRecipe(ScrollObject obj)
     {
-	if (obj instanceof ScrollItemStack)
+	if (obj instanceof ScrollCraftEntry)
 	{
-	    selected = ((ScrollItemStack) obj).is;
+	    selectedEntry = ((ScrollCraftEntry) obj).craftEntry;
 	    recipePanel.clearObjects();
-	    List<Entry<ItemStack, Integer>> recipe = ClickCraft.getRecipe(selected);
+	    List<Entry<ItemStack, Integer>> recipe = selectedEntry.input;
 	    if (recipe != null)
 	    {
 		for (Entry<ItemStack, Integer> e : recipe)
 		{
 		    ItemStack displayIS = e.getKey().copy();
 		    displayIS.stackSize = 1;
-		    ScrollClickCraftRecipeItemStack scrl = new ScrollClickCraftRecipeItemStack(recipePanel, displayIS, 20);
+		    ScrollRecipeIS scrl = new ScrollRecipeIS(recipePanel, displayIS, 20, recipePanel.panelWidth, 16);
 		    scrl.yMarginBG = 1;
 		    scrl.xMarginBG = 4;
+		    scrl.textImageSpace = 8;
 		    scrl.quantityNeed = e.getValue();
 		    recipePanel.addObject(scrl);
 		}
@@ -157,8 +162,9 @@ public class GuiCraftStation extends GuiScreen implements IGuiHasScrollPanel
     public void updateScreen()
     {
 	super.updateScreen();
-	hoveringOver = null;
-	for (PanelScrollList p : panels)
+	hoveringEntry = null;
+	hoveringItemStack = null;
+	for (Panel p : panels)
 	{
 	    p.onUpdate();
 	}
@@ -169,11 +175,11 @@ public class GuiCraftStation extends GuiScreen implements IGuiHasScrollPanel
 	    {
 		for (int a = 0; a < recipePanel.objects.size(); a++)
 		{
-		    if (recipePanel.objects.get(a) instanceof ScrollClickCraftRecipeItemStack)
+		    if (recipePanel.objects.get(a) instanceof ScrollRecipeIS)
 		    {
-			ScrollClickCraftRecipeItemStack scrlis = (ScrollClickCraftRecipeItemStack) recipePanel.objects.get(a);
-			scrlis.quantityHave = getAmountUserHas(user, scrlis.is);
-			int i = (int) Math.floor((double) scrlis.quantityHave / (double) scrlis.quantityNeed);
+			ScrollRecipeIS aRecipeIS = (ScrollRecipeIS) recipePanel.objects.get(a);
+			aRecipeIS.quantityHave = ClickCraft.getAmountUserHas(user, aRecipeIS.is);
+			int i = (int) Math.floor((double) aRecipeIS.quantityHave / (double) aRecipeIS.quantityNeed);
 			craftable = craftable == -1 ? i : Math.min(craftable, i);
 		    }
 		}
@@ -220,43 +226,29 @@ public class GuiCraftStation extends GuiScreen implements IGuiHasScrollPanel
 
     public void craft(int amount)
     {
-	if (craftable > 0 && amount > 0 && selected != null)
+	if (craftable > 0 && amount > 0 && selectedEntry != null)
 	{
 	    int toCraft = Math.min(amount, craftable);
-	    ClickCraft.clientPlayerQueueCraft(user, selected, toCraft);
+	    ClickCraft.clientPlayerQueueCraft(user, selectedEntry, toCraft);
 	}
-    }
-
-    public int getAmountUserHas(EntityPlayer p, ItemStack hasIS)
-    {
-	if (hasIS == null) return 0;
-	int count = 0;
-	for (int a = 0; a < p.inventory.getSizeInventory(); a++)
-	{
-	    ItemStack is = p.inventory.getStackInSlot(a);
-	    if (is != null && ItemStack.areItemStackTagsEqual(is, hasIS) && is.isItemEqual(hasIS))
-	    {
-		count += is.stackSize;
-	    }
-	}
-	return count;
     }
 
     @Override
     public void drawScreen(int mx, int my, float partial)
     {
-	ScaledResolution scl = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
+	ScaledResolution scl = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
 	GL11.glPushMatrix();
 	GL11.glScaled(1 / (double) scl.getScaleFactor(), 1 / (double) scl.getScaleFactor(), 1 / (double) scl.getScaleFactor());
 
 	drawGuiBackground();
-	for (PanelScrollList p : panels)
+	for (Panel p : panels)
 	{
 	    p.drawPanel();
 	}
-
 	GL11.glPopMatrix();
 
+	String s = EnumChatFormatting.BOLD + "Magical Crafting";
+	fontRendererObj.drawStringWithShadow(s, width / 2 - fontRendererObj.getStringWidth(s)/2, height / 2 - 93, 0xffffff);
 	fontRendererObj.drawString(StatCollector.translateToLocal("mgk3.string.Categories"), width / 2 - 150, height / 2 - 76, 0x000000);
 	fontRendererObj.drawString(StatCollector.translateToLocal("mgk3.string.Craft"), width / 2 - 80, height / 2 - 76, 0x000000);
 	fontRendererObj.drawString(StatCollector.translateToLocal("mgk3.string.Recipe"), width / 2 - 40, height / 2 - 76, 0x000000);
@@ -272,32 +264,39 @@ public class GuiCraftStation extends GuiScreen implements IGuiHasScrollPanel
 
 	super.drawScreen(mx, my, partial);
 
-	if (hoveringOver != null)
+	if (hoveringEntry != null)
 	{
 	    GL11.glPushMatrix();
 	    GL11.glTranslated(0, 0, 100);
-	    renderToolTip(hoveringOver, mx, my);
+	    renderToolTip(hoveringEntry.output, mx, my);
+	    GL11.glPopMatrix();
+	}
+	if (hoveringItemStack != null)
+	{
+	    GL11.glPushMatrix();
+	    GL11.glTranslated(0, 0, 100);
+	    renderToolTip(hoveringItemStack, mx, my);
 	    GL11.glPopMatrix();
 	}
     }
 
     public void drawGuiBackground()
     {
-	ScaledResolution scl = new ScaledResolution(mc.gameSettings, mc.displayWidth, mc.displayHeight);
+	ScaledResolution scl = new ScaledResolution(mc, mc.displayWidth, mc.displayHeight);
 	double guiScaleW = guiImgW * scl.getScaleFactor();
 	double guiScaleH = guiImgH * scl.getScaleFactor();
 	mc.renderEngine.bindTexture(guiImg);
 	DrawHelper.blurTexture(true);
 	Tessellator tess = Tessellator.instance;
 	tess.startDrawingQuads();
-	DrawHelper.tessAddQuad(tess, mc.displayWidth / 2 - guiScaleW / 2, mc.displayHeight / 2 - guiScaleH / 2, mc.displayWidth / 2
-		+ guiScaleW / 2, mc.displayHeight / 2 + guiScaleH / 2, 0, 0, 1, 1);
+	DrawHelper.tessAddQuad(tess, mc.displayWidth / 2 - guiScaleW / 2, mc.displayHeight / 2 - guiScaleH / 2, mc.displayWidth / 2 + guiScaleW / 2,
+		mc.displayHeight / 2 + guiScaleH / 2, 0, 0, 1, 1);
 	tess.draw();
 	DrawHelper.blurTexture(false);
     }
 
     @Override
-    public boolean drawPanelBackground(PanelScrollList panel)
+    public boolean drawPanelBackground(Panel panel)
     {
 	if (panel == catPanel || panel == itemsPanel || panel == recipePanel)
 	{

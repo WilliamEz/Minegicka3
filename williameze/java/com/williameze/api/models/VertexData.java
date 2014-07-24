@@ -7,6 +7,7 @@ import com.williameze.api.math.Vector;
 public class VertexData
 {
     public Vector position;
+    public Vector texture;
     public Vector normal;
     public Vector specular;
     public Color color;
@@ -14,6 +15,7 @@ public class VertexData
     public VertexData()
     {
 	position = Vector.root.copy();
+	texture = Vector.root.copy();
 	normal = Vector.unitY.copy();
 	specular = Vector.unitY.copy();
 	color = new Color(0, 0, 0);
@@ -38,6 +40,12 @@ public class VertexData
 	position = p;
 	normal = n;
 	color = c;
+    }
+
+    public VertexData setTextureCoord(double x, double y)
+    {
+	texture = new Vector(x, y, 0);
+	return this;
     }
 
     public VertexData copy()

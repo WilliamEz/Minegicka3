@@ -10,7 +10,7 @@ import net.minecraft.client.settings.KeyBinding;
 import org.lwjgl.input.Keyboard;
 
 import com.williameze.api.TestOverlay;
-import com.williameze.minegicka3.main.Element;
+import com.williameze.minegicka3.mechanics.Element;
 
 import cpw.mods.fml.client.registry.ClientRegistry;
 
@@ -28,9 +28,7 @@ public class ModKeybinding
     public static KeyBinding keyArcane = new KeyBinding("Spell Arcane", Keyboard.KEY_J, "key.categories." + ModBase.MODID);
     public static KeyBinding keyEarth = new KeyBinding("Spell Earth", Keyboard.KEY_K, "key.categories." + ModBase.MODID);
     public static KeyBinding keyFire = new KeyBinding("Spell Fire", Keyboard.KEY_L, "key.categories." + ModBase.MODID);
-    public static KeyBinding keyArea = new KeyBinding("Toggle Area spell", Keyboard.KEY_F, "key.categories." + ModBase.MODID);
-    public static KeyBinding keyClear = new KeyBinding("Clear Queued", Keyboard.KEY_V, "key.categories." + ModBase.MODID);
-    public static KeyBinding keyMagick = new KeyBinding("Cast Magick", Keyboard.KEY_R, "key.categories." + ModBase.MODID);
+    public static KeyBinding keyUltility = new KeyBinding("Cast Magick/Clear Queue", Keyboard.KEY_R, "key.categories." + ModBase.MODID);
      
     public static void load()
     {
@@ -59,9 +57,7 @@ public class ModKeybinding
 	ClientRegistry.registerKeyBinding(keyArcane);
 	ClientRegistry.registerKeyBinding(keyEarth);
 	ClientRegistry.registerKeyBinding(keyFire);
-	ClientRegistry.registerKeyBinding(keyArea);
-	ClientRegistry.registerKeyBinding(keyClear);
-	ClientRegistry.registerKeyBinding(keyMagick);
+	ClientRegistry.registerKeyBinding(keyUltility);
 	ClientRegistry.registerKeyBinding(TestOverlay.keyToggleTestOverlay);
     }
     

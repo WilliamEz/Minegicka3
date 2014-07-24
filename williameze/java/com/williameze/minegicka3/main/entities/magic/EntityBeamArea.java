@@ -20,12 +20,12 @@ import com.williameze.api.math.IntVector;
 import com.williameze.api.math.Line;
 import com.williameze.api.math.Vector;
 import com.williameze.minegicka3.ModBase;
-import com.williameze.minegicka3.main.Element;
-import com.williameze.minegicka3.main.SpellDamageModifier;
 import com.williameze.minegicka3.main.Values;
 import com.williameze.minegicka3.main.objects.blocks.TileEntityShield;
-import com.williameze.minegicka3.main.spells.ESelectorBeamArea;
-import com.williameze.minegicka3.main.spells.Spell;
+import com.williameze.minegicka3.mechanics.Element;
+import com.williameze.minegicka3.mechanics.SpellDamageModifier;
+import com.williameze.minegicka3.mechanics.spells.ESelectorBeamArea;
+import com.williameze.minegicka3.mechanics.spells.Spell;
 
 import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 
@@ -54,7 +54,7 @@ public class EntityBeamArea extends Entity implements IEntityAdditionalSpawnData
     {
 	return false;
     }
-    
+
     @Override
     public boolean isInRangeToRenderDist(double par1)
     {
@@ -92,8 +92,8 @@ public class EntityBeamArea extends Entity implements IEntityAdditionalSpawnData
 	if (!searched)
 	{
 	    searched = true;
-	    targets.addAll(worldObj.selectEntitiesWithinAABB(Entity.class, AxisAlignedBB.getBoundingBox(posX, posY, posZ, posX, posY, posZ)
-		    .expand(maxRange(), 2, maxRange()), new ESelectorBeamArea(spell)));
+	    targets.addAll(worldObj.selectEntitiesWithinAABB(Entity.class,
+		    AxisAlignedBB.getBoundingBox(posX, posY, posZ, posX, posY, posZ).expand(maxRange(), 2, maxRange()), new ESelectorBeamArea(spell)));
 	}
 	if (!targets.isEmpty())
 	{
@@ -103,6 +103,7 @@ public class EntityBeamArea extends Entity implements IEntityAdditionalSpawnData
 	    {
 		if (ent.getDistanceSqToEntity(this) <= maxAtkDistSqr)
 		{
+
 		    explosionReachEntity(ent);
 		    toRemove.add(ent);
 		}
@@ -114,44 +115,52 @@ public class EntityBeamArea extends Entity implements IEntityAdditionalSpawnData
     public void explosionReachEntity(Entity e)
     {
 	Vector pos = new Vector(posX, posY, posZ);
-	AxisAlignedBB aabb = e.boundingBox;
+	AxisAlignedBB aabb = e.getBoundingBox();
 	if (aabb == null)
 	{
 	    if (reachAntiBeamBlockOnTheWay(pos, new Vector(e.posX, e.posY, e.posZ).subtract(pos))) return;
 	}
 	else
 	{
-	    if (reachAntiBeamBlockOnTheWay(pos, FuncHelper.vectorToCenterEntity(this, e)))
+	    if (reachAntiBeamBlockOnTheWay(pos, FuncHelper.getCenter(e).subtract(pos)))
 	    {
-		if (reachAntiBeamBlockOnTheWay(pos, new Vector(aabb.minX, aabb.minY, aabb.minZ).subtract(pos)))
-		{
-		    if (reachAntiBeamBlockOnTheWay(pos, new Vector(aabb.minX, aabb.minY, aabb.maxZ).subtract(pos)))
-		    {
-			if (reachAntiBeamBlockOnTheWay(pos, new Vector(aabb.minX, aabb.maxY, aabb.minZ).subtract(pos)))
-			{
-			    if (reachAntiBeamBlockOnTheWay(pos, new Vector(aabb.minX, aabb.maxY, aabb.maxZ).subtract(pos)))
-			    {
-				if (reachAntiBeamBlockOnTheWay(pos, new Vector(aabb.maxX, aabb.minY, aabb.minZ).subtract(pos)))
-				{
-				    if (reachAntiBeamBlockOnTheWay(pos, new Vector(aabb.maxX, aabb.minY, aabb.maxZ).subtract(pos)))
-				    {
-					if (reachAntiBeamBlockOnTheWay(pos, new Vector(aabb.maxX, aabb.maxY, aabb.minZ).subtract(pos)))
-					{
-					    if (reachAntiBeamBlockOnTheWay(pos, new Vector(aabb.maxX, aabb.maxY, aabb.maxZ).subtract(pos)))
-					    {
-						return;
-					    }
-					}
-				    }
-				}
-			    }
-			}
-		    }
-		}
+		return;
+	    }
+	    if (reachAntiBeamBlockOnTheWay(pos, new Vector(aabb.minX, aabb.minY, aabb.minZ).subtract(pos)))
+	    {
+		return;
+	    }
+	    if (reachAntiBeamBlockOnTheWay(pos, new Vector(aabb.minX, aabb.minY, aabb.maxZ).subtract(pos)))
+	    {
+		return;
+	    }
+	    if (reachAntiBeamBlockOnTheWay(pos, new Vector(aabb.minX, aabb.maxY, aabb.minZ).subtract(pos)))
+	    {
+		return;
+	    }
+	    if (reachAntiBeamBlockOnTheWay(pos, new Vector(aabb.minX, aabb.maxY, aabb.maxZ).subtract(pos)))
+	    {
+		return;
+	    }
+	    if (reachAntiBeamBlockOnTheWay(pos, new Vector(aabb.maxX, aabb.minY, aabb.minZ).subtract(pos)))
+	    {
+		return;
+	    }
+	    if (reachAntiBeamBlockOnTheWay(pos, new Vector(aabb.maxX, aabb.minY, aabb.maxZ).subtract(pos)))
+	    {
+		return;
+	    }
+	    if (reachAntiBeamBlockOnTheWay(pos, new Vector(aabb.maxX, aabb.maxY, aabb.minZ).subtract(pos)))
+	    {
+		return;
+	    }
+	    if (reachAntiBeamBlockOnTheWay(pos, new Vector(aabb.maxX, aabb.maxY, aabb.maxZ).subtract(pos)))
+	    {
+		return;
 	    }
 	}
 	spell.damageEntity(e, 0, damMod);
-	if(!e.isDead && e instanceof EntityMine) e.attackEntityFrom(DamageSource.magic, 0.2F);
+	if (!e.isDead && e instanceof EntityMine) e.attackEntityFrom(DamageSource.magic, 0.2F);
     }
 
     public boolean reachAntiBeamBlockOnTheWay(Vector pos, Vector toward)
@@ -182,8 +191,8 @@ public class EntityBeamArea extends Entity implements IEntityAdditionalSpawnData
 	    int minY = (int) Math.floor(pos.y);
 	    int minZ = (int) Math.floor(pos.z);
 	    int maxX = (int) Math.floor(pos.x + toward.x);
-	    int maxY = (int) Math.floor(pos.y + toward.x);
-	    int maxZ = (int) Math.floor(pos.z + toward.x);
+	    int maxY = (int) Math.floor(pos.y + toward.y);
+	    int maxZ = (int) Math.floor(pos.z + toward.z);
 
 	    for (int x = minX; x <= maxX; x++)
 	    {
@@ -232,16 +241,14 @@ public class EntityBeamArea extends Entity implements IEntityAdditionalSpawnData
     @Override
     public void writeSpawnData(ByteBuf buffer)
     {
+	FuncHelper.writeNBTToByteBuf(buffer, spell.writeToNBT());
 	try
 	{
-	    byte[] b = CompressedStreamTools.compress(spell.writeToNBT());
-	    buffer.writeInt(b.length);
-	    buffer.writeBytes(b);
 	    byte[] b1 = damMod.toString().getBytes();
 	    buffer.writeInt(b1.length);
 	    buffer.writeBytes(b1);
 	}
-	catch (IOException e)
+	catch (Exception e)
 	{
 	    e.printStackTrace();
 	}
@@ -250,21 +257,16 @@ public class EntityBeamArea extends Entity implements IEntityAdditionalSpawnData
     @Override
     public void readSpawnData(ByteBuf additionalData)
     {
+	spell = Spell.createFromNBT(FuncHelper.readNBTFromByteBuf(additionalData));
 	try
 	{
-	    byte[] b = new byte[additionalData.readInt()];
-	    additionalData.readBytes(b);
-	    NBTTagCompound tag = CompressedStreamTools.decompress(b);
-	    spell = Spell.createFromNBT(tag);
-
 	    byte[] b1 = new byte[additionalData.readInt()];
 	    additionalData.readBytes(b1);
 	    damMod = new SpellDamageModifier(new String(b1));
 	}
-	catch (IOException e)
+	catch (Exception e)
 	{
 	    e.printStackTrace();
 	}
     }
-
 }

@@ -4,6 +4,7 @@ import io.netty.buffer.ByteBuf;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -14,19 +15,20 @@ import net.minecraft.entity.player.EntityPlayer;
 import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
-import net.minecraft.util.DamageSource;
 import net.minecraft.world.World;
 
-import com.google.common.collect.Sets;
+import com.williameze.api.HitObject;
+import com.williameze.api.HitObject.HitType;
 import com.williameze.api.lib.FuncHelper;
 import com.williameze.api.math.MathHelper;
 import com.williameze.api.math.Vector;
+import com.williameze.api.selectors.BSelectorNonConduct;
+import com.williameze.api.selectors.BSelectorSolid;
 import com.williameze.minegicka3.ModBase;
-import com.williameze.minegicka3.core.PlayersData;
-import com.williameze.minegicka3.main.Element;
 import com.williameze.minegicka3.main.Values;
-import com.williameze.minegicka3.main.spells.Spell;
-import com.williameze.minegicka3.main.spells.Spell.CastType;
+import com.williameze.minegicka3.mechanics.Element;
+import com.williameze.minegicka3.mechanics.spells.Spell;
+import com.williameze.minegicka3.mechanics.spells.Spell.CastType;
 
 import cpw.mods.fml.common.registry.IEntityAdditionalSpawnData;
 
@@ -160,9 +162,14 @@ public class EntityLightning extends Entity implements IEntityAdditionalSpawnDat
 			Vector newToward = FuncHelper.vectorToEntity(start, e);
 			if (spell.castType == CastType.Area || MathHelper.getCosAngleBetweenVector(toward, newToward) >= minCosConeSeek)
 			{
-			    l.add(e);
-			    spell.damageEntity(e, 30);
-			    seekTargets(e, level + 1, newToward);
+			    HitObject hit = FuncHelper.rayTrace(worldObj, FuncHelper.getCenter(start), FuncHelper.getCenter(e),
+				    new BSelectorNonConduct(), null, Arrays.asList(start, spell.getCaster()));
+			    if (hit.hitType != HitType.Block)
+			    {
+				l.add(e);
+				spell.damageEntity(e, 30);
+				seekTargets(e, level + 1, newToward);
+			    }
 			}
 		    }
 		}
@@ -205,15 +212,13 @@ public class EntityLightning extends Entity implements IEntityAdditionalSpawnDat
     @Override
     public void writeSpawnData(ByteBuf buffer)
     {
+	FuncHelper.writeNBTToByteBuf(buffer, spell.writeToNBT());
 	try
 	{
-	    byte[] b = CompressedStreamTools.compress(spell.writeToNBT());
-	    buffer.writeInt(b.length);
-	    buffer.writeBytes(b);
 	    buffer.writeInt(maxTick);
 	    buffer.writeBoolean(dieWithSpell);
 	}
-	catch (IOException e)
+	catch (Exception e)
 	{
 	    e.printStackTrace();
 	}
@@ -222,16 +227,13 @@ public class EntityLightning extends Entity implements IEntityAdditionalSpawnDat
     @Override
     public void readSpawnData(ByteBuf additionalData)
     {
+	spell = Spell.createFromNBT(FuncHelper.readNBTFromByteBuf(additionalData));
 	try
 	{
-	    byte[] b = new byte[additionalData.readInt()];
-	    additionalData.readBytes(b);
-	    NBTTagCompound tag = CompressedStreamTools.decompress(b);
-	    spell = Spell.createFromNBT(tag);
 	    maxTick = additionalData.readInt();
 	    dieWithSpell = additionalData.readBoolean();
 	}
-	catch (IOException e)
+	catch (Exception e)
 	{
 	    e.printStackTrace();
 	}

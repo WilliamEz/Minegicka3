@@ -1,20 +1,25 @@
 key.categories.minegicka3=Minegicka 3
 itemGroup.Minegicka 3=Minegicka 3
+potion.coldresistance=Cold Resistance
+potion.lifeboost=Life Effective
+potion.arcaneresistance=Arcane Resistance
+potion.lightningresistance=Lightning Resistance
 
 tile.minegicka3-CraftStation.name=Magical Crafting Station
+tile.minegicka3-EnchantStaff.name=Staff Enchanting Table
 
-item.minegicka3-Thingy.name=Magical Thing of Nothingness
-item.minegicka3-ThingyGood.name=Magical Thing of Something-ness
-item.minegicka3-ThingySuper.name=Magical Thing of Really-something-ness
+item.minegicka3-Thingy.name=Thingy
+item.minegicka3-ThingyGood.name=Good Thingy
+item.minegicka3-ThingySuper.name=Great Thingy
 item.minegicka3-TheStick.name=The Stick
-item.minegicka3-TheStickGood.name=The Pretty Good Stick
-item.minegicka3-TheStickSuper.name=The Really Good Stick
+item.minegicka3-TheStickGood.name=The Good Stick
+item.minegicka3-TheStickSuper.name=The Great Stick
 item.minegicka3-MagicApple.name=Magic Apple
-item.minegicka3-MagicGoodApple.name=Magic "Kinda" Golden Apple
-item.minegicka3-MagicSuperApple.name=Magic Golden Apple
+item.minegicka3-MagicGoodApple.name=Magic Golden Apple
+item.minegicka3-MagicSuperApple.name=Great Magic Golden Apple
 item.minegicka3-MagicCookie.name=Magic Cookie
-item.minegicka3-MagicGoodCookie.name=Magic Good Cookie
-item.minegicka3-MagicSuperCookie.name=Magic "Really" Good Cookie
+item.minegicka3-MagicGoodCookie.name=Good Magic Cookie
+item.minegicka3-MagicSuperCookie.name=Great Magic Cookie
 item.minegicka3-ArcaneEssence.name=Arcane Essence
 item.minegicka3-ColdEssence.name=Cold Essence
 item.minegicka3-EarthEssence.name=Earth Essence
@@ -26,6 +31,8 @@ item.minegicka3-ShieldEssence.name=Shield Essence
 item.minegicka3-SteamEssence.name=Steam Essence
 item.minegicka3-WaterEssence.name=Water Essence
 item.minegicka3-MagickTablet.name=Tablet
+item.minegicka3-MagickPedia.name=Magickpedia
+item.minegicka3-MatResistance.name=Essence of Resistance
 
 item.minegicka3-Staff.name=Staff
 item.minegicka3-StaffGrand.name=Grand Staff
@@ -39,12 +46,25 @@ item.minegicka3-StaffManipulation.name=Manipulation Staff
 item.minegicka3-Hat.name=Wizard Hat
 item.minegicka3-HatOfImmunity.name=Hat of Immunity
 item.minegicka3-HatOfRisk.name=Hat of Risk
+item.minegicka3-HatOfResistance.name=Hat of Resistance
+
+entity.minegicka3_888.name=Eighty-eight Eight
 
 mgk3.string.Categories=Categories
 mgk3.string.Craft=Craft
 mgk3.string.Craft Batch=Craft Batch
 mgk3.string.Craftable=Craftable
 mgk3.string.Crafting=Crafting
+mgk3.string.Enchantment=Enchantment
+mgk3.string.Info=Info
+mgk3.string.Items=Items
+mgk3.string.Locked=Locked
+mgk3.string.Magicks=Magicks
+mgk3.string.Materials=Materials
+mgk3.string.Output=Output
 mgk3.string.Recipe=Recipe
+mgk3.string.Staves=Staves
+mgk3.string.Unlock=Unlock
+mgk3.string.Unlocked=Unlocked
 
 commands.m3unlock.usage=Unlocked all spells and magicks.

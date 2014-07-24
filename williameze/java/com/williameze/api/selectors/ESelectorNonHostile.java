@@ -22,7 +22,8 @@ public class ESelectorNonHostile implements IEntitySelector
 	if (var1 instanceof EntityAnimal) return true;
 	if (var1 instanceof EntityVillager) return true;
 	if (var1 instanceof IEntityLivingNonHostile) return true;
-	if (var1 instanceof IAnimals && var1 instanceof IMob == false) return true;
+	if (var1 instanceof IAnimals) return true;
+	if (var1 instanceof IMob) return false;
 	return false;
     }
 }

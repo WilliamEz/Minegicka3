@@ -8,7 +8,8 @@ import net.minecraft.nbt.CompressedStreamTools;
 import net.minecraft.nbt.NBTTagCompound;
 
 import com.williameze.minegicka3.ModBase;
-import com.williameze.minegicka3.main.spells.Spell;
+import com.williameze.minegicka3.main.Values;
+import com.williameze.minegicka3.mechanics.spells.Spell;
 
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 
@@ -48,7 +49,7 @@ public class PacketStartSpell extends Packet<PacketStartSpell>
 	buffer.readBytes(b);
 	try
 	{
-	    NBTTagCompound tag = CompressedStreamTools.decompress(b);
+	    NBTTagCompound tag = CompressedStreamTools.func_152457_a(b, Values.nbtSizeTracker);
 	    spell = Spell.createFromNBT(tag);
 	}
 	catch (IOException e)

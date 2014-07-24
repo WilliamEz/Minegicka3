@@ -1,14 +1,23 @@
 package com.williameze.api.lib;
 
+import io.netty.buffer.ByteBuf;
+
+import java.io.IOException;
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import net.minecraft.block.Block;
 import net.minecraft.command.IEntitySelector;
 import net.minecraft.entity.Entity;
-import net.minecraft.init.Blocks;
+import net.minecraft.entity.item.EntityItem;
+import net.minecraft.item.ItemStack;
+import net.minecraft.nbt.CompressedStreamTools;
+import net.minecraft.nbt.NBTSizeTracker;
+import net.minecraft.nbt.NBTTagCompound;
 import net.minecraft.util.AxisAlignedBB;
 import net.minecraft.world.World;
 
@@ -19,9 +28,33 @@ import com.williameze.api.math.Line;
 import com.williameze.api.math.Plane;
 import com.williameze.api.math.Vector;
 import com.williameze.api.selectors.BSelector;
+import com.williameze.minegicka3.main.Values;
+import com.williameze.minegicka3.mechanics.spells.Spell;
 
 public class FuncHelper
 {
+    public static Random rnd = new Random();
+
+    public static void spawnItem(World world, ItemStack is, double x, double y, double z, double velocity)
+    {
+	EntityItem entity = new EntityItem(world, x, y, z, is);
+	Vector v = new Vector(velocity, velocity, 0);
+	v = v.rotateAround(Vector.unitY, rnd.nextDouble() * 2 * Math.PI);
+	entity.motionX = v.x;
+	entity.motionY = v.y;
+	entity.motionZ = v.z;
+	entity.noClip = true;
+	entity.moveEntity(v.x, v.y, v.z);
+	entity.noClip = false;
+	if (entity.ticksExisted == 0) entity.ticksExisted = 1;
+	world.spawnEntityInWorld(entity);
+    }
+
+    public static String formatToPercentage(double d)
+    {
+	return new DecimalFormat("#.###").format(d * 100) + "%";
+    }
+
     public static HitObject rayTrace(World world, Vector start, Vector end, BSelector blockSelector, IEntitySelector selector, List excluding)
     {
 	Vector path = end.subtract(start);
@@ -343,6 +376,11 @@ public class FuncHelper
 	return getCenter(e2).subtract(getCenter(e1));
     }
 
+    public static Vector vectorEyeToCenter(Entity eye, Entity center)
+    {
+	return getCenter(center).subtract(getEyePosition(eye));
+    }
+
     public static Vector getCenter(Entity e1)
     {
 	AxisAlignedBB aabb1 = e1.getBoundingBox();
@@ -351,6 +389,11 @@ public class FuncHelper
 		e1.posY + e1.height, e1.posZ + e1.width / 2);
 
 	return new Vector((aabb1.maxX + aabb1.minX) / 2, (aabb1.maxY + aabb1.minY) / 2, (aabb1.maxZ + aabb1.minZ) / 2);
+    }
+
+    public static Vector getEyePosition(Entity e)
+    {
+	return new Vector(e.posX, e.posY + e.getEyeHeight(), e.posZ);
     }
 
     public static Entity getEntityClosestTo(double x, double y, double z, List<Entity> l)
@@ -366,5 +409,35 @@ public class FuncHelper
 	    }
 	}
 	return e1;
+    }
+
+    public static void writeNBTToByteBuf(ByteBuf buffer, NBTTagCompound tag)
+    {
+	try
+	{
+	    byte[] b = CompressedStreamTools.compress(tag);
+	    buffer.writeShort(b.length);
+	    buffer.writeBytes(b);
+	}
+	catch (IOException e)
+	{
+	    e.printStackTrace();
+	}
+    }
+
+    public static NBTTagCompound readNBTFromByteBuf(ByteBuf buffer)
+    {
+	try
+	{
+	    byte[] b = new byte[buffer.readShort()];
+	    buffer.readBytes(b);
+	    NBTTagCompound tag = CompressedStreamTools.func_152457_a(b, Values.nbtSizeTracker);
+	    return tag;
+	}
+	catch (IOException e)
+	{
+	    e.printStackTrace();
+	}
+	return null;
     }
 }

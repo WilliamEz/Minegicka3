@@ -14,18 +14,38 @@ public class ScrollObject
     public static Tessellator tess = Tessellator.instance;
     public static Random rnd = new Random();
 
-    public PanelScrollList parent;
+    public Panel parent;
     public double width, height;
     public double localObjectMinX, localObjectMinY, localObjectMaxX, localObjectMaxY;
     public double xMarginBG, yMarginBG;
 
-    public ScrollObject(PanelScrollList panel, double occupyHeight)
+    public ScrollObject(Panel panel, double w, double h)
+    {
+	parent = panel;
+	width = w;
+	height = h;
+	localObjectMinX = localObjectMinY = 0;
+	localObjectMaxX = w;
+	localObjectMaxY = h;
+    }
+
+    public ScrollObject(PanelScrollVertical panel, double occupyHeight)
     {
 	parent = panel;
 	height = occupyHeight;
 	width = parent.panelWidth;
 	localObjectMinX = localObjectMinY = 0;
-	localObjectMaxX = parent.panelWidth;
+	localObjectMaxX = width;
+	localObjectMaxY = height;
+    }
+
+    public ScrollObject(PanelScrollHorizontal panel, double occupyWidth)
+    {
+	parent = panel;
+	width = occupyWidth;
+	height = parent.panelHeight;
+	localObjectMinX = localObjectMinY = 0;
+	localObjectMaxX = width;
 	localObjectMaxY = height;
     }
 
@@ -46,8 +66,8 @@ public class ScrollObject
 
     public void drawSelectedBackground(Color c)
     {
-	DrawHelper.drawRect(xMarginBG, yMarginBG, width - xMarginBG, height - yMarginBG, c.getRed() / 255D, c.getGreen() / 255D,
-		c.getBlue() / 255D, c.getAlpha() / 255D);
+	DrawHelper.drawRect(xMarginBG, yMarginBG, width - xMarginBG, height - yMarginBG, c.getRed() / 255D, c.getGreen() / 255D, c.getBlue() / 255D,
+		c.getAlpha() / 255D);
     }
 
     public void draw()

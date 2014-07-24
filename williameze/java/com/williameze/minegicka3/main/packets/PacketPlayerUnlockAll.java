@@ -6,8 +6,8 @@ import java.util.UUID;
 
 import net.minecraft.entity.player.EntityPlayer;
 
-import com.williameze.minegicka3.core.PlayerData;
-import com.williameze.minegicka3.core.PlayersData;
+import com.williameze.minegicka3.functional.PlayerData;
+import com.williameze.minegicka3.functional.PlayersData;
 
 import cpw.mods.fml.common.network.simpleimpl.MessageContext;
 

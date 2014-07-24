@@ -13,9 +13,9 @@ import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.world.World;
 
 import com.williameze.minegicka3.ModBase;
-import com.williameze.minegicka3.core.PlayersData;
-import com.williameze.minegicka3.main.Element;
-import com.williameze.minegicka3.main.magicks.Magick;
+import com.williameze.minegicka3.functional.PlayersData;
+import com.williameze.minegicka3.mechanics.Element;
+import com.williameze.minegicka3.mechanics.magicks.Magick;
 
 public class ItemMagickTablet extends Item
 {

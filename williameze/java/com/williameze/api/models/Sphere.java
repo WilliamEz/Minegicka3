@@ -43,10 +43,10 @@ public class Sphere extends ModelObject
 	{
 	    for (int b = 0; b < slices; b++)
 	    {
-		Vector v1 = vert.rotateAround(Vector.unitX, a * vertRotAngle).rotateAround(Vector.unitY, b * horzRotAngle);
-		Vector v2 = vert.rotateAround(Vector.unitX, (a + 1) * vertRotAngle).rotateAround(Vector.unitY, b * horzRotAngle);
-		Vector v3 = vert.rotateAround(Vector.unitX, a * vertRotAngle).rotateAround(Vector.unitY, (b + 1) * horzRotAngle);
-		Vector v4 = vert.rotateAround(Vector.unitX, (a + 1) * vertRotAngle).rotateAround(Vector.unitY, (b + 1) * horzRotAngle);
+		Vector v1 = vert.rotateAround(Vector.unitX, a * vertRotAngle).rotateAround(Vector.unitY, -b * horzRotAngle);
+		Vector v2 = vert.rotateAround(Vector.unitX, (a + 1) * vertRotAngle).rotateAround(Vector.unitY, -b * horzRotAngle);
+		Vector v3 = vert.rotateAround(Vector.unitX, a * vertRotAngle).rotateAround(Vector.unitY, -(b + 1) * horzRotAngle);
+		Vector v4 = vert.rotateAround(Vector.unitX, (a + 1) * vertRotAngle).rotateAround(Vector.unitY, -(b + 1) * horzRotAngle);
 
 		if (a < stacks - 1)
 		{
@@ -55,7 +55,7 @@ public class Sphere extends ModelObject
 		}
 		if (a > 0)
 		{
-		    Triangle tri2 = new Triangle(v1, v3, v4);
+		    Triangle tri2 = new Triangle(v1, v4, v3);
 		    faces.add(tri2);
 		}
 		if (!vectorFlatmap.containsKey(v1)) vectorFlatmap.put(v1, new IntVector(b, a, 0));
@@ -96,7 +96,7 @@ public class Sphere extends ModelObject
     }
 
     @Override
-    public void render()
+    public void doRender()
     {
 	GL11.glPushMatrix();
 	GL11.glTranslated(orgX, orgY, orgZ);

@@ -27,7 +27,7 @@ public class MagickExplosion extends Magick
     public List<String> getDescription()
     {
         return Arrays.asList(new String[]{
-        	"Causes an explosion where the player is looking at.",
+        	"Causes an explosion where the caster is looking.",
         	"Max explosion distance: 12 x staff's power (blocks)",
         	"Explosion power: square root (2 times staff's power)"
         });

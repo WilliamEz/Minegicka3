@@ -113,7 +113,7 @@ public class Entity888 extends EntityCreature implements IBossDisplayData, IMob,
     protected void applyEntityAttributes()
     {
 	super.applyEntityAttributes();
-	getAttributeMap().getAttributeInstance(SharedMonsterAttributes.maxHealth).setBaseValue(888);
+	getAttributeMap().getAttributeInstance(SharedMonsterAttributes.maxHealth).setBaseValue(8);
 	getAttributeMap().getAttributeInstance(SharedMonsterAttributes.followRange).setBaseValue(64);
 	getAttributeMap().getAttributeInstance(SharedMonsterAttributes.knockbackResistance).setBaseValue(1);
 	getAttributeMap().getAttributeInstance(SharedMonsterAttributes.movementSpeed).setBaseValue(0);
@@ -347,52 +347,61 @@ public class Entity888 extends EntityCreature implements IBossDisplayData, IMob,
 	    int x = (int) posX;
 	    int y = (int) posY;
 	    int z = (int) posZ;
-	    worldObj.setBlock(x, y, z, Blocks.chest);
-	    TileEntityChest tile = (TileEntityChest) worldObj.getTileEntity(x, y, z);
-	    if (tile != null)
+	    if (rand.nextInt(2) == 0)
 	    {
-		WeightedRandomChestContent.generateChestContents(rand, ChestGenHooks.getItems(DUNGEON_CHEST, rand), tile, 18);
+		worldObj.setBlock(x - 1, y, z, Blocks.obsidian);
+		worldObj.setBlock(x, y, z, Blocks.obsidian);
+		worldObj.setBlock(x + 1, y, z, Blocks.obsidian);
+		worldObj.setBlock(x - 2, y + 1, z, Blocks.obsidian);
+		worldObj.setBlock(x - 2, y + 2, z, Blocks.obsidian);
+		worldObj.setBlock(x - 2, y + 3, z, Blocks.obsidian);
+		worldObj.setBlock(x + 2, y + 1, z, Blocks.obsidian);
+		worldObj.setBlock(x + 2, y + 2, z, Blocks.obsidian);
+		worldObj.setBlock(x + 2, y + 3, z, Blocks.obsidian);
+		worldObj.setBlock(x - 1, y + 4, z, Blocks.obsidian);
+		worldObj.setBlock(x, y + 4, z, Blocks.obsidian);
+		worldObj.setBlock(x + 1, y + 4, z, Blocks.obsidian);
+		worldObj.setBlock(x, y + 1, z, Blocks.fire);
 	    }
-
+	    else
+	    {
+		worldObj.setBlock(x, y, z, Blocks.chest);
+		TileEntityChest tile = (TileEntityChest) worldObj.getTileEntity(x, y, z);
+		if (tile != null)
+		{
+		    WeightedRandomChestContent.generateChestContents(rand, ChestGenHooks.getItems(DUNGEON_CHEST, rand), tile, 18);
+		}
+	    }
 	    double velocity = 0.6;
 	    double essenceChance = 0.4;
-	    new DropItemEntry(new ItemStack(ModBase.thingy), 64, 0.9).spawn(worldObj, posX, posY + height / 2, posZ, velocity);
-	    new DropItemEntry(new ItemStack(ModBase.thingyGood), 16, 0.3).spawn(worldObj, posX, posY + height / 2, posZ, velocity);
-	    new DropItemEntry(new ItemStack(ModBase.thingySuper), 4, 0.1).spawn(worldObj, posX, posY + height / 2, posZ, velocity);
-	    new DropItemEntry(new ItemStack(ModBase.stick), 32, 0.6).spawn(worldObj, posX, posY + height / 2, posZ, velocity);
-	    new DropItemEntry(new ItemStack(ModBase.stickGood), 8, 0.2).spawn(worldObj, posX, posY + height / 2, posZ, velocity);
-	    new DropItemEntry(new ItemStack(ModBase.stickSuper), 2, 0.05).spawn(worldObj, posX, posY + height / 2, posZ, velocity);
-	    new DropItemEntry(new ItemStack(ModBase.magicApple), 16, 0.3).spawn(worldObj, posX, posY + height / 2, posZ, velocity);
-	    new DropItemEntry(new ItemStack(ModBase.magicGoodApple), 4, 0.1).spawn(worldObj, posX, posY + height / 2, posZ, velocity);
-	    new DropItemEntry(new ItemStack(ModBase.magicSuperApple), 1, 0.01).spawn(worldObj, posX, posY + height / 2, posZ, velocity);
-	    new DropItemEntry(new ItemStack(ModBase.magicCookie), 64, 0.6).spawn(worldObj, posX, posY + height / 2, posZ, velocity);
-	    new DropItemEntry(new ItemStack(ModBase.magicGoodCookie), 16, 0.2).spawn(worldObj, posX, posY + height / 2, posZ, velocity);
-	    new DropItemEntry(new ItemStack(ModBase.magicSuperCookie), 4, 0.05).spawn(worldObj, posX, posY + height / 2, posZ, velocity);
-	    new DropItemEntry(new ItemStack(ModBase.essenceArcane), 8, essenceChance).spawn(worldObj, posX, posY + height / 2, posZ, velocity);
-	    new DropItemEntry(new ItemStack(ModBase.essenceCold), 8, essenceChance).spawn(worldObj, posX, posY + height / 2, posZ, velocity);
-	    new DropItemEntry(new ItemStack(ModBase.essenceEarth), 8, essenceChance).spawn(worldObj, posX, posY + height / 2, posZ, velocity);
-	    new DropItemEntry(new ItemStack(ModBase.essenceFire), 8, essenceChance).spawn(worldObj, posX, posY + height / 2, posZ, velocity);
-	    new DropItemEntry(new ItemStack(ModBase.essenceIce), 8, essenceChance).spawn(worldObj, posX, posY + height / 2, posZ, velocity);
-	    new DropItemEntry(new ItemStack(ModBase.essenceLife), 8, essenceChance).spawn(worldObj, posX, posY + height / 2, posZ, velocity);
-	    new DropItemEntry(new ItemStack(ModBase.essenceLightning), 8, essenceChance).spawn(worldObj, posX, posY + height / 2, posZ, velocity);
-	    new DropItemEntry(new ItemStack(ModBase.essenceShield), 8, essenceChance).spawn(worldObj, posX, posY + height / 2, posZ, velocity);
-	    new DropItemEntry(new ItemStack(ModBase.essenceSteam), 8, essenceChance).spawn(worldObj, posX, posY + height / 2, posZ, velocity);
-	    new DropItemEntry(new ItemStack(ModBase.essenceWater), 8, essenceChance).spawn(worldObj, posX, posY + height / 2, posZ, velocity);
-	    new DropItemEntry(new ItemStack(ModBase.hat), 8, 0.05).spawn(worldObj, posX, posY + height / 2, posZ, velocity);
-	    new DropItemEntry(new ItemStack(ModBase.matResistance), 8, 0.1).spawn(worldObj, posX, posY + height / 2, posZ, velocity);
+	    double dx = posX;
+	    double dy = posY + height / 2D;
+	    double dz = posZ;
+	    new DropItemEntry(new ItemStack(ModBase.thingy), 64, 0.9).spawn(worldObj, dx, dy, dz, velocity);
+	    new DropItemEntry(new ItemStack(ModBase.thingyGood), 16, 0.3).spawn(worldObj, dx, dy, dz, velocity);
+	    new DropItemEntry(new ItemStack(ModBase.thingySuper), 4, 0.1).spawn(worldObj, dx, dy, dz, velocity);
+	    new DropItemEntry(new ItemStack(ModBase.stick), 32, 0.6).spawn(worldObj, dx, dy, dz, velocity);
+	    new DropItemEntry(new ItemStack(ModBase.stickGood), 8, 0.2).spawn(worldObj, dx, dy, dz, velocity);
+	    new DropItemEntry(new ItemStack(ModBase.stickSuper), 2, 0.05).spawn(worldObj, dx, dy, dz, velocity);
+	    new DropItemEntry(new ItemStack(ModBase.magicApple), 16, 0.3).spawn(worldObj, dx, dy, dz, velocity);
+	    new DropItemEntry(new ItemStack(ModBase.magicGoodApple), 4, 0.1).spawn(worldObj, dx, dy, dz, velocity);
+	    new DropItemEntry(new ItemStack(ModBase.magicSuperApple), 1, 0.01).spawn(worldObj, dx, dy, dz, velocity);
+	    new DropItemEntry(new ItemStack(ModBase.magicCookie), 64, 0.6).spawn(worldObj, dx, dy, dz, velocity);
+	    new DropItemEntry(new ItemStack(ModBase.magicGoodCookie), 16, 0.2).spawn(worldObj, dx, dy, dz, velocity);
+	    new DropItemEntry(new ItemStack(ModBase.magicSuperCookie), 4, 0.05).spawn(worldObj, dx, dy, dz, velocity);
+	    new DropItemEntry(new ItemStack(ModBase.essenceArcane), 8, essenceChance).spawn(worldObj, dx, dy, dz, velocity);
+	    new DropItemEntry(new ItemStack(ModBase.essenceCold), 8, essenceChance).spawn(worldObj, dx, dy, dz, velocity);
+	    new DropItemEntry(new ItemStack(ModBase.essenceEarth), 8, essenceChance).spawn(worldObj, dx, dy, dz, velocity);
+	    new DropItemEntry(new ItemStack(ModBase.essenceFire), 8, essenceChance).spawn(worldObj, dx, dy, dz, velocity);
+	    new DropItemEntry(new ItemStack(ModBase.essenceIce), 8, essenceChance).spawn(worldObj, dx, dy, dz, velocity);
+	    new DropItemEntry(new ItemStack(ModBase.essenceLife), 8, essenceChance).spawn(worldObj, dx, dy, dz, velocity);
+	    new DropItemEntry(new ItemStack(ModBase.essenceLightning), 8, essenceChance).spawn(worldObj, dx, dy, dz, velocity);
+	    new DropItemEntry(new ItemStack(ModBase.essenceShield), 8, essenceChance).spawn(worldObj, dx, dy, dz, velocity);
+	    new DropItemEntry(new ItemStack(ModBase.essenceSteam), 8, essenceChance).spawn(worldObj, dx, dy, dz, velocity);
+	    new DropItemEntry(new ItemStack(ModBase.essenceWater), 8, essenceChance).spawn(worldObj, dx, dy, dz, velocity);
+	    new DropItemEntry(new ItemStack(ModBase.hat), 8, 0.05).spawn(worldObj, dx, dy, dz, velocity);
+	    new DropItemEntry(new ItemStack(ModBase.matResistance), 8, 0.1).spawn(worldObj, dx, dy, dz, velocity);
 	}
-    }
-
-    @Override
-    public void writeToNBT(NBTTagCompound tag)
-    {
-	super.writeToNBT(tag);
-    }
-
-    @Override
-    public void readFromNBT(NBTTagCompound tag)
-    {
-	super.readFromNBT(tag);
     }
 
     @Override

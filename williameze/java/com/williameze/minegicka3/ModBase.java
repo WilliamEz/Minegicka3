@@ -179,7 +179,7 @@ public class ModBase
     public void initObjects()
     {
 	String themodid = MODID + "-";
-	magical = new Material(MapColor.adobeColor);
+	magical = new Material(MapColor.purpleColor);
 	modCreativeTab = new CreativeTabCustom("Minegicka 3");
 
 	coldResistance = new PotionCustom(28, false, 0xeeeeff).setCustomIconIndex(6, 1).setPotionName("potion.coldresistance");
@@ -307,7 +307,7 @@ public class ModBase
 	int superSlowUpdateFreq = Integer.MAX_VALUE;
 	registerEntity(FXEProjectileCharge.class, "FXEProjectileCharge", 64, superSlowUpdateFreq);
 	registerEntity(FXESimpleParticle.class, "FXESimpleParticle", 64, superSlowUpdateFreq);
-
+	
 	registerEntity(EntitySprayCold.class, "SprayCold", 64, superSlowUpdateFreq);
 	registerEntity(EntitySprayFire.class, "SprayFire", 64, superSlowUpdateFreq);
 	registerEntity(EntitySpraySteam.class, "SpraySteam", 64, superSlowUpdateFreq);

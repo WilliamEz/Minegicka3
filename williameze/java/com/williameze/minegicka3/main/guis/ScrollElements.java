@@ -4,9 +4,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import org.lwjgl.opengl.GL11;
-
-import com.sun.xml.internal.bind.v2.schemagen.xmlschema.Occurs;
 import com.williameze.api.gui.PanelScrollVertical;
 import com.williameze.api.gui.ScrollObject;
 import com.williameze.api.lib.DrawHelper;

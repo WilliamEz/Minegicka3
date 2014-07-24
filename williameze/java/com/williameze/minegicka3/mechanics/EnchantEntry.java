@@ -223,7 +223,7 @@ public class EnchantEntry
 	    String sign = positive ^ stat == StatBasic.ConsumeRate ? "+" : "-";
 	    if (statEnchanting.get(stat) * (positive ? 1 : -1) > 0)
 	    {
-		list.add(sign + FuncHelper.formatToPercentage(Math.abs(statEnchanting.get(stat))) + " " + stat.toString());
+		list.add(sign + FuncHelper.formatToDecimal(Math.abs(statEnchanting.get(stat))) + " " + stat.toString());
 	    }
 	}
 
@@ -232,7 +232,7 @@ public class EnchantEntry
 	{
 	    if ((elementEnchanting.getModifierFor(element) - 1) * (positive ? 1 : -1) > 0)
 	    {
-		list.add(sign + new DecimalFormat("#.####").format(Math.abs(elementEnchanting.getModifierFor(element) - 1)) + " "
+		list.add(sign + FuncHelper.formatToDecimal(Math.abs(elementEnchanting.getModifierFor(element) - 1)) + " "
 			+ element.toString() + " efficiency");
 	    }
 	}

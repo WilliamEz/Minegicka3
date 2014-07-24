@@ -34,25 +34,16 @@ import com.williameze.minegicka3.mechanics.spells.Spell;
 public class FuncHelper
 {
     public static Random rnd = new Random();
-
-    public static void spawnItem(World world, ItemStack is, double x, double y, double z, double velocity)
-    {
-	EntityItem entity = new EntityItem(world, x, y, z, is);
-	Vector v = new Vector(velocity, velocity, 0);
-	v = v.rotateAround(Vector.unitY, rnd.nextDouble() * 2 * Math.PI);
-	entity.motionX = v.x;
-	entity.motionY = v.y;
-	entity.motionZ = v.z;
-	entity.noClip = true;
-	entity.moveEntity(v.x, v.y, v.z);
-	entity.noClip = false;
-	if (entity.ticksExisted == 0) entity.ticksExisted = 1;
-	world.spawnEntityInWorld(entity);
-    }
+    public static DecimalFormat decimalFormat = new DecimalFormat("#.######");
 
     public static String formatToPercentage(double d)
     {
-	return new DecimalFormat("#.###").format(d * 100) + "%";
+	return decimalFormat.format(d * 100) + "%";
+    }
+
+    public static String formatToDecimal(double d)
+    {
+	return decimalFormat.format(d);
     }
 
     public static HitObject rayTrace(World world, Vector start, Vector end, BSelector blockSelector, IEntitySelector selector, List excluding)

@@ -37,6 +37,7 @@ public class ModelStaff
 
     public static void load()
     {
+	addStaffModel(ModBase.hemmyStaff, new ModelStaffHemmy());
 	addStaffModel(ModBase.staffGrand, new ModelStaffGrand());
 	addStaffModel(ModBase.staffSuper, new ModelStaffSuper());
 	addStaffModel(ModBase.staffBlessing, new ModelStaffBlessing());

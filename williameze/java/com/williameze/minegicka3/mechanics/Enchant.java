@@ -21,7 +21,7 @@ import com.williameze.minegicka3.mechanics.EnchantEntry.StatBasic;
 
 public class Enchant
 {
-    private static Map<Object, EnchantEntry> enchantList = new HashMap();
+    public static final Map<Object, EnchantEntry> enchantList = new HashMap();
 
     public static void load()
     {
@@ -118,7 +118,7 @@ public class Enchant
 	return null;
     }
 
-    public static EnchantEntry getEnchantEntry(Object o)
+    public static Entry<Object, EnchantEntry> getEnchantEntry(Object o)
     {
 	ItemStack is = null;
 	if (o instanceof ItemStack) is = (ItemStack) o;
@@ -128,7 +128,7 @@ public class Enchant
 	for (Entry<Object, EnchantEntry> entry : enchantList.entrySet())
 	{
 	    Object o1 = entry.getKey();
-	    if (o1 == o) return entry.getValue();
+	    if (o1 == o) return entry;
 
 	    ItemStack is1 = null;
 	    if (o1 instanceof ItemStack) is1 = (ItemStack) o1;
@@ -136,7 +136,7 @@ public class Enchant
 	    else if (o1 instanceof Item) is1 = new ItemStack((Item) o1);
 	    else continue;
 
-	    if (is.isItemEqual(is1)) return entry.getValue();
+	    if (is.isItemEqual(is1)) return entry;
 	}
 	return null;
     }
@@ -204,7 +204,7 @@ public class Enchant
 		List<EnchantEntry> entries = new ArrayList();
 		for (ItemStack is : items)
 		{
-		    EnchantEntry entry = getEnchantEntry(is);
+		    EnchantEntry entry = getEnchantEntry(is).getValue();
 		    if (entry != null)
 		    {
 			entries.add(entry);

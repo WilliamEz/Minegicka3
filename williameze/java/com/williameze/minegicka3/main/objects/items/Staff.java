@@ -255,20 +255,20 @@ public class Staff extends Item
 	NBTTagCompound tag = getStaffTag(is);
 	if (!GuiScreen.isShiftKeyDown())
 	{
-	    String power = EnumChatFormatting.RED + "" + FuncHelper.formatToPercentage(tag.getDouble("Power")) + EnumChatFormatting.GRAY;
-	    String atkSpeed = EnumChatFormatting.GREEN + "" + FuncHelper.formatToPercentage(tag.getDouble("ATKSpeed")) + EnumChatFormatting.GRAY;
-	    String consume = EnumChatFormatting.BLUE + "" + FuncHelper.formatToPercentage(tag.getDouble("Consume")) + EnumChatFormatting.GRAY;
-	    String recover = EnumChatFormatting.LIGHT_PURPLE + "" + FuncHelper.formatToPercentage(tag.getDouble("Recover")) + EnumChatFormatting.GRAY;
+	    String power = EnumChatFormatting.RED + "x" + FuncHelper.formatToDecimal(tag.getDouble("Power")) + EnumChatFormatting.GRAY;
+	    String atkSpeed = EnumChatFormatting.GREEN + "x" + FuncHelper.formatToDecimal(tag.getDouble("ATKSpeed")) + EnumChatFormatting.GRAY;
+	    String consume = EnumChatFormatting.BLUE + "x" + FuncHelper.formatToDecimal(tag.getDouble("Consume")) + EnumChatFormatting.GRAY;
+	    String recover = EnumChatFormatting.LIGHT_PURPLE + "x" + FuncHelper.formatToDecimal(tag.getDouble("Recover")) + EnumChatFormatting.GRAY;
 	    l.add("[ " + power + " ; " + atkSpeed + " ; " + consume + " ; " + recover + " ]");
 	}
 	else
 	{
-	    l.add("[ " + EnumChatFormatting.RED + "Power: " + FuncHelper.formatToPercentage(tag.getDouble("Power")) + EnumChatFormatting.GRAY + " ]");
-	    l.add("[ " + EnumChatFormatting.GREEN + "Atk Rate: " + FuncHelper.formatToPercentage(tag.getDouble("ATKSpeed")) + EnumChatFormatting.GRAY
+	    l.add("[ " + EnumChatFormatting.RED + "Power: x" + FuncHelper.formatToDecimal(tag.getDouble("Power")) + EnumChatFormatting.GRAY + " ]");
+	    l.add("[ " + EnumChatFormatting.GREEN + "Atk Rate: x" + FuncHelper.formatToDecimal(tag.getDouble("ATKSpeed")) + EnumChatFormatting.GRAY
 		    + " ]");
-	    l.add("[ " + EnumChatFormatting.BLUE + "Mana Consume: " + FuncHelper.formatToPercentage(tag.getDouble("Consume"))
-		    + EnumChatFormatting.GRAY + " ]");
-	    l.add("[ " + EnumChatFormatting.LIGHT_PURPLE + "Mana Recover: " + FuncHelper.formatToPercentage(tag.getDouble("Recover"))
+	    l.add("[ " + EnumChatFormatting.BLUE + "Mana Consume: x" + FuncHelper.formatToDecimal(tag.getDouble("Consume")) + EnumChatFormatting.GRAY
+		    + " ]");
+	    l.add("[ " + EnumChatFormatting.LIGHT_PURPLE + "Mana Recover: x" + FuncHelper.formatToDecimal(tag.getDouble("Recover"))
 		    + EnumChatFormatting.GRAY + " ]");
 	}
 
@@ -309,7 +309,11 @@ public class Staff extends Item
 	    }
 	}
 
-	if (tag.getInteger("Add queueable") != 0) l.add((5 + tag.getInteger("Add queueable")) + "-element combo!");
+	if (tag.getInteger("Add queueable") != 0)
+	{
+	    int queueable = (5 + tag.getInteger("Add queueable"));
+	    l.add(queueable + "-element combo" + (queueable > 5 ? "!!!" : ""));
+	}
     }
 
     public List<String> getModifierStrings(ItemStack is)
@@ -320,7 +324,7 @@ public class Staff extends Item
 	{
 	    double[] values = new double[] { mod.arcaneMod, mod.coldMod, mod.earthMod, mod.fireMod, mod.iceMod, mod.lifeMod, mod.lightningMod,
 		    mod.shieldMod, mod.steamMod, mod.waterMod };
-	    DecimalFormat df = new DecimalFormat("#.####");
+	    DecimalFormat df = FuncHelper.decimalFormat;
 	    int counted = 0;
 	    String display = "";
 	    for (int a = 0; a < 10; a++)

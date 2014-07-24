@@ -27,7 +27,7 @@ public class MagickLightning extends Magick
     public List<String> getDescription()
     {
         return Arrays.asList(new String[]{
-        	"Strikes lightning where the player is looking at.",
+        	"Lightning strikes where the caster is looking.",
         	"Max strike distance: 12 x staff's power (blocks)"
         });
     }

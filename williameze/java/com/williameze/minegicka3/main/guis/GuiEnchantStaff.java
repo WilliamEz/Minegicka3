@@ -2,13 +2,18 @@ package com.williameze.minegicka3.main.guis;
 
 import java.awt.Color;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
+import net.minecraft.block.Block;
 import net.minecraft.client.gui.GuiButton;
 import net.minecraft.client.gui.GuiScreen;
 import net.minecraft.client.gui.ScaledResolution;
 import net.minecraft.client.renderer.Tessellator;
 import net.minecraft.entity.player.EntityPlayer;
+import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.EnumChatFormatting;
 import net.minecraft.util.ResourceLocation;
@@ -48,6 +53,7 @@ public class GuiEnchantStaff extends GuiScreen implements IGuiHasScrollPanel
     public ItemStack hoveringItemStack;
     public int maxInput = 50;
     public List<ItemStack> checkedThrough = new ArrayList();
+    public Map<Object, EnchantEntry> originalEnchantList = new HashMap();
 
     public EnchantEntry finalEntry = null;
     public boolean justEnchanted = false;
@@ -67,6 +73,8 @@ public class GuiEnchantStaff extends GuiScreen implements IGuiHasScrollPanel
     public void initGui()
     {
 	super.initGui();
+	originalEnchantList.clear();
+	originalEnchantList.putAll(Enchant.enchantList);
 	panels.clear();
 	checkedThrough.clear();
 	staffPanel = new PanelScrollVertical(this, mc.displayWidth / 2D, mc.displayHeight / 2D, -150, -66, 30, 140, 3).setSeparatorColor(
@@ -92,17 +100,35 @@ public class GuiEnchantStaff extends GuiScreen implements IGuiHasScrollPanel
 		}
 		if (!hasItemBeenChecked(is))
 		{
-		    EnchantEntry entry = Enchant.getEnchantEntry(is);
-		    if (entry != null)
+		    Entry<Object, EnchantEntry> mapEntry = Enchant.getEnchantEntry(is);
+		    if (mapEntry != null)
 		    {
+			EnchantEntry entry = mapEntry.getValue();
 			ItemStack is1 = is.copy();
 			is1.stackSize = 1;
 			ScrollRecipeIS scrollIS = new ScrollRecipeIS(itemsPanel, is1, 20, itemsPanel.panelWidth, 16, 10);
 			scrollIS.quantityHave = scrollIS.quantityNeed = ClickCraft.getAmountUserHas(user, is1);
 			itemsPanel.addObject(scrollIS);
+			originalEnchantList.remove(mapEntry.getKey());
 		    }
 		    checkedThrough.add(is);
 		}
+	    }
+	}
+	for (EnchantEntry entry : originalEnchantList.values())
+	{
+	    Object o = entry.enchantee;
+	    ItemStack is = null;
+	    if (o instanceof ItemStack) is = (ItemStack) o;
+	    else if (o instanceof Item) is = new ItemStack((Item) o);
+	    else if (o instanceof Block) is = new ItemStack((Block) o);
+	    if (is != null)
+	    {
+		is.stackSize = 1;
+		ScrollRecipeIS scrollIS = new ScrollRecipeIS(itemsPanel, is, 20, itemsPanel.panelWidth, 16, 10);
+		scrollIS.color2 = 0xc5c5c5;
+		scrollIS.quantityHave = scrollIS.quantityNeed = 0;
+		itemsPanel.addObject(scrollIS);
 	    }
 	}
 
@@ -197,7 +223,7 @@ public class GuiEnchantStaff extends GuiScreen implements IGuiHasScrollPanel
 	    {
 		if (scroll instanceof ScrollItemStack && ((ScrollItemStack) scroll).is != null)
 		{
-		    EnchantEntry entry = Enchant.getEnchantEntry(((ScrollItemStack) scroll).is);
+		    EnchantEntry entry = Enchant.getEnchantEntry(((ScrollItemStack) scroll).is).getValue();
 		    l1.add(entry);
 		}
 	    }

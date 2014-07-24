@@ -13,21 +13,24 @@ public class ScrollRecipeIS extends ScrollIsWithText
 {
     public int quantityNeed;
     public int quantityHave;
+    public int color2;
 
     public ScrollRecipeIS(PanelScrollVertical panel, ItemStack is, double h, double w, double isSize, double lm)
     {
 	super(panel, is, h, w, isSize, lm);
+	color2 = 0x00ff00;
     }
 
     public ScrollRecipeIS(PanelScrollVertical panel, ItemStack is, double h, double w, double isSize)
     {
 	super(panel, is, h, w, isSize);
+	color2 = 0x00ff00;
     }
 
     @Override
     public void draw()
     {
-	color = quantityHave >= quantityNeed ? 0x00ff00 : 0xffffff;
+	color = quantityHave >= quantityNeed ? color2 : color;
 	text = quantityHave + "/" + quantityNeed;
 	super.draw();
     }

@@ -197,10 +197,6 @@ public class CoreClient
 		}
 	    }
 	}
-	if (!Mouse.isButtonDown(0))
-	{
-	    selfcasting = false;
-	}
 	ModKeybinding.keyUltility.isPressed();
 	for (KeyBinding mkb : ModKeybinding.elementKeys)
 	{

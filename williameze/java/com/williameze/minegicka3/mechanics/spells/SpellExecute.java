@@ -1,6 +1,6 @@
 package com.williameze.minegicka3.mechanics.spells;
 
-import scala.util.Random;
+import java.util.Random;
 
 import com.williameze.minegicka3.mechanics.spells.Spell.SpellType;
 

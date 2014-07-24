@@ -113,7 +113,7 @@ public class Entity888 extends EntityCreature implements IBossDisplayData, IMob,
     protected void applyEntityAttributes()
     {
 	super.applyEntityAttributes();
-	getAttributeMap().getAttributeInstance(SharedMonsterAttributes.maxHealth).setBaseValue(8);
+	getAttributeMap().getAttributeInstance(SharedMonsterAttributes.maxHealth).setBaseValue(888);
 	getAttributeMap().getAttributeInstance(SharedMonsterAttributes.followRange).setBaseValue(64);
 	getAttributeMap().getAttributeInstance(SharedMonsterAttributes.knockbackResistance).setBaseValue(1);
 	getAttributeMap().getAttributeInstance(SharedMonsterAttributes.movementSpeed).setBaseValue(0);

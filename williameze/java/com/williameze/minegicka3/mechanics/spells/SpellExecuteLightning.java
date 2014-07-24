@@ -29,10 +29,11 @@ public class SpellExecuteLightning extends SpellExecute
 		double consumeMana = s.countElements() * 100 + s.countElement(Element.Lightning) * 50 * s.getManaConsumeRate();
 		if (s.consumeMana(consumeMana, true, true, 3) > 0)
 		{
+		    double dist = 4 * s.getAtkSpeed();
 		    for (int a = 0; a < s.countElement(Element.Lightning); a++)
 		    {
-			EntityLightningBolt l = new EntityLightningBolt(caster.worldObj, caster.posX + (rnd.nextDouble() - 0.5) * 8, caster.posY,
-				caster.posZ + (rnd.nextDouble() - 0.5) * 8);
+			EntityLightningBolt l = new EntityLightningBolt(caster.worldObj, caster.posX + (rnd.nextDouble() - 0.5) * dist, caster.posY,
+				caster.posZ + (rnd.nextDouble() - 0.5) * dist);
 			caster.worldObj.spawnEntityInWorld(l);
 		    }
 		    s.elements.removeAll(Collections.singleton(Element.Lightning));

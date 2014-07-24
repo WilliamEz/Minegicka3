@@ -14,6 +14,20 @@ public class SpellExecute
     public static SpellExecute projectileExecute = new SpellExecuteProjectile();
     public static SpellExecute groundedExecute = new SpellExecuteGrounded();
 
+    public SpellExecute()
+    {
+    }
+
+    public static void load()
+    {
+	dummyExecute = new SpellExecute();
+	sprayExecute = new SpellExecuteSpray();
+	lightningExecute = new SpellExecuteLightning();
+	beamExecute = new SpellExecuteBeam();
+	projectileExecute = new SpellExecuteProjectile();
+	groundedExecute = new SpellExecuteGrounded();
+    }
+
     public static SpellExecute getSpellExecute(Spell s)
     {
 	if (s.spellType == SpellType.Spray) return sprayExecute;

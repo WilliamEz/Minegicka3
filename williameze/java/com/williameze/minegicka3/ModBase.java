@@ -64,6 +64,7 @@ import com.williameze.minegicka3.mechanics.ClickCraft;
 import com.williameze.minegicka3.mechanics.Element;
 import com.williameze.minegicka3.mechanics.Enchant;
 import com.williameze.minegicka3.mechanics.magicks.Magicks;
+import com.williameze.minegicka3.mechanics.spells.SpellExecute;
 
 import cpw.mods.fml.common.Mod;
 import cpw.mods.fml.common.Mod.EventHandler;
@@ -111,6 +112,7 @@ public class ModBase
 	registerObjects();
 	registerRecipes();
 	registerEntities();
+	SpellExecute.load();
 	ClickCraft.load();
 	Enchant.load();
 	ChestGenHook.load();
@@ -307,7 +309,7 @@ public class ModBase
 	int superSlowUpdateFreq = Integer.MAX_VALUE;
 	registerEntity(FXEProjectileCharge.class, "FXEProjectileCharge", 64, superSlowUpdateFreq);
 	registerEntity(FXESimpleParticle.class, "FXESimpleParticle", 64, superSlowUpdateFreq);
-	
+
 	registerEntity(EntitySprayCold.class, "SprayCold", 64, superSlowUpdateFreq);
 	registerEntity(EntitySprayFire.class, "SprayFire", 64, superSlowUpdateFreq);
 	registerEntity(EntitySpraySteam.class, "SpraySteam", 64, superSlowUpdateFreq);
